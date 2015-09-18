@@ -10,11 +10,12 @@ class SrunnerTestCase(unittest.TestCase):
         self.app = srunner.app.test_client()
 
     def tearDown(self):
-	pass
+	    pass
 
     def test_empty_db(self):
         rv = self.app.get('/')
         assert 'Hello World!' in rv.data
+
 
 
 if __name__ == '__main__':
