@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+{% from "includes/_formhelpers.html" import render_field %}
+ <form method="POST" action="/submit">
+   {{ form.hidden_tag() }}
+   {% for field in form if field.widget.input_type != 'hidden' %}
+     {{ field.label }}
+     {{ field }}
+   {% endfor %}
+       <input type="submit" value="Submit">
+</form>
+
+{% endblock content %}

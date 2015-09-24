@@ -14,9 +14,7 @@ class SrunnerTestCase(unittest.TestCase):
 
     def test_empty_db(self):
         rv = self.app.get('/')
-        self.assertIn('Hello world',rv.data)
-
-
+        assert 'Hello world!' in rv.data
 
 if __name__ == '__main__':
     unittest.main()
