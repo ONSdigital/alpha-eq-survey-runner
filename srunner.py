@@ -28,7 +28,7 @@ def questionnaire_viewer(questionnaire_id):
     if request.args.get('preview'):
         preview=True
 
-    qurl = 'http://'+app.survey_registry_url + '/surveys/api/questionnaire/' + str(questionnaire_id) + '/'
+    qurl = app.survey_registry_url + '/surveys/api/questionnaire/' + str(questionnaire_id) + '/'
     form_schema = requests.get(qurl)
     form = convert_to_wtform(form_schema.content)
     f_form = form(request.form)
