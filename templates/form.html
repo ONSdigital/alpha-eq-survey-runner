@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+{% from "includes/_formhelpers.html" import render_field %}
+{% if preview == true %}
+  <div class="preview">
+      <h3>This is a preview - no data will be submitted downstream.</h3>
+  </div>
+{% endif %}
+
+ <form method="POST" action="">
+   {% for field in form if field.widget.input_type != 'hidden' %}
+     {{ field.label }}
+     {{ field }}
+   {% endfor %}
+       <input type="submit" value="Submit">
+</form>
+
+{% endblock content %}
