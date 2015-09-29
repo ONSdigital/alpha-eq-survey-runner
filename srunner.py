@@ -6,10 +6,10 @@ from wtforms import StringField, TextField
 from wtforms.validators import DataRequired
 import requests
 import os
+import json
 from jsonforms import convert_to_wtform
-import logging
+import random
 
-logging.basicConfig(level=logging.WARN)
 
 app = Flask(__name__)
 Foundation(app)
@@ -33,8 +33,15 @@ def questionnaire_viewer(questionnaire_id):
     form = convert_to_wtform(form_schema.content)
     f_form = form(request.form)
     if request.method == 'POST' and f_form.validate():
-        return render_template("thanks.html", data=f_form.data)
-    return render_template("form.html", form=f_form, preview=preview)
+        receipt_id = random.randrange(10000, 100000)
+        app.logger.warning('{"rid": %d, "data": %s} ', receipt_id, json.dumps(f_form.data))
+        return render_template("thanks.html",
+                                data=f_form.data,
+                                receipt_id=receipt_id)
+
+    return render_template("form.html",
+                            form=f_form,
+                            preview=preview)
 
 
 
