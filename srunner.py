@@ -22,15 +22,19 @@ def hello():
     return render_template('index.html')
 
 
+def get_form_schema(questionnaire_id):
+    qurl = app.survey_registry_url + '/surveys/api/questionnaire/' + str(questionnaire_id) + '/'
+    form_schema = requests.get(qurl)
+    return form_schema.content
+
+
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'))
 def questionnaire_viewer(questionnaire_id):
     preview=False
     if request.args.get('preview'):
         preview=True
 
-    qurl = app.survey_registry_url + '/surveys/api/questionnaire/' + str(questionnaire_id) + '/'
-    form_schema = requests.get(qurl)
-    form = convert_to_wtform(form_schema.content)
+    form = convert_to_wtform(get_form_schema(questionnaire_id))
     f_form = form(request.form)
     if request.method == 'POST' and f_form.validate():
         receipt_id = random.randrange(10000, 100000)
