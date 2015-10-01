@@ -72,12 +72,12 @@ class SrunnerLoggingTest(unittest.TestCase):
         # check that given a submission we log
         # the correct data.
         self.app.logger.warning('{"rid": , "data": {"what is your hair colour?": "blue"}} ')
-        self.assertEqual(len(self.app.logger.handlers[1].messages['warning']), 1)
+        self.assertEqual(len(self.app.logger.handlers[2].messages['warning']), 1)
         self.client = srunner.app.test_client()
         response = self.client.post("/questionnaire/1",  data={
                                                         'How many marbles do you have?':'4'
                                 }, follow_redirects=True)
-        self.assertEqual(len(self.app.logger.handlers[1].messages['warning']), 2)
+        self.assertEqual(len(self.app.logger.handlers[2].messages['warning']), 2)
 
     def tearDown(self):
         self.mock_get_form_schema.stop()
