@@ -1,1 +1,1 @@
-web: gunicorn srunner:app --log-file=-
+web: gunicorn srunner:app --log-file -

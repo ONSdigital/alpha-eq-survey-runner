@@ -9,10 +9,18 @@ import os
 import json
 from jsonforms import convert_to_wtform
 import random
-
+import logging
+from logging import StreamHandler
 
 app = Flask(__name__)
 Foundation(app)
+
+# log to stderr
+
+file_handler = StreamHandler()
+app.logger.setLevel(logging.DEBUG)  # set the desired logging level here
+app.logger.addHandler(file_handler)
+
 # @TODO change this env variable
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', None)
