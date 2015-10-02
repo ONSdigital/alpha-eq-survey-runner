@@ -2,7 +2,7 @@
 {% block content %}
 <h2> Thanks for completing the survey.</h2>
 
-<p>Your recipt number is: <strong>45563786-2</strong></p>
+<p>Your recipt number is: <strong>{{receipt_id}}</strong></p>
 <dl>
 {% for key, value in data.iteritems() %}
     <dt>{{ key|e }}</dt>
