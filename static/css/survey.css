@@ -34,7 +34,8 @@ header p {
 }
 
 header aside {
-  float:right;
+  width:100%;
+  text-align: right;
   text-transform: uppercase;
   font-weight: 400;
   color:#222;
@@ -58,6 +59,8 @@ header aside {
   display: inline-block;
   vertical-align: middle;
   margin: 20px 0 0 0;
+  position: absolute;
+  left:20px;
 
 }
 
@@ -70,7 +73,11 @@ header aside {
   margin: 30px 0 0 0;
   position: absolute;
   top:0;
-  right:0
+  right:20px
+}
+
+.survey-heading {
+  margin-top:120px
 }
 
 .begin {
@@ -126,4 +133,17 @@ footer div span {
 .btn, .reset {
   margin: 10px 0;
   cursor: pointer;
+}
+
+/* mqs */
+
+@media screen and (max-width: 600px) {
+  body { font-size:95% }
+  .logo{ width:120px; right:20px }
+  .crest { width:70px; }
+  fieldset { width:100% }
+  header aside {
+    text-align: center;
+  }
+
 }
