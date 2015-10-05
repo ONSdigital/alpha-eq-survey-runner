@@ -88,6 +88,7 @@ header aside {
   margin:30px auto;
   padding: 10px 20px;
   text-align: center;
+  cursor:pointer;
 }
 
 .start { display: none }

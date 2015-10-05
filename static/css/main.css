@@ -1673,11 +1673,12 @@ img {
       padding: 0 2rem; } }
 
 input {
-  max-width: 100%; }
+  max-width: 100%; width:100%; }
 
 input[type="text"], input[type="search"], input[type="number"], input[type="email"], input[type="tel"], textarea {
   padding: 12px 15px;
   padding: 1.25rem 1.5rem;
+  margin: 5px 0 0 0;
   border-color: #d1d3cf;
   border-style: solid;
   border-width: 3px;
