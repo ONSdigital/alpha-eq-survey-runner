@@ -22,7 +22,7 @@ class Converter(object):
         """Given a question dict structure, return a TextField"""
         kwargs = {
             'label': question['title'],
-            'description': question['help_text'],
+            'description': question['description'],
             'validators': [],
             'filters': [],
         }

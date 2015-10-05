@@ -51,7 +51,7 @@ class SrunnerTestCase(unittest.TestCase):
         assert 'Hello world!' in rv.data
 
     def test_questionnaire_render(self):
-        FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"help_text": "All sizes count, even grandfathers.", "error_text": "Sorry - that doesn\'t look like a valid entry.", "title": "How many marbles do you have?"}]}'
+        FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"description": "All sizes count, even grandfathers.", "error_text": "Sorry - that doesn\'t look like a valid entry.", "title": "How many marbles do you have?"}]}'
         test_form = convert_to_wtform(FORM_SCHEMA)
         self.assertEqual(type(test_form) is  wtforms.form.FormMeta, True)
 
@@ -59,7 +59,7 @@ class SrunnerTestCase(unittest.TestCase):
 class SrunnerLoggingTest(unittest.TestCase):
 
     def setUp(self):
-        self.FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"help_text": "All sizes count, even grandfathers.", "error_text": "Sorry - that doesn\'t look like a valid entry.", "title": "How many marbles do you have?"}]}'
+        self.FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"description": "All sizes count, even grandfathers.", "error_text": "Sorry - that doesn\'t look like a valid entry.", "title": "How many marbles do you have?"}]}'
         srunner.app.config['TESTING'] = True
         self.app = srunner.app
         self.patcher = patch('srunner.get_form_schema')
