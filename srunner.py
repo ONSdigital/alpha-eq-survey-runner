@@ -36,13 +36,14 @@ def get_form_schema(questionnaire_id):
     return form_schema.content
 
 
+
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'))
 def questionnaire_viewer(questionnaire_id):
     preview=False
     if request.args.get('preview'):
         preview=True
-
-    form = convert_to_wtform(get_form_schema(questionnaire_id))
+    raw_form = get_form_schema(questionnaire_id)
+    form = convert_to_wtform(raw_form)
     f_form = form(request.form)
     if request.method == 'POST' and f_form.validate():
         receipt_id = random.randrange(10000, 100000)
@@ -50,9 +51,10 @@ def questionnaire_viewer(questionnaire_id):
         return render_template("thanks.html",
                                 data=f_form.data,
                                 receipt_id=receipt_id)
-
-    return render_template("form.html",
+    questionnaire = json.loads(raw_form)
+    return render_template("survey_index.html",
                             form=f_form,
+                            questionnaire=questionnaire,
                             preview=preview)
 
 

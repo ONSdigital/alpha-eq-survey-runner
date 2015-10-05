@@ -1,0 +1,114 @@
+<!--[if IE]><![endif]-->
+<!DOCTYPE html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8 ie7"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9 ie8"><![endif]-->
+<!--[if IE 9]><html class="no-js ie9"><![endif]-->
+<!--[if gt IE 8]><!-->
+<!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Survey Runner</title>
+  <meta charset="utf-8" />
+  <meta content="width=device-width,initial-scale=1.0" name="viewport" />
+  <meta content="on" http-equiv="cleartype" />
+  <meta name="format-detection" content="telephone=no">
+  <!--[if IE]><![endif]-->
+  <!--[if lte IE 8]>
+        <link rel="stylesheet" href="/static/css/oldie.css"/>
+    <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <link rel="stylesheet" href="/static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/survey.css" />
+  <![endif]-->
+    <script src="/static/js/header.js"></script>
+  </head>
+  <body class="">
+    <a class="skiplink visuallyhidden focusable" href="#main" tabindex="0">
+      <span>Skip to main content</span>
+    </a>
+    <header class="desktop-full-width">
+      <div class="notice"><em>Notice is given under section 1 of the Statistics of Trade Act 1947</em></div>
+      <div class="wrapper">
+          <div class="grid-wrap">
+            <div class="grid-col mobile-grid-full-width tablet-grid-one-half desktop-grid-one-half">
+              <img src="/static/img/crest.svg" class="crest">
+            </div>
+            <div class="grid-col mobile-grid-full-width tablet-grid-one-half  desktop-grid-one-half">
+              <img src="/static/img/ons-logo-grayscale.svg" class="logo">
+            </div>
+          </div>
+          <div class="grid-wrap">
+            <div class="desktop-grid-full-width">
+              <h1 class="beta">{{ questionnaire.title }}</h1>
+              <p>NB: Your response is legally required</p>
+              <aside><p>Your REF : XYZ76545</p><p>Helpline 0800 0858163</p></aside>
+            </div>
+          </div>
+       </div>
+    </header>
+
+    <div class="wrapper panel--mar">
+      <div class="grid-wrap">
+        <div class="grid-col mobile-grid-full-width tablet-grid-one-half desktop-grid-full-width">
+          <p class="txt-center">To be completed for: The business or organisation</p>
+          <p class="txt-center heavy">Completion required by 2nd November 2015</p>
+        </div>
+    </div>
+
+    <div class="grid-wrap intro">
+      <div class="grid-col mobile-grid-full-width  desktop-grid-full-width">
+
+     <p>{{ questionnaire.overview }}</p>
+
+    <a class="begin">Begin</a>
+
+  </div>
+</div>
+
+<!-- questions begin -->
+<div class="grid-wrap start">
+  <div class="grid-col mobile-grid-full-width  desktop-grid-full-width">
+<fieldset>
+<form method="POST" action="">
+
+{% for field in form if field.widget.input_type != 'hidden' %}
+<label class="field field--spaced field--text">
+  <b class="field__label">  {{ field.label }}</b>
+  <span class="description field__description label__description"></span>
+      {{ field }}
+</label>
+{% endfor %}
+
+<input type="submit" class="btn">
+
+<p class="reset">Return to intro</p>
+
+</form>
+</fieldset>
+  </div>
+</div>
+<!-- questions -->
+    </div>
+
+    <footer><div><span></span></div></footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/scrollto.js"></script>
+    <script>
+    $(function() {
+      $(".begin").click(function() {
+        $(".intro").fadeOut();
+        $(".start").fadeIn();
+      });
+      $(".reset").click(function() {
+        $(".start").fadeOut();
+        $(".intro").fadeIn();
+      });
+    });
+    </script>
+  </body>
+</html>
