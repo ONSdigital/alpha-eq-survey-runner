@@ -1,9 +1,11 @@
 web:
   build: .
   ports:
-   - "5000:5000"
+   - "8080:8080"
   volumes:
-   - .:/code
+   - .:/opt/eq-survey-runner
+  environment:
+    - MODE=dev
   links:
    - cassandra
 cassandra:
