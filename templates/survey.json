@@ -1,0 +1,12 @@
+{
+   "overview":"This is a questionnaire to test stuff",
+   "title": "welcome to my survey about crayons",
+   "questionnaire_title":"Hope",
+   "questions":[
+      {
+         "description":"All sizes count, even grandfathers.",
+         "error_text":"Sorry - that doesn't look like a valid entry.",
+         "title":"How many marbles do you have?"
+      }
+   ]
+}

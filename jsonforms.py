@@ -8,7 +8,7 @@ from unidecode import unidecode
 _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
 
-def slugify(text, delim=u'-'):
+def slugify(text, delim=u'_'):
     """Generates an ASCII-only slug."""
     result = []
     for word in _punct_re.split(text.lower()):
@@ -21,6 +21,7 @@ class Converter(object):
     def convert(self, question):
         """Given a question dict structure, return a TextField"""
         kwargs = {
+            '_name': slugify(question['title']),
             'label': question['title'],
             'description': question['description'],
             'validators': [],
@@ -39,7 +40,7 @@ def json_fields(form_schema):
     for question in form_schema['questions']:
         field = converter.convert(question)
         if field is not None:
-            field_dict[question['title']] = field
+            field_dict[slugify(question['title'])] = field
 
     return field_dict
 
