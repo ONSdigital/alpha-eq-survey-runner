@@ -146,13 +146,13 @@
     }
 
 
+    {% if request.view_args.get('quest_session_id') %}
 
     var timer;
 
     var fun = function autosave() {
       var now = new Date();
       var strDateTime = [[AddZero(now.getDate()), AddZero(now.getMonth() + 1), now.getFullYear()].join("/"), [AddZero(now.getHours()), AddZero(now.getMinutes())].join(":"), now.getHours() >= 12 ? "PM" : "AM"].join(" ");
-
 
       jQuery('form').each(function () {
         jQuery.ajax({
@@ -168,9 +168,12 @@
       });
     }
     $(document).ready(function () {
+
       setTimeout(fun, 1000);
       setInterval(fun,5000);
     });
+    {% endif %}
+
     </script>
   </body>
 </html>

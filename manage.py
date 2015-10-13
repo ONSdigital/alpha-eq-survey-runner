@@ -27,8 +27,8 @@ def create_sessions_schema():
     cql_table = """CREATE TABLE IF NOT EXISTS SessionStore.sessions (
               quest_session_id varchar,
               data text,
-             session_id varchar,
-             PRIMARY KEY (quest_session_id)
+            session_id varchar,
+            PRIMARY KEY (quest_session_id)
             ) ;"""
     table_create = session.execute(cql_table)
     print str(table_create)
