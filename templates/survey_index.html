@@ -83,7 +83,7 @@
   <div class="grid-col mobile-grid-full-width  desktop-grid-full-width">
 <fieldset>
 <form method="POST" action="">
-
+<p class="right" id="autosave"></p>
 {% for field in form if field.widget.input_type != 'hidden' %}
 <label class="field field--spaced field--text">
   <b class="field__label">  {{ field.label }}</b>
@@ -118,6 +118,64 @@
         $(".intro").fadeIn();
       });
     });
+
+
+
+
+    $.fn.serializeObject = function()
+    {
+      var o = {};
+      var a = this.serializeArray();
+      $.each(a, function() {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+      });
+      return o;
+    };
+
+
+    //Pad given value to the left with "0"
+    function AddZero(num) {
+      return (num >= 0 && num < 10) ? "0" + num : num + "";
+    }
+
+
+    {% if request.view_args.get('quest_session_id') %}
+
+    var timer;
+
+    var fun = function autosave() {
+      var now = new Date();
+      var strDateTime = [[AddZero(now.getDate()), AddZero(now.getMonth() + 1), now.getFullYear()].join("/"), [AddZero(now.getHours()), AddZero(now.getMinutes())].join(":"), now.getHours() >= 12 ? "PM" : "AM"].join(" ");
+
+      jQuery('form').each(function () {
+        jQuery.ajax({
+            url: "{{ url_for('autosave', questionnaire_id=request.view_args.get('questionnaire_id'), quest_session_id=request.view_args.get('quest_session_id')) }}?autosave=true",
+            data: JSON.stringify($('form').serializeObject()),
+            type: 'POST',
+            success: function (data) {
+                if (data && data == 'OK') {
+                    $('#autosave').text("Form saved at " + strDateTime );
+                } else {}
+            }
+        });
+      });
+    }
+    $(document).ready(function () {
+
+      setTimeout(fun, 1000);
+      setInterval(fun,5000);
+    });
+    {% endif %}
+
     </script>
   </body>
 </html>
+
+

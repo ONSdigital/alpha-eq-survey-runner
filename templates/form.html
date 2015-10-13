@@ -16,3 +16,33 @@
 </form>
 
 {% endblock content %}
+
+
+{% block footer_scripts %}
+        {{ super() }}
+
+var timer;
+
+var fun = function autosave() {
+    alert();
+    jQuery('form').each(function () {
+        jQuery.ajax({
+            url: "{{ url_for('autosave', questionnaire_id=request.view_args.get(questionnaire_id), quest_session_id=request.view_args.get(quest_sesssion_id)) }}?autosave=true",
+            data: jQuery(this).serialize(),
+            type: 'POST',
+            success: function (data) {
+                if (data && data == 'OK') {
+                    alert("data saved");
+                } else {}
+            }
+        });
+    });
+}
+$(document).ready(function () {
+    setTimeout(fun, 1000);
+    //setInterval(fun,1000);
+});
+
+
+
+{% endblock footer_scripts %}
