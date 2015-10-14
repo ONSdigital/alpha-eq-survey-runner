@@ -2,11 +2,54 @@
    "overview":"This is a questionnaire to test stuff",
    "title": "welcome to my survey about crayons",
    "questionnaire_title":"Hope",
-   "questions":[
+   "questions": [
       {
-         "description":"All sizes count, even grandfathers.",
-         "error_text":"Sorry - that doesn't look like a valid entry.",
-         "title":"How many marbles do you have?"
+        "questionType": "InputText",
+        "questionText": "How many marbles do you have",
+        "questionHelp": "All sizes count, even grandfathers.",
+        "questionError": "Sorry - that doesn't look like a valid entry.",
+        "questionReference": "",
+        "children": [],
+        "validation": {
+          "required": true
+        },
+        "displayProperties": {},
+        "displayConditions": [],
+        "skipConditions": [],
+        "branchConditions": [],
+        "parts": []
+      },
+      {
+        "questionType": "MultipleChoice",
+        "questionText": "Which colour marble would you prefer?",
+        "questionHelp": "Only the displayed colours are available",
+        "questionError": "That isn't a valid answer",
+        "questionReference": "",
+        "children": [],
+        "validation": {
+          "required": true
+        },
+        "displayProperties": {},
+        "displayConditions": [],
+        "skipConditions": [],
+        "branchConditions": [],
+        "parts": [
+          {
+            "name": "Blue",
+            "label": "Not Red or Green",
+            "value": "Blue Marble"
+          },
+          {
+            "name": "Red",
+            "label": "Not green or blue",
+            "value": "Red Marble"
+          },
+          {
+            "name": "Green",
+            "label": "Not Blue or Red",
+            "value": "Green Marble"
+          }
+        ]
       }
-   ]
+    ]
 }
