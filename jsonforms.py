@@ -4,6 +4,10 @@ from wtforms import validators
 import re
 import json
 from unidecode import unidecode
+from widgets import RichTextDisplayWidget
+import bleach
+from bleach_whitelist import print_tags, print_attrs, all_styles
+
 
 _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
@@ -22,13 +26,14 @@ class Converter(object):
     field = {}
 
     def __init__(self, question):
-        print question
         questiontype = question['questionType']
 
         if questiontype == "InputText":
             self.convert_textfield(question)
         elif questiontype == "MultipleChoice":
             self.convert_radiofield(question)
+        elif questiontype == "TextBlock":
+            self.convert_textblock(question)
         return
 
     def get_field(self):
@@ -66,6 +71,18 @@ class Converter(object):
             choices.append(choice)
         return choices
 
+    def convert_textblock(self, question):
+        """Given a question dict structure, return a TextBlock"""
+        kwargs = {
+            '_name': slugify(question['questionText']),
+            'label': '',
+            'default': bleach.clean(question['questionText'], print_tags),
+            'description': '',
+            'validators': [validators.optional()],
+            'filters': [],
+            'widget': RichTextDisplayWidget()
+        }
+        self.field = f.TextAreaField(**kwargs)
 
 
 def json_fields(form_schema):

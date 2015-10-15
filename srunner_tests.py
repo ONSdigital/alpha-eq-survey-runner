@@ -60,6 +60,11 @@ class SrunnerTestCase(unittest.TestCase):
         test_form = convert_to_wtform(FORM_SCHEMA)
         self.assertEqual(type(test_form) is  wtforms.form.FormMeta, True)
 
+    def test_questionnaire_render_with_richtextblock(self):
+        FORM_SCHEMA = open(r"./test_fixtures/test_survey.json", "r").read()
+        test_form = convert_to_wtform(FORM_SCHEMA)
+        self.assertEqual(type(test_form) is  wtforms.form.FormMeta, True)
+
 class SrunnerLoggingTest(unittest.TestCase):
 
     def setUp(self):
