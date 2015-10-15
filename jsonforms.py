@@ -46,7 +46,7 @@ class Converter(object):
         self.field = f.StringField(**kwargs)
 
     def convert_radiofield(self, question):
-        """Given a question dict structure, return a TextField"""
+        """Given a multipe choice question dict structure, return a Radio Field"""
         kwargs = {
             '_name': slugify(question['questionText']),
             'label': question['questionText'],
@@ -61,8 +61,8 @@ class Converter(object):
         choices = []
         for part in parts:
             value = part['value']
-            name = part['name']
-            choice = (name, value)
+            description = part['name']
+            choice = (value, description)
             choices.append(choice)
         return choices
 
