@@ -22,7 +22,7 @@
       {
      "questionType": "TextBlock",
      "questionError": "",
-     "questionText": "This is <strong>strong<\/strong>  and this is <i>Italic<\/i>",
+     "questionText": "This is <strong>strong<\/strong> <script>alert('l33t');</script>  and this is <i>Italic<\/i>",
      "displayConditions": [
 
      ],
@@ -46,7 +46,7 @@
      "skipConditions": [
 
      ]
-   }, 
+   },
       {
         "questionType": "MultipleChoice",
         "questionText": "Which colour marble would you prefer?",
