@@ -1,9 +1,5 @@
-import os
 from flask import Flask, render_template, redirect, request, session
 from flask_zurb_foundation import Foundation
-from flask_wtf import Form
-from wtforms import StringField, TextField
-from wtforms.validators import DataRequired
 import requests
 import os
 import json
@@ -52,22 +48,23 @@ def get_form_schema(questionnaire_id):
 
 
 def get_session_data(quest_session_id, session_id):
-    session = cassandra.connect()
-    session.set_keyspace("sessionstore")
+    cassandra_session = cassandra.connection
+    cassandra_session.set_keyspace("sessionstore")
     cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
-    r = session.execute(cql)
+    r = cassandra_session.execute(cql)
 
     if r:
         payload = json.loads(r[0].data)
         return payload
     return None
 
+
 def set_session_data(quest_session_id, session_id, data):
-    session = cassandra.connect()
-    session.set_keyspace("sessionstore")
+    cassandra_session = cassandra.connection
+    cassandra_session.set_keyspace("sessionstore")
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
-    r = session.execute(cql)
+    r = cassandra_session.execute(cql)
     app.logger.debug(r)
     return r
 
