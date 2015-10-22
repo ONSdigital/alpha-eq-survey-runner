@@ -66,7 +66,7 @@ class Converter(object):
         choices = []
         for part in parts:
             value = part['value']
-            description = part['name']
+            description = part['value']
             choice = (value, description)
             choices.append(choice)
         return choices

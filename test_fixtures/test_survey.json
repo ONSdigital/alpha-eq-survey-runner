@@ -63,19 +63,13 @@
         "branchConditions": [],
         "parts": [
           {
-            "name": "Blue",
-            "label": "Not Red or Green",
-            "value": "Blue Marble"
+            "value": "Blue"
           },
           {
-            "name": "Red",
-            "label": "Not green or blue",
-            "value": "Red Marble"
+            "value": "Red"
           },
           {
-            "name": "Green",
-            "label": "Not Blue or Red",
-            "value": "Green Marble"
+            "value": "Green"
           }
         ]
       }
