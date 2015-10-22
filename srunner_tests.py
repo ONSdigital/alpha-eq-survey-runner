@@ -56,7 +56,7 @@ class SrunnerTestCase(unittest.TestCase):
         self.assertEqual(type(test_form) is  wtforms.form.FormMeta, True)
 
     def test_questionnaire_render_with_multipe_choice(self):
-        FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"questionType": "MultiChoice", "questionHelp": "Only the displayed colours are available.", "questionError": "That isn\'t a valid answer", "questionText": "Which colour marble would you prefer?", "parts":[{"name": "Blue","label": "Not Red or Green","value": "Blue Marble"},{"name": "Red","label": "Not green or blue","value": "Red Marble"},{"name": "Green","label": "Not Blue or Red","value": "Green Marble"}]}]}'
+        FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"questionType": "MultiChoice", "questionHelp": "Only the displayed colours are available.", "questionError": "That isn\'t a valid answer", "questionText": "Which colour marble would you prefer?", "parts":[{"value": "Blue"},{"value": "Red"},{"value": "Green"}]}]}'
         test_form = convert_to_wtform(FORM_SCHEMA)
         self.assertEqual(type(test_form) is  wtforms.form.FormMeta, True)
 
@@ -68,7 +68,7 @@ class SrunnerTestCase(unittest.TestCase):
 class SrunnerLoggingTest(unittest.TestCase):
 
     def setUp(self):
-        self.FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"questionType": "InputText", "questionHelp": "All sizes count, even grandfathers.", "questionError": "Sorry - that doesn\'t look like a valid entry.", "questionText": "How many marbles do you have?"},{"questionType": "MultiChoice", "questionHelp": "Only the displayed colours are available.", "questionError": "That isn\'t a valid answer", "questionText": "Which colour marble would you prefer?", "parts":[{"name": "Blue","label": "Not Red or Green","value": "Blue Marble"},{"name": "Red","label": "Not green or blue","value": "Red Marble"},{"name": "Green","label": "Not Blue or Red","value": "Green Marble"}]}]}'
+        self.FORM_SCHEMA = '{"overview": "This is a questionnaire to test stuff", "questionnaire_title": "Hope", "questions": [{"questionType": "InputText", "questionHelp": "All sizes count, even grandfathers.", "questionError": "Sorry - that doesn\'t look like a valid entry.", "questionText": "How many marbles do you have?"},{"questionType": "MultiChoice", "questionHelp": "Only the displayed colours are available.", "questionError": "That isn\'t a valid answer", "questionText": "Which colour marble would you prefer?", "parts":[{"value": "Blue"},{"value": "Red"},{"value": "Green"}]}]}'
         srunner.app.config['TESTING'] = True
         self.app = srunner.app
         self.patcher = patch('srunner.get_form_schema')
