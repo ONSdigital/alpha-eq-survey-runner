@@ -136,6 +136,24 @@ footer div span {
   cursor: pointer;
 }
 
+.field ul {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.field li {
+  list-style: none;
+  margin-bottom: 15px;
+}
+
+.field li label, .field li input {
+  display: inline-block;
+  vertical-align: middle;
+  width: auto !important;
+}
+
+
 /* mqs */
 
 @media screen and (max-width: 600px) {
