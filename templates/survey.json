@@ -1,23 +1,37 @@
 {
-   "overview":"This is a questionnaire to test stuff",
-   "title": "welcome to my survey about crayons",
-   "questionnaire_title":"Hope",
-   "questions": [
-      {
-        "questionType": "InputText",
-        "questionText": "How many marbles do you have",
-        "questionHelp": "All sizes count, even grandfathers.",
-        "questionError": "Sorry - that doesn't look like a valid entry.",
-        "questionReference": "",
-        "children": [],
-        "validation": {
-          "required": true
-        },
-        "displayProperties": {},
-        "displayConditions": [],
-        "skipConditions": [],
-        "branchConditions": [],
-        "parts": []
+  "overview":"This is a questionnaire to test stuff",
+  "title": "welcome to my survey about crayons",
+  "questionnaire_title":"Hope",
+  "questions": [
+    {
+      "questionType": "InputText",
+      "questionText": "How many marbles do you have",
+      "questionHelp": "All sizes count, even grandfathers.",
+      "questionError": "Sorry - that doesn't look like a valid entry.",
+      "questionReference": "",
+      "children": [],
+      "validation": {
+        "required": true
+      },
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": []
+    },
+    {
+      "questionType": "TextBlock",
+      "questionError": "",
+      "questionText": "This is <strong>strong<\/strong>  and this is <i>Italic<\/i>",
+      "displayConditions": [],
+      "questionReference": "",
+      "children": [],
+      "parts": [],
+      "branchConditions": [],
+      "displayProperties": {},
+      "questionHelp": "",
+      "validation": {
+        "required": true
       },
       {
      "questionType": "TextBlock",
@@ -46,7 +60,7 @@
      "skipConditions": [
 
      ]
-   }, 
+   },
       {
         "questionType": "MultipleChoice",
         "questionText": "Which colour marble would you prefer?",
