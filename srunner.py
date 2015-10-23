@@ -72,40 +72,53 @@ def set_session_data(quest_session_id, session_id, data):
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'), strict_slashes=False)
 @app.route('/questionnaire/<int:questionnaire_id>/<quest_session_id>', methods=('GET', 'POST'), strict_slashes=False)
 def questionnaire_viewer(questionnaire_id, quest_session_id=None):
+
     if not session.get('uid'):
         session['uid'] = uuid.uuid4()
-    preview=False
+
+    preview = False
+
     if request.args.get('preview'):
-        preview=True
+        preview = True
+
     if 'debug' in request.args:
-        raw_form = render_template('survey.json')
+        q_data = render_template('survey.json')
     else:
-        raw_form = get_form_schema(questionnaire_id)
-    form = convert_to_wtform(raw_form)
+        q_data = get_form_schema(questionnaire_id)
+
 
     resume_data = None
+
     if quest_session_id is not None:
         resume_data = get_session_data(quest_session_id, str(session['uid']))
 
-    if request.method == 'POST':
-        f_form = form(request.form)
-        if f_form.validate():
-            receipt_id = random.randrange(10000, 100000)
-            app.logger.warning('{"rid": %d, "data": %s} ', receipt_id, json.dumps(f_form.data))
-            return render_template("thanks.html",
-                                    data=f_form.data,
-                                    receipt_id=receipt_id)
-    elif resume_data:
-        f_form = form(**resume_data)
+    q_manager = QuestionnnaireManager(q_data, resume_data)
 
+    if q_manager.started:
+        print q_manager.get_current_question().question_text
     else:
-        f_form = form()
+        return render_template('survey_intro.html')
 
-    questionnaire = json.loads(raw_form)
-    return render_template("survey_index.html",
-                            form=f_form,
-                            questionnaire=questionnaire,
-                            preview=preview)
+
+    # if request.method == 'POST':
+    #     f_form = form(request.form)
+    #     if f_form.validate():
+    #         receipt_id = random.randrange(10000, 100000)
+    #         app.logger.warning('{"rid": %d, "data": %s} ', receipt_id, json.dumps(f_form.data))
+    #         return render_template("thanks.html",
+    #                                 data=f_form.data,
+    #                                 receipt_id=receipt_id)
+    # elif resume_data:
+    #     f_form = form(**resume_data)
+    #
+    # else:
+    #     f_form = form()
+    #
+    # questionnaire = json.loads(raw_form)
+    # return render_template("survey_index.html",
+    #                         form=f_form,
+    #                         questionnaire=questionnaire,
+    #                         preview=preview)
 
 
 
