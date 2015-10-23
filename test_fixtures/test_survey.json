@@ -1,77 +1,66 @@
 {
-   "overview":"This is a questionnaire to test stuff",
-   "title": "welcome to my survey about crayons",
-   "questionnaire_title":"Hope",
-   "questions": [
-      {
-        "questionType": "InputText",
-        "questionText": "How many marbles do you have",
-        "questionHelp": "All sizes count, even grandfathers.",
-        "questionError": "Sorry - that doesn't look like a valid entry.",
-        "questionReference": "",
-        "children": [],
-        "validation": {
-          "required": true
-        },
-        "displayProperties": {},
-        "displayConditions": [],
-        "skipConditions": [],
-        "branchConditions": [],
-        "parts": []
+  "overview":"This is a questionnaire to test stuff",
+  "title": "welcome to my survey about crayons",
+  "questionnaire_title":"Hope",
+  "questions": [
+    {
+      "questionType": "InputText",
+      "questionText": "How many marbles do you have",
+      "questionHelp": "All sizes count, even grandfathers.",
+      "questionError": "Sorry - that doesn't look like a valid entry.",
+      "questionReference": "",
+      "children": [],
+      "validation": {
+        "required": true,
+        "numeric":true
       },
-      {
-     "questionType": "TextBlock",
-     "questionError": "",
-     "questionText": "This is <strong>strong<\/strong> <script>alert('l33t');</script>  and this is <i>Italic<\/i>",
-     "displayConditions": [
-
-     ],
-     "questionReference": "",
-     "children": [
-
-     ],
-     "parts": [
-
-     ],
-     "branchConditions": [
-
-     ],
-     "displayProperties": {
-
-     },
-     "questionHelp": "",
-     "validation": {
-       "required": true
-     },
-     "skipConditions": [
-
-     ]
-   },
-      {
-        "questionType": "MultipleChoice",
-        "questionText": "Which colour marble would you prefer?",
-        "questionHelp": "Only the displayed colours are available",
-        "questionError": "That isn't a valid answer",
-        "questionReference": "",
-        "children": [],
-        "validation": {
-          "required": true
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": []
+    },
+    {
+      "questionType": "TextBlock",
+      "questionError": "",
+      "questionText": "This is <strong>strong<\/strong> <script>alert('l33t');</script>  and this is <i>Italic<\/i>",
+      "displayConditions": [],
+      "questionReference": "",
+      "children": [],
+      "parts": [],
+      "branchConditions": [],
+      "displayProperties": {},
+      "questionHelp": "",
+      "validation": {
+        "required": true
+      },
+      "skipConditions": []
+    },
+    {
+      "questionType": "MultipleChoice",
+      "questionText": "Which colour marble would you prefer?",
+      "questionHelp": "Only the displayed colours are available",
+      "questionError": "That isn't a valid answer",
+      "questionReference": "",
+      "children": [],
+      "validation": {
+        "required": true
+      },
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [
+        {
+          "value": "Blue"
         },
-        "displayProperties": {},
-        "displayConditions": [],
-        "skipConditions": [],
-        "branchConditions": [],
-        "parts": [
-          {
-            "value": "Blue"
-          },
-          {
-            "value": "Red"
-          },
-          {
-            "value": "Green"
-          }
-        ]
-      }
-    ]
+        {
+          "value": "Red"
+        },
+        {
+          "value": "Green"
+        }
+      ]
+    }
+  ]
 }
