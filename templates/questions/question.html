@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<p>{{ question.question_text }}</p>
+
+  {% block question_template %}
+  {% endblock question_template %}
+
+<form method="post">
+  <input type="hidden" name="debug" value="true">
+  <input type="submit" name="next" value="Next">
+</form>
+
+{% endblock content %}

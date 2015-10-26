@@ -1,17 +1,21 @@
 from questions import Question
 import json
+import pprint
 
 class QuestionnaireManager:
     def __init__(self, questionnaire_json, resume_data):
-        self.questionnaire_json = json.loads(questionnaire_json)
-        self.resume_data = resume_data
-        self.questions = []
-        self._load_question_data(self.questionnaire_json)
+        self.title = None
         self.question_index = 0
         self.started = False
         self.completed = False
+        self.questions = []
 
-    def _load_question_data(self, question_data):
+        self.questionnaire_json = json.loads(questionnaire_json)
+        self.resume_data = resume_data
+        self._load_questionnaire_data(self.questionnaire_json)
+
+    def _load_questionnaire_data(self, question_data):
+
         self.title = question_data['title']
         self.overview = question_data['overview']
 

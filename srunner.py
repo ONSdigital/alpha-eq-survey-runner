@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session
+from flask import Flask, render_template, redirect, request, session, url_for
 from flask_zurb_foundation import Foundation
 import requests
 import os
@@ -9,6 +9,7 @@ import random
 import logging
 from logging import StreamHandler
 import uuid
+from questionnaireManager import QuestionnaireManager
 
 app = Flask(__name__)
 Foundation(app)
@@ -82,22 +83,40 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         preview = True
 
     if 'debug' in request.args:
+        print 'DEBUG in GET'
+        q_data = render_template('survey.json')
+    elif 'debug' in request.form:
+        print 'DEBUG in POST'
         q_data = render_template('survey.json')
     else:
+        print 'LIVE'
         q_data = get_form_schema(questionnaire_id)
-
 
     resume_data = None
 
     if quest_session_id is not None:
         resume_data = get_session_data(quest_session_id, str(session['uid']))
+        print "GOT RESUME DATA"
 
-    q_manager = QuestionnnaireManager(q_data, resume_data)
+    q_manager = QuestionnaireManager(q_data, resume_data)
+    print 'Instantiated Manager'
+
+    if request.method == 'POST':
+        if request.form['start']:
+            print "Starting Questionnaire"
+            q_manager.start_questionnaire()
+        elif request.form['next']:
+            # validate response
+            q_manager.get_next_question()
 
     if q_manager.started:
-        print q_manager.get_current_question().question_text
+        q = q_manager.get_current_question()
+        print 'Is Started'
+        return render_template('questions/' + q.type + '.html', question=q)
     else:
-        return render_template('survey_intro.html')
+        print 'Showing intro'
+        return render_template('survey_intro.html',
+                                questionnaire=q_manager)
 
 
     # if request.method == 'POST':

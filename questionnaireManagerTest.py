@@ -20,6 +20,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         # Instantiate the questionnaire manager... There is no resume data
         qManager = QuestionnaireManager(qData, {})
+
+        assert qManager.title == "welcome to my survey about crayons"
+
         qManager.start_questionnaire()
 
         q = qManager.get_current_question()
