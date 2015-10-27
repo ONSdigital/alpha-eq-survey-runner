@@ -62,7 +62,7 @@ class MultipleChoiceQuestion(Question):
     def is_valid_response(self, response):
         valid = super(MultipleChoiceQuestion, self).is_valid_response(response)
 
-        if not response.isspace():
+        if response is not None and not response.isspace():
             for part in self.parts:
                 if part == response:
                     return True
