@@ -1,4 +1,6 @@
 {% extends "questions/question.html" %}
 
 {% block question_template %}
+<p>{{ question.question_text }}</p>
+  <input type="text" name="user_response" value="{{user_response}}"/>
 {% endblock question_template %}

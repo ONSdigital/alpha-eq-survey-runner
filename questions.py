@@ -48,10 +48,10 @@ class Question(object):
 
         return len(self.errors) == 0
 
-    def get_warnings(self, request):
+    def get_warnings(self):
         return None
 
-    def get_errors(self, request):
+    def get_errors(self):
         return self.errors or None
 
 
@@ -62,13 +62,14 @@ class MultipleChoiceQuestion(Question):
     def is_valid_response(self, response):
         valid = super(MultipleChoiceQuestion, self).is_valid_response(response)
 
-        # check the response against our list of parts
-        if valid and not response in self.parts:
+        if not response.isspace():
+            for part in self.parts:
+                if part == response:
+                    return True
+
             return False
 
         return valid
-
-
 
 class InputTextQuestion(Question):
     def __init__(self, question_schema):
@@ -82,8 +83,8 @@ class TextBlock(Question):
     def is_valid_response(self, request):
         return True
 
-    def get_warnings(self, request):
+    def get_warnings(self):
         return None
 
-    def get_warnings(self, request):
+    def get_warnings(self):
         return None

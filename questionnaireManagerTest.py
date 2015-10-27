@@ -45,8 +45,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert qManager.is_valid_response(response) == True
 
-        assert qManager.get_question_errors(response) == None
-        assert qManager.get_question_warnings(response) == None
+        assert qManager.get_question_errors() == None
+        assert qManager.get_question_warnings() == None
 
     def test_miss_required_question(self):
         qData = self._loadFixture('test_survey.json')
@@ -68,7 +68,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert qManager.is_valid_response(response) == False
 
-        assert 'required' in qManager.get_question_errors(response)
+        assert 'required' in qManager.get_question_errors()
 
     def test_next_question(self):
         qData = self._loadFixture('test_survey.json')
@@ -90,7 +90,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q, TextBlock) == True
 
         assert qManager.is_valid_response('anything you like') == True
-        assert qManager.get_question_errors('still anything') == None
+        assert qManager.get_question_errors() == None
 
         q = qManager.get_next_question()
 
@@ -105,6 +105,72 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         valid_response = 'Blue'
         assert qManager.is_valid_response(valid_response) == True
+
+    def test_resume_questionnaire(self):
+        qData = self._loadFixture('test_survey.json')
+
+        resumeData = {
+            '_last': 'q1',
+            'q1': '123'
+        }
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.resume_questionnaire(resumeData)
+
+        q = qManager.get_current_question()
+
+        assert q.reference == 'q2'
+
+    def test_resume_from_text_block(self):
+        qData = self._loadFixture('test_survey.json')
+        resumeData = {
+            '_last':'q2',
+            'q1':'123',
+            'q2':None
+        }
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.resume_questionnaire(resumeData)
+
+        q = qManager.get_current_question()
+
+        assert q.reference == 'q3'
+        assert qManager.completed == False
+
+    def test_resume_from_last_question(self):
+        qData = self._loadFixture('test_survey.json')
+        resumeData = {
+            '_last':'q2',
+            'q1':'123',
+            'q2':None,
+            'q3':None,
+        }
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.resume_questionnaire(resumeData)
+
+        q = qManager.get_current_question()
+
+        assert q.reference == 'q3'
+        assert qManager.completed == False
+
+    def test_resume_completed_questionnaire(self):
+        qData = self._loadFixture('test_survey.json')
+        resumeData = {
+            '_last':'completed',
+            'q1':'123',
+            'q2':None,
+            'q3':None,
+        }
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.resume_questionnaire(resumeData)
+
+        q = qManager.get_current_question()
+
+        assert q is None
+        assert qManager.completed == True
+
 
 
 if __name__ == '__main__':

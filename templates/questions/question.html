@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="question {{ question.type }}">
+  <form method="post">
+    {% if questionnaire.get_question_errors() %}
+    {% for error in questionnaire.get_question_errors() %}
+      <p class="error">{{error}}</p>
+    {% endfor %}
+    {% endif %}
+    
+    {% block question_template %}
+    {% endblock question_template %}
 
-<p>{{ question.question_text }}</p>
-
-  {% block question_template %}
-  {% endblock question_template %}
-
-<form method="post">
-  <input type="hidden" name="debug" value="true">
-  <input type="submit" name="next" value="Next">
-</form>
-
+    <input type="submit" name="next" value="Next">
+  </form>
+</div>
 {% endblock content %}

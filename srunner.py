@@ -10,8 +10,10 @@ import logging
 from logging import StreamHandler
 import uuid
 from questionnaireManager import QuestionnaireManager
+import pprint
 
 app = Flask(__name__)
+app.debug = True
 Foundation(app)
 
 cassandra = CassandraCluster()
@@ -69,7 +71,6 @@ def set_session_data(quest_session_id, session_id, data):
     app.logger.debug(r)
     return r
 
-
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'), strict_slashes=False)
 @app.route('/questionnaire/<int:questionnaire_id>/<quest_session_id>', methods=('GET', 'POST'), strict_slashes=False)
 def questionnaire_viewer(questionnaire_id, quest_session_id=None):
@@ -83,38 +84,60 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         preview = True
 
     if 'debug' in request.args:
-        print 'DEBUG in GET'
         q_data = render_template('survey.json')
     elif 'debug' in request.form:
-        print 'DEBUG in POST'
         q_data = render_template('survey.json')
     else:
-        print 'LIVE'
         q_data = get_form_schema(questionnaire_id)
 
     resume_data = None
 
     if quest_session_id is not None:
         resume_data = get_session_data(quest_session_id, str(session['uid']))
-        print "GOT RESUME DATA"
+        print "Loaded resume data"
+        pprint.pprint(resume_data)
 
     q_manager = QuestionnaireManager(q_data, resume_data)
-    print 'Instantiated Manager'
 
     if request.method == 'POST':
-        if request.form['start']:
-            print "Starting Questionnaire"
-            q_manager.start_questionnaire()
-        elif request.form['next']:
+        if 'start' in request.form:
+            if resume_data is not None:
+                q_manager.resume_questionnaire(resume_data)
+            else:
+                q_manager.start_questionnaire()
+        elif 'next' in request.form:
+            q_manager.resume_questionnaire(resume_data)
             # validate response
-            q_manager.get_next_question()
+            if 'user_response' in request.form:
+                user_response = request.form['user_response']
+            else:
+                user_response = None
+            if q_manager.is_valid_response(user_response):
+                set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_resume_data()))
+                q_manager.get_next_question()
+
 
     if q_manager.started:
         q = q_manager.get_current_question()
-        print 'Is Started'
-        return render_template('questions/' + q.type + '.html', question=q)
+
+        if q_manager.completed:
+            return render_template('survey_completed.html',
+                                    responses=resume_data,
+                                    questionnaire=q_manager)
+
+
+        if 'user_response' in request.form:
+            user_response = request.form['user_response']
+        elif resume_data is not None and q_manager.current_question.reference in resume_data.keys():
+            user_response = resume_data[q_manager.current_question.reference]
+        else:
+            user_response = ''
+
+        return render_template('questions/' + q.type + '.html',
+                                question=q,
+                                user_response=user_response,
+                                questionnaire=q_manager)
     else:
-        print 'Showing intro'
         return render_template('survey_intro.html',
                                 questionnaire=q_manager)
 
@@ -129,7 +152,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
     #                                 receipt_id=receipt_id)
     # elif resume_data:
     #     f_form = form(**resume_data)
-    #
+
     # else:
     #     f_form = form()
     #
@@ -138,8 +161,6 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
     #                         form=f_form,
     #                         questionnaire=questionnaire,
     #                         preview=preview)
-
-
 
 if __name__ == '__main__':
     app.debug = True

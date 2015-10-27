@@ -11,8 +11,8 @@ class QuestionnaireManager:
         self.questions = []
 
         self.questionnaire_json = json.loads(questionnaire_json)
-        self.resume_data = resume_data
         self._load_questionnaire_data(self.questionnaire_json)
+        self._load_resume_data(resume_data)
 
     def _load_questionnaire_data(self, question_data):
 
@@ -24,37 +24,86 @@ class QuestionnaireManager:
                 Question.factory(schema)
             )
 
+    def _load_resume_data(self, resume_data):
+        if resume_data is None:
+            self.resume_data = {}
+
+        else:
+            self.resume_data = resume_data
+            if '_last' in resume_data.keys():
+                if resume_data['_last'] == 'completed':
+                    self.completed = True
+                    self.current_question = None
+                else:
+                    self.jump_to_question(resume_data['_last'])
+                    self.get_next_question()
+
     def _add_question(self, question):
         self.questions.append(question)
 
     def start_questionnaire(self):
         self.started = True
-        self.question_index = 0;
-        self.current_question = self.questions[self.question_index];
+        self.question_index = 0
+        self.current_question = self.questions[self.question_index]
+
+    def resume_questionnaire(self, resume_data):
+        self.started = True
+        self.question_index = 0
+        self.current_question = self.questions[self.question_index]
+        self._load_resume_data(resume_data)
+
+    def get_resume_data(self):
+        return self.resume_data
 
     def is_valid_response(self, request):
-        return self.current_question.is_valid_response(request)
+        if self.current_question is not None:
+            valid = self.current_question.is_valid_response(request)
+            if valid:
+                value = request
+                if value is None: value = ''
+                self.resume_data[self.current_question.reference] = request
+                self.resume_data['_last'] = self.current_question.reference
 
-    def get_question_warnings(self, request):
-        return self.current_question.get_warnings(request)
+            return valid
 
-    def get_question_errors(self, request):
-        return self.current_question.get_errors(request)
+        return True
+
+    def get_question_warnings(self):
+        if self.current_question:
+            return self.current_question.get_warnings()
+        else:
+            return []
+
+    def get_question_errors(self):
+        if self.current_question:
+            return self.current_question.get_errors()
+        else:
+            return []
 
     def get_current_question(self):
         return self.current_question
 
     def get_next_question(self):
-        if self.question_index + 1 <= len(self.questions):
+        if self.question_index + 1 <= len(self.questions) - 1:
             self.question_index += 1
             self.current_question = self.questions[self.question_index]
             return self.current_question
+        else:
+            self.current_question = None
+            self.completed = True
+            self.resume_data['_last'] = 'completed'
+            return None
 
-        return None
-
-    def jump_to_question(self):
+    def jump_to_question(self, reference):
         # can only jump to a previously seen question
-        return None
+        if reference in self.resume_data.keys():
+            index = 0
+            for question in self.questions:
+                if question.reference == reference:
+                    self.question_index = index
+                    self.current_question = self.questions[self.question_index]
+                index += 1
+
 
     def complete_questionnaire(self):
         self.completed = True

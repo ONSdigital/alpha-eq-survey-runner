@@ -8,10 +8,11 @@
       "questionText": "How many marbles do you have",
       "questionHelp": "All sizes count, even grandfathers.",
       "questionError": "Sorry - that doesn't look like a valid entry.",
-      "questionReference": "",
+      "questionReference": "q1",
       "children": [],
       "validation": {
-        "required": true
+        "required": true,
+        "numeric":true
       },
       "displayProperties": {},
       "displayConditions": [],
@@ -24,7 +25,7 @@
       "questionError": "",
       "questionText": "This is <strong>strong<\/strong>  and this is <i>Italic<\/i>",
       "displayConditions": [],
-      "questionReference": "",
+      "questionReference": "q2",
       "children": [],
       "parts": [],
       "branchConditions": [],
@@ -40,11 +41,9 @@
       "questionText": "Which colour marble would you prefer?",
       "questionHelp": "Only the displayed colours are available",
       "questionError": "That isn't a valid answer",
-      "questionReference": "",
+      "questionReference": "q3",
       "children": [],
-      "validation": {
-        "required": true
-      },
+      "validation": {},
       "displayProperties": {},
       "displayConditions": [],
       "skipConditions": [],

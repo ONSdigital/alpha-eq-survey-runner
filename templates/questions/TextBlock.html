@@ -1,4 +1,6 @@
 {% extends "questions/question.html" %}
 
 {% block question_template %}
+<p>{{ question.question_text | safe }}</p>
+
 {% endblock question_template %}
