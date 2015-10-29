@@ -2,5 +2,5 @@
 
 {% block question_template %}
 <p>{{ question.question_text }}</p>
-  <input type="text" name="user_response" value="{{user_response}}"/>
+  <input type="text" name="{{question.reference}}" value="{{user_response[question.reference] or ''}}"/>
 {% endblock question_template %}

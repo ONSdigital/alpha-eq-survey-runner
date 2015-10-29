@@ -21,6 +21,8 @@ class Question(object):
         if schema['questionType'] == 'InputText': return InputTextQuestion(schema)
         if schema['questionType'] == 'TextBlock': return TextBlock(schema)
         if schema['questionType'] == 'MultipleChoice': return MultipleChoiceQuestion(schema)
+        if schema['questionType'] == 'QuestionGroup': return QuestionGroup(schema)
+        if schema['questionType'] == 'CheckBox': return CheckBoxQuestion(schema)
 
     def _build_validation(self, validation_schema):
         rules = []
@@ -48,10 +50,10 @@ class Question(object):
 
         return len(self.errors) == 0
 
-    def get_warnings(self):
+    def get_warnings(self, reference=None):
         return None
 
-    def get_errors(self):
+    def get_errors(self, reference=None):
         return self.errors or None
 
 
@@ -67,9 +69,16 @@ class MultipleChoiceQuestion(Question):
                 if part == response:
                     return True
 
+            self.errors.append('invalid option')
             return False
 
         return valid
+
+
+class CheckBoxQuestion(Question):
+    def __init__(self, question_schema):
+        super(CheckBoxQuestion, self).__init__(question_schema)
+
 
 class InputTextQuestion(Question):
     def __init__(self, question_schema):
@@ -83,8 +92,44 @@ class TextBlock(Question):
     def is_valid_response(self, request):
         return True
 
-    def get_warnings(self):
+    def get_warnings(self, reference=None):
         return None
 
-    def get_warnings(self):
+    def get_warnings(self, reference=None):
         return None
+
+
+class QuestionGroup(Question):
+    def __init__(self, question_schema):
+        super(QuestionGroup, self).__init__(question_schema)
+        self.children = []
+        self.errors = {}
+        self._load_children(question_schema['children'])
+
+    def _load_children(self, children_schema):
+        for child in children_schema:
+            self.children.append(Question.factory(child))
+
+    def is_valid_response(self, responses):
+        self.errors = {}
+        for question in self.children:
+            if question.reference in responses.keys():
+                response = responses[question.reference]
+            else:
+                response = None
+
+            if not question.is_valid_response(response):
+                self.errors[question.reference] = question.get_errors()
+
+        return len(self.errors) == 0
+
+    def get_warnings(self, reference=None):
+        return None
+
+    def get_errors(self, reference=None):
+        if reference is None:
+            return self.errors
+        elif reference in self.errors.keys():
+            return self.errors[reference]
+        else:
+            return None

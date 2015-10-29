@@ -3,7 +3,7 @@ import os
 from settings import APP_FIXTURES
 from questionnaireManager import QuestionnaireManager
 
-from questions import TextBlock, MultipleChoiceQuestion, InputTextQuestion
+from questions import TextBlock, MultipleChoiceQuestion, InputTextQuestion, QuestionGroup
 
 class QuestionnaireManagerTest(unittest.TestCase):
 
@@ -170,6 +170,86 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q is None
         assert qManager.completed == True
 
+    def test_groups_navigation(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        q2 = qManager.get_next_question()
+
+        assert isinstance(q2, QuestionGroup) == True
+
+        assert q1 != q2
+
+    def test_validate_group(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        responses = {
+            'q1':'1',           # Numeric required field
+            'q2': None,         # Rich text text, no response required
+            'q3': 'option1',    # Multi-choice, option 1
+            'q4':'Coption1',    # Checkbox, selected
+            'q5':'Some Text'    # required free text field
+        }
+
+        assert qManager.is_valid_response(responses) == True
+
+    def test_group_fail_validation(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        responses = {
+            'q1':'',            # Numeric required field
+            'q2': None,         # Rich text text, no response required
+            'q3': 'option6',    # Multi-choice, there is no option6
+            'q4': None,         # Checkbox requires selection
+            'q5': ' '           # required free text field
+        }
+
+        assert qManager.is_valid_response(responses) == False
+
+        errors = qManager.get_question_errors()
+
+        assert 'q1' in errors.keys()
+        assert 'q2' not in errors.keys()
+        assert 'q3' in errors.keys()
+        assert 'q4' in errors.keys()
+        assert 'q5' in errors.keys()
+
+        assert 'required' in errors['q1']
+        assert 'is not numeric' in errors['q1']
+
+        assert 'invalid option' in errors['q3']
+
+        assert 'required' in errors['q4']
+
+        assert 'required' in errors['q5']
+
+        q1Errors = qManager.get_question_errors('q1')
+
+        assert 'required' in q1Errors
+        assert 'is not numeric' in q1Errors
 
 if __name__ == '__main__':
     unittest.main()
