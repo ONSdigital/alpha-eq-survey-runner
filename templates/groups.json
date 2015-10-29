@@ -1,0 +1,252 @@
+{
+  "overview":"This is a questionnaire to test stuff",
+  "title": "welcome to my survey about crayons",
+  "questionnaire_title":"Hope",
+  "questions": [
+    {
+      "questionText": "Section1",
+      "questionHelp": "",
+      "questionError": "",
+      "questionReference": "start",
+      "questionType": "QuestionGroup",
+      "dndType": "group",
+      "type": "group",
+      "children": [
+        {
+          "questionText": "Number1",
+          "questionHelp": "Number1",
+          "questionError": "Number1",
+          "questionReference": "q1",
+          "children": [],
+          "validation": {
+            "required": true,
+            "numeric": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "InputText",
+          "type": "number_question"
+        },
+        {
+          "questionText": "<p>Rich1</p>",
+          "questionHelp": "",
+          "questionError": "",
+          "questionReference": "q2",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "TextBlock",
+          "type": "rich_text_block"
+        },
+        {
+          "questionText": "Multi 1",
+          "questionHelp": "Multi 1",
+          "questionError": "Multi 1",
+          "questionReference": "q3",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [
+            {
+              "type": "option",
+              "value": "option1"
+            },
+            {
+              "type": "option",
+              "value": "option2"
+            }
+          ],
+          "dndType": "item",
+          "questionType": "MultipleChoice",
+          "type": "radio_question"
+        },
+        {
+          "questionText": "check1",
+          "questionHelp": "check1",
+          "questionError": "check1",
+          "questionReference": "q4",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [
+            {
+              "type": "option",
+              "value": "Coption1"
+            }
+          ],
+          "dndType": "item",
+          "questionType": "CheckBox",
+          "type": "check_box_question"
+        },
+        {
+          "questionText": "text1",
+          "questionHelp": "text1",
+          "questionError": "text1",
+          "questionReference": "q5",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "InputText",
+          "type": "text_question"
+        }
+      ],
+      "validation": {
+        "required": true
+      },
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": []
+    },
+    {
+      "questionText": "section2",
+      "questionHelp": "",
+      "questionError": "",
+      "questionType": "QuestionGroup",
+      "questionReference": "",
+      "children": [
+        {
+          "questionText": "<p>rich2</p>",
+          "questionHelp": "",
+          "questionError": "",
+          "questionReference": "q1",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "TextBlock",
+          "type": "rich_text_block"
+        },
+        {
+          "questionText": "multi2",
+          "questionHelp": "multi2",
+          "questionError": "multi2",
+          "questionReference": "q2",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [
+            {
+              "type": "option",
+              "value": "multi2option1"
+            }
+          ],
+          "dndType": "item",
+          "questionType": "MultipleChoice",
+          "type": "radio_question"
+        },
+        {
+          "questionText": "check2",
+          "questionHelp": "check2",
+          "questionError": "check2",
+          "questionReference": "q3",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [
+            {
+              "type": "option",
+              "value": "check2option"
+            }
+          ],
+          "dndType": "item",
+          "questionType": "CheckBox",
+          "type": "check_box_question"
+        },
+        {
+          "questionText": "number2",
+          "questionHelp": "number2",
+          "questionError": "number2",
+          "questionReference": "q4",
+          "children": [],
+          "validation": {
+            "required": true,
+            "numeric": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "InputText",
+          "type": "number_question"
+        },
+        {
+          "questionText": "text2",
+          "questionHelp": "text2",
+          "questionError": "text2",
+          "questionReference": "q5",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "InputText",
+          "type": "text_question"
+        }
+      ],
+      "validation": {
+        "required": true
+      },
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "group",
+      "questionType": "QuestionGroup",
+      "type": "group"
+    }
+  ]
+}

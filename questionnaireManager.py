@@ -69,15 +69,15 @@ class QuestionnaireManager:
 
         return True
 
-    def get_question_warnings(self):
+    def get_question_warnings(self, reference=None):
         if self.current_question:
-            return self.current_question.get_warnings()
+            return self.current_question.get_warnings(reference)
         else:
             return []
 
-    def get_question_errors(self):
+    def get_question_errors(self, reference=None):
         if self.current_question:
-            return self.current_question.get_errors()
+            return self.current_question.get_errors(reference)
         else:
             return []
 

@@ -1,0 +1,10 @@
+{% extends "questions/question.html" %}
+
+{% block question_template %}
+<p>{{ question.question_text }}</p>
+
+{% for part in question.parts %}
+<label><input name="{{question.reference}}" type="checkbox" value="{{part}}" {% if question.reference in user_response and user_response[question.reference] == part %}checked="checked"{% endif %}> {{ part }}</label>
+{% endfor %}
+
+{% endblock question_template %}

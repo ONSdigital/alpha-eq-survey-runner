@@ -246,5 +246,10 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'required' in errors['q5']
 
+        q1Errors = qManager.get_question_errors('q1')
+
+        assert 'required' in q1Errors
+        assert 'is not numeric' in q1Errors
+
 if __name__ == '__main__':
     unittest.main()

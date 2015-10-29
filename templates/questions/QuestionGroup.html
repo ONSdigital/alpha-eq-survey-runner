@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block pageBody %}
+
+{% for question in question.children %}
+{% include 'questions/' + question.type + '.html' %}
+{% endfor %}
+
+<input type="submit" name="next" value="Save and Continue">
+{% endblock pageBody %}
