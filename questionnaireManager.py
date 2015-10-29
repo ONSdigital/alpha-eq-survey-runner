@@ -1,6 +1,6 @@
 from questions import Question
 import json
-import pprint
+
 
 class QuestionnaireManager:
     def __init__(self, questionnaire_json, resume_data):
@@ -14,12 +14,12 @@ class QuestionnaireManager:
         self._load_questionnaire_data(self.questionnaire_json)
         self._load_resume_data(resume_data)
 
-    def _load_questionnaire_data(self, question_data):
+    def _load_questionnaire_data(self, questionnaire_data):
 
-        self.title = question_data['title']
-        self.overview = question_data['overview']
+        self.title = questionnaire_data['title']
+        self.overview = questionnaire_data['overview']
 
-        for schema in question_data['questions']:
+        for schema in questionnaire_data['questions']:
             self._add_question(
                 Question.factory(schema)
             )
@@ -55,13 +55,14 @@ class QuestionnaireManager:
     def get_resume_data(self):
         return self.resume_data
 
-    def is_valid_response(self, request):
+    def is_valid_response(self, user_answer):
         if self.current_question is not None:
-            valid = self.current_question.is_valid_response(request)
+            valid = self.current_question.is_valid_response(user_answer)
             if valid:
-                value = request
-                if value is None: value = ''
-                self.resume_data[self.current_question.reference] = request
+                value = user_answer
+                if value is None:
+                    value = ''
+                self.resume_data[self.current_question.reference] = user_answer
                 self.resume_data['_last'] = self.current_question.reference
 
             return valid
@@ -84,7 +85,7 @@ class QuestionnaireManager:
         return self.current_question
 
     def get_next_question(self):
-        if self.question_index + 1 <= len(self.questions) - 1:
+        if self.question_index + 1 < len(self.questions):
             self.question_index += 1
             self.current_question = self.questions[self.question_index]
             return self.current_question
@@ -94,19 +95,15 @@ class QuestionnaireManager:
             self.resume_data['_last'] = 'completed'
             return None
 
-    def jump_to_question(self, reference):
+    def jump_to_question(self, questionnaire_location):
         # can only jump to a previously seen question
-        if reference in self.resume_data.keys():
+        if questionnaire_location in self.resume_data.keys():
             index = 0
             for question in self.questions:
-                if question.reference == reference:
+                if question.reference == questionnaire_location:
                     self.question_index = index
                     self.current_question = self.questions[self.question_index]
                 index += 1
 
-
     def complete_questionnaire(self):
         self.completed = True
-
-    def get_question_by_reference(self, reference):
-        return None

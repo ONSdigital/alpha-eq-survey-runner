@@ -10,7 +10,6 @@ import logging
 from logging import StreamHandler
 import uuid
 from questionnaireManager import QuestionnaireManager
-import pprint
 
 app = Flask(__name__)
 app.debug = True
@@ -67,9 +66,10 @@ def set_session_data(quest_session_id, session_id, data):
     cassandra_session.set_keyspace("sessionstore")
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
-    r = cassandra_session.execute(cql)
-    app.logger.debug(r)
-    return r
+    result = cassandra_session.execute(cql)
+    app.logger.debug(result)
+    return result
+
 
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'), strict_slashes=False)
 @app.route('/questionnaire/<int:questionnaire_id>/<quest_session_id>', methods=('GET', 'POST'), strict_slashes=False)
@@ -94,11 +94,8 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
     if quest_session_id is not None:
         resume_data = get_session_data(quest_session_id, str(session['uid']))
-        print "Loaded resume data"
-        pprint.pprint(resume_data)
 
     q_manager = QuestionnaireManager(q_data, resume_data)
-
     if request.method == 'POST':
         if 'start' in request.form:
             if resume_data is not None:
@@ -141,26 +138,6 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         return render_template('survey_intro.html',
                                 questionnaire=q_manager)
 
-
-    # if request.method == 'POST':
-    #     f_form = form(request.form)
-    #     if f_form.validate():
-    #         receipt_id = random.randrange(10000, 100000)
-    #         app.logger.warning('{"rid": %d, "data": %s} ', receipt_id, json.dumps(f_form.data))
-    #         return render_template("thanks.html",
-    #                                 data=f_form.data,
-    #                                 receipt_id=receipt_id)
-    # elif resume_data:
-    #     f_form = form(**resume_data)
-
-    # else:
-    #     f_form = form()
-    #
-    # questionnaire = json.loads(raw_form)
-    # return render_template("survey_index.html",
-    #                         form=f_form,
-    #                         questionnaire=questionnaire,
-    #                         preview=preview)
 
 if __name__ == '__main__':
     app.debug = True

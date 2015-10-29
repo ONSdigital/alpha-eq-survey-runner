@@ -2,7 +2,6 @@ import unittest
 import os
 from settings import APP_FIXTURES
 from questionnaireManager import QuestionnaireManager
-import pprint
 
 from questions import TextBlock, MultipleChoiceQuestion, InputTextQuestion
 
@@ -170,7 +169,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert q is None
         assert qManager.completed == True
-
 
 
 if __name__ == '__main__':
