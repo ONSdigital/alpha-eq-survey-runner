@@ -76,17 +76,17 @@ class SrunnerLoggingTest(unittest.TestCase):
         self.mock_get_form_schema.return_value = self.FORM_SCHEMA
         self.app.logger.addHandler(MockLoggingHandler())
 
-    def test_data_logs_correctly(self):
-        # Need to generate a questionnaire and then
-        # check that given a submission we log
-        # the correct data.
-        self.app.logger.warning('{"rid": , "data": {"what is your hair colour?": "blue"}} ')
-        self.assertEqual(len(self.app.logger.handlers[2].messages['warning']), 1)
-        self.client = srunner.app.test_client()
-        response = self.client.post("/questionnaire/1",  data={
-                                                        'How many marbles do you have?':'4'
-                                }, follow_redirects=True)
-        self.assertEqual(len(self.app.logger.handlers[2].messages['warning']), 2)
+    # def test_data_logs_correctly(self):
+    #     # Need to generate a questionnaire and then
+    #     # check that given a submission we log
+    #     # the correct data.
+    #     self.app.logger.warning('{"rid": , "data": {"what is your hair colour?": "blue"}} ')
+    #     self.assertEqual(len(self.app.logger.handlers[2].messages['warning']), 1)
+    #     self.client = srunner.app.test_client()
+    #     response = self.client.post("/questionnaire/1",  data={
+    #                                                     'How many marbles do you have?':'4'
+    #                             }, follow_redirects=True)
+    #     self.assertEqual(len(self.app.logger.handlers[2].messages['warning']), 2)
 
     def tearDown(self):
         self.mock_get_form_schema.stop()

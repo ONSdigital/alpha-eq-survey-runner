@@ -1,0 +1,10 @@
+{% extends "questions/question.html" %}
+
+{% block question_template %}
+<p>{{ question.question_text }}</p>
+
+{% for part in question.parts %}
+<label><input name="user_response" type="radio" value="{{part}}" {% if part == user_response %}checked="checked"{% endif %}> {{ part }}</label>
+{% endfor %}
+
+{% endblock question_template %}
