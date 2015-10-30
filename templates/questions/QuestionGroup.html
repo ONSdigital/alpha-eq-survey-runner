@@ -6,5 +6,10 @@
 {% include 'questions/' + question.type + '.html' %}
 {% endfor %}
 
-<input type="submit" name="next" value="Save and Continue">
+<footer class="row">
+    <div class="large-12 columns actions">
+        <input type="submit" name="next" value="Save and Continue" class="btn continue"/>
+        <!-- on first page just show a proceed button <a href="">Proceed</a>-->
+    </div>
+</footer>
 {% endblock pageBody %}
