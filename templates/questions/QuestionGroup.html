@@ -5,6 +5,9 @@
 {% for question in question.children %}
 {% include 'questions/' + question.type + '.html' %}
 {% endfor %}
-
-<input type="submit" name="next" value="Save and Continue">
 {% endblock pageBody %}
+
+{% block actions %}
+<input type="button" class="btn exit" value="Save and exit">
+<input type="submit" class="btn continue" name="next" value="Save and continue">
+{% endblock actions %}
