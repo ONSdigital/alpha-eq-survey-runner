@@ -19,10 +19,12 @@ class QuestionnaireManager:
         self.title = questionnaire_data['title']
         self.overview = questionnaire_data['overview']
 
-        for schema in questionnaire_data['questions']:
-            self._add_question(
-                Question.factory(schema)
-            )
+        for index, schema in enumerate(questionnaire_data['questions']):
+            question = Question.factory(schema)
+            if not question.reference:
+                question.reference = 'q' + str(index)
+                
+            self._add_question(question)
 
     def _load_resume_data(self, resume_data):
         if resume_data is None:

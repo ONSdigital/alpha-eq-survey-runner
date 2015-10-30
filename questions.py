@@ -107,8 +107,11 @@ class QuestionGroup(Question):
         self._load_children(question_schema['children'])
 
     def _load_children(self, children_schema):
-        for child in children_schema:
-            self.children.append(Question.factory(child))
+        for index, child in enumerate(children_schema):
+            question = Question.factory(child)
+            if not question.reference:
+                question.reference = 'q' + str(index)
+            self.children.append(question)
 
     def is_valid_response(self, responses):
         self.errors = {}
