@@ -25,7 +25,7 @@ app.logger.addHandler(file_handler)
 
 # @TODO change this env variable
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', None)
+app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
 
 
 @app.route('/')
@@ -119,7 +119,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
         if q_manager.completed:
             return render_template('survey_completed.html',
-                                    responses=resume_data,
+                                    responses=q_manager.get_resume_data(),
                                     questionnaire=q_manager)
 
         return render_template('questions/' + question.type + '.html',
