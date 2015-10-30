@@ -4,6 +4,7 @@
 <h1>{{questionnaire.title}}</h1>
 <p>Thank you for completing the Questionnaire, You gave us the following answers:</p>
 
+{% if responses %}
 <dl>
 {% for question in questionnaire.questions %}
   {% if question.reference in responses.keys() and question.type != 'TextBlock' %}
@@ -12,6 +13,7 @@
   {% endif %}
 {% endfor %}
 </dl>
+{% endif %}
 
 
 
