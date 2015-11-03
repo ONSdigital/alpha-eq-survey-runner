@@ -84,7 +84,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         preview = True
 
     if 'debug' in request.args:
-        q_data = render_template('groups.json')
+        q_data = render_template('starwars.json')
     else:
         q_data = get_form_schema(questionnaire_id)
 
@@ -120,15 +120,18 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         if q_manager.completed:
             return render_template('survey_completed.html',
                                     responses=q_manager.get_resume_data(),
-                                    questionnaire=q_manager)
+                                    questionnaire=q_manager,
+                                    request=request)
 
         return render_template('questions/' + question.type + '.html',
                                 question=question,
                                 user_response=user_responses,
-                                questionnaire=q_manager)
+                                questionnaire=q_manager,
+                                request=request)
     else:
         return render_template('survey_intro.html',
-                                questionnaire=q_manager)
+                                questionnaire=q_manager,
+                                request=request)
 
 
 if __name__ == '__main__':

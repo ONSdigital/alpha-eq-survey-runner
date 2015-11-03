@@ -1,8 +1,89 @@
-{% extends "foundation/base.html" %}
-{% block content %}
-  <h1>{{questionnaire.title}}</h1>
+<!doctype html>
+<html class="no-js" lang="en">
 
-  <form method="post">
-  {% block pageBody %}{% endblock pageBody %}
-  </form>
-{% endblock %}
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{questionnaire.title}}</title>
+  <link rel="stylesheet" href="/static/css/foundation.css"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+  <script src="/static/js/vendor/modernizr.js"></script>
+  <!-- probably should swap these out for local for perfomance -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,400italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <header>
+      <div class="row">
+        <div class="large-12 columns">
+          <span class="crest"><img src="/static/img/crest.svg"></span>
+            <div class="survey-info">
+              <h2>{{questionnaire.title}}</h2>
+              <!-- below notice should be optional + editable by survey manager -->
+              <p>Notice is given under Section 1 of the Statistics of Trade Act 1947</p>
+            </div>
+          <span class="logo"><img src="/static/img/ons-logo.svg"></span>
+        </div>
+      </div>
+    </header>
+
+    <form method="post">
+      <section class="row">
+        <div class="large-12">
+          <main>
+            <ul class="recipient-info">
+                <li>For attention of
+                  <data>Nigel Surname</data>
+                </li>
+                <li>Reference
+                  <data>4900 000 000</data>
+                </li>
+                <li>Survey Code
+                  <data>801</data>
+                </li>
+                <li>Survey Period
+                  <data>2015/07</data>
+                </li>
+                <li>Need help?
+                  <data><i class="fa fa-phone"></i>&nbsp;<a href="tel:0800 000 000">0800 5454 64646</a></data>
+                  <data><i class="fa fa-envelope-o"></i>&nbsp;<a href="mailto:help@help.com?subject=Questionnaire {{ questionnaire.title }} - {{ questionnaire.questionnaire_id }}">help@helpme.com</data>
+                </li>
+              </ul>
+              <aside class="large-10 large-offset-1">
+                <div>
+                  <h6><b>Return to this survey (on any device) at</b></h6>
+                  <a href="" title="go to the {{questionnaire.title}} survey">{{request.url}}</a>
+                </div>
+              </aside>
+              <div class="large-10 large-offset-1 survey-body">
+                  {% block content %}
+                    {% block pageBody %}{% endblock pageBody %}
+                  {% endblock %}
+              </div>
+          </main>
+        </div>
+      </section>
+
+      <footer class="row">
+        <div class="large-12 columns actions">
+          {% block actions %}
+          <a href="" class="btn exit">Save and exit</a>
+          <a href="" class="btn continue">Save and continue</a>
+          <!-- on first page just show a proceed button <a href="">Proceed</a>-->
+          {% endblock actions %}
+        </div>
+      </footer>
+    </form>
+  </div>
+
+  <div class="help">
+    <span class="help">Need help?</span>
+  </div>
+
+
+</body>
+
+</html>

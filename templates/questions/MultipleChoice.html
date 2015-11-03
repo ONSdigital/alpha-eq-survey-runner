@@ -1,10 +1,9 @@
 {% extends "questions/question.html" %}
 
 {% block question_template %}
-<p>{{question.reference}}: {{ question.question_text }}</p>
-
+<label><span>{{ question.question_text }}</span></label>
 {% for part in question.parts %}
-<label><input name="{{question.reference}}" type="radio" value="{{part}}" {% if question.reference in user_response and user_response[question.reference] == part %}checked="checked"{% endif %}> {{ part }}</label>
+<input type="radio" name="{{question.reference}}" value="{{part}}" id="{{ question.reference ~ '_' ~ loop.index0 }}" {% if question.reference in user_response and user_response[question.reference] == part %}checked="checked"{% endif %}><label for="{{ question.reference ~ '_' ~ loop.index0 }}">{{part}}</label>
 {% endfor %}
 
 {% endblock question_template %}

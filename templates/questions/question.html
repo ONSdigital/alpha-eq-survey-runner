@@ -1,11 +1,9 @@
-<div class="question {{ question.type }}">
-    {% if questionnaire.get_question_errors(question.reference) %}
-        {% for error in questionnaire.get_question_errors(question.reference) %}
-        <p class="error">{{error}}</p>
-        {% endfor %}
-    {% endif %}
-
-    {% block question_template %}
-    {% endblock question_template %}
-
-</div>
+<article>
+  {% block question_template %}
+  {% endblock question_template %}
+  {% if questionnaire.get_question_errors(question.reference) %}
+      {% for error in questionnaire.get_question_errors(question.reference) %}
+  <small class="error">{{error}}</small>
+      {% endfor %}
+  {% endif %}
+</article>
