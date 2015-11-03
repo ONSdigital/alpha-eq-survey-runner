@@ -9,7 +9,6 @@ class QuestionnaireManager:
         self.started = False
         self.completed = False
         self.questions = []
-
         self.questionnaire_json = json.loads(questionnaire_json)
         self._load_questionnaire_data(self.questionnaire_json)
         self._load_resume_data(resume_data)
@@ -18,7 +17,6 @@ class QuestionnaireManager:
 
         self.title = questionnaire_data['title']
         self.overview = questionnaire_data['overview']
-
         for index, schema in enumerate(questionnaire_data['questions']):
             question = Question.factory(schema)
             if not question.reference:
@@ -42,6 +40,12 @@ class QuestionnaireManager:
 
     def _add_question(self, question):
         self.questions.append(question)
+
+    def get_current_question_index(self):
+        return self.question_index + 1
+
+    def get_total_questions(self):
+        return len(self.questions)
 
     def start_questionnaire(self):
         self.started = True
@@ -106,6 +110,14 @@ class QuestionnaireManager:
                     self.question_index = index
                     self.current_question = self.questions[self.question_index]
                 index += 1
+        self.resume_data['_last'] = self.current_question.reference
+
+    def get_question_by_reference(self, reference):
+        for question in self.questions:
+            if question.reference == reference:
+                return question
+
+        return None
 
     def complete_questionnaire(self):
         self.completed = True

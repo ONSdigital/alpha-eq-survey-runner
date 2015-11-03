@@ -2,6 +2,19 @@
 
 {% block pageBody %}
 
+<p>Viewing Section {{questionnaire.get_current_question_index()}} of {{questionnaire.get_total_questions()}} - {{questionnaire.get_current_question().question_text}}</p>
+
+{% if questionnaire.get_resume_data() %}
+<p>Previously Visited Sections</p>
+<ul>
+{% for section in questionnaire.get_resume_data().keys() %}
+    {% if section != '_last' %}
+    <li><a href="?jumpTo={{section}}{%if request.args.get('debug')%}&debug=True{%endif%}">{{questionnaire.get_question_by_reference(section).question_text}}</a></li>
+    {% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+
 {% for question in question.children %}
 {% include 'questions/' + question.type + '.html' %}
 {% endfor %}
