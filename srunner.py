@@ -113,6 +113,12 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                 user_responses = []
                 q_manager.get_next_question()
 
+    if request.method == 'GET':
+        jump_to = request.args.get('jumpTo')
+        if jump_to and resume_data:
+            q_manager.resume_questionnaire(resume_data)
+            q_manager.jump_to_question(jump_to)
+            user_responses = resume_data[jump_to]
 
     if q_manager.started:
         question = q_manager.get_current_question()
