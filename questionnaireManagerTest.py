@@ -203,7 +203,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'q2': None,         # Rich text text, no response required
             'q3': 'option1',    # Multi-choice, option 1
             'q4':'Coption1',    # Checkbox, selected
-            'q5':'Some Text'    # required free text field
+            'q5':'Some Text',   # required free text field
+            'q6': None          # Text not required
         }
 
         assert qManager.is_valid_response(responses) == True

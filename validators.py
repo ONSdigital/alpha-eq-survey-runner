@@ -1,11 +1,10 @@
-
 # Base validator class
 class Validator(object):
     def __init__(self, schema):
         self._schema = schema
 
     def is_valid(self, response):
-        return true
+        return True
 
     def get_error(self, response):
         return None
@@ -20,11 +19,16 @@ class Required(Validator):
         super(Required, self).__init__(schema)
 
     def is_valid(self, response):
-        # empty strings are falsey
-        return response and not response.isspace()
+        if self._schema:
+            # empty strings are falsey
+            return response and not response.isspace()
+        else:
+            # value not required
+            return True
 
     def get_error(self, response):
         return 'required'
+
 
 # Numeric Field
 class Numeric(Validator):

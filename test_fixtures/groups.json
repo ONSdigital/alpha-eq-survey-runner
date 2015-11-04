@@ -234,6 +234,24 @@
           "dndType": "item",
           "questionType": "InputText",
           "type": "text_question"
+        },
+        {
+          "questionText": "text3",
+          "questionHelp": "text3",
+          "questionError": "text3",
+          "questionReference": "q6",
+          "children": [],
+          "validation": {
+            "required": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "InputText",
+          "type": "text_question"
         }
       ],
       "validation": {
