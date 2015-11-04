@@ -84,54 +84,62 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         preview = True
 
     if 'debug' in request.args:
-        q_data = render_template('starwars.json')
+        q_schema = render_template('starwars.json')
     else:
-        q_data = get_form_schema(questionnaire_id)
+        q_schema = get_form_schema(questionnaire_id)
 
-    resume_data = None
+    questionnaire_state = None
 
     if quest_session_id is not None:
-        resume_data = get_session_data(quest_session_id, str(session['uid']))
+        questionnaire_state = get_session_data(quest_session_id, str(session['uid']))
 
-    q_manager = QuestionnaireManager(q_data, resume_data)
 
-    user_responses = []
 
     if request.method == 'POST':
+        q_manager = QuestionnaireManager(q_schema, questionnaire_state)
+
         if 'start' in request.form:
-            if resume_data is not None:
-                q_manager.resume_questionnaire(resume_data)
-            else:
                 q_manager.start_questionnaire()
         elif 'next' in request.form:
-            q_manager.resume_questionnaire(resume_data)
             # validate response
             user_responses = request.form
 
-            if q_manager.is_valid_response(user_responses):
-                set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_resume_data()))
-                q_manager.get_next_question(user_responses)
-                user_responses = []
+            q_manager.store_response(user_responses)
 
-    if request.method == 'GET':
-        jump_to = request.args.get('jumpTo')
-        if jump_to and resume_data:
-            q_manager.resume_questionnaire(resume_data)
-            q_manager.jump_to_question(jump_to)
-            user_responses = resume_data[jump_to]
+            if q_manager.is_valid_response(user_responses):
+                q_manager.get_next_question(user_responses)
+
+
+        set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
+
+        redirect_url = request.base_url
+        if 'debug' in request.args.keys():
+            redirect_url += '?debug=' + request.args['debug']
+
+        return redirect(redirect_url, 302)
+
+
+    questionnaire_state = get_session_data(quest_session_id, str(session['uid']))
+
+    q_manager = QuestionnaireManager(q_schema, questionnaire_state)
+
+    # if request.method == 'GET':
+    #     jump_to = request.args.get('jumpTo')
+    #     if jump_to:
+    #         q_manager.jump_to_question(jump_to)
 
     if q_manager.started:
         question = q_manager.get_current_question()
 
         if q_manager.completed:
             return render_template('survey_completed.html',
-                                    responses=q_manager.get_resume_data(),
+                                    responses=q_manager.get_responses(),
                                     questionnaire=q_manager,
                                     request=request)
 
         return render_template('questions/' + question.type + '.html',
                                 question=question,
-                                user_response=user_responses,
+                                user_response=q_manager.get_responses(question.reference),
                                 questionnaire=q_manager,
                                 request=request)
     else:
