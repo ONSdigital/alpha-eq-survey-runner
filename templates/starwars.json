@@ -15,7 +15,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q1",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "",
@@ -33,7 +33,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q2",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "Please only enter one character, i.e. Han Solo",
@@ -80,7 +80,7 @@
                             "value": "Episode 7: The Force Awakens"
                         }
                     ],
-                    "questionReference": "",
+                    "questionReference": "q3",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "Please select one only",
@@ -143,9 +143,19 @@
                             "value": "C3P0"
                         }
                     ],
-                    "questionReference": "",
+                    "questionReference": "q4",
                     "displayConditions": [],
-                    "branchConditions": [],
+                    "branchConditions": [
+                        {
+                            "jumpTo": {
+                                "question":"sectionThree",
+                                "condition": {
+                                    "value": {
+                                        "is":"Jar Jar Binks"
+                                    }
+                                }
+                            }
+                        }],
                     "questionHelp": "Please tick all that apply",
                     "questionType": "CheckBox",
                     "validation": {
@@ -179,7 +189,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q1",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "Please only enter a number",
@@ -216,7 +226,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q1",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "This question is optional",
