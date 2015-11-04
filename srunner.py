@@ -110,8 +110,8 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
             if q_manager.is_valid_response(user_responses):
                 set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_resume_data()))
+                q_manager.get_next_question(user_responses)
                 user_responses = []
-                q_manager.get_next_question()
 
     if request.method == 'GET':
         jump_to = request.args.get('jumpTo')

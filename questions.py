@@ -1,4 +1,5 @@
 import importlib
+from branching import JumpTo
 
 class Question(object):
     def __init__(self, question_schema):
@@ -12,7 +13,7 @@ class Question(object):
         self.children = None
         self.display_conditions = None
         self.skip_conditions = None
-        self.branch_conditions = None
+        self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
         self.warnings = []
         self.errors = []
 
@@ -41,6 +42,25 @@ class Question(object):
             parts.append(part['value'])
 
         return parts
+
+    def _build_branch_conditions(self, branch_conditions_schema):
+        branch_conditions = []
+        for condition in branch_conditions_schema:
+             if condition['jumpTo']:
+                jumpTo = JumpTo(condition['jumpTo']['question'], self.reference, condition['jumpTo']['condition']['value']['is'])
+                branch_conditions.append(jumpTo)
+
+        return branch_conditions
+
+    def branches(self, response):
+        for rule in self.branch_conditions:
+            if rule.trigger == self.reference and rule.state == response:
+                return rule.target
+
+        return None
+
+    def get_branch_target(self, response):
+        return self.branches(response)
 
     def is_valid_response(self, response):
         self.errors = []
@@ -134,5 +154,25 @@ class QuestionGroup(Question):
             return self.errors
         elif reference in self.errors.keys():
             return self.errors[reference]
+        else:
+            return None
+
+    def branches(self, responses):
+        jumps = []
+        for child in self.children:
+            if child.reference in responses.keys():
+                jump = child.branches(responses[child.reference])
+                if jump:
+                    jumps.append(jump)
+
+        return jumps
+
+    def get_branch_target(self, response):
+        jumps = self.branches(response)
+
+        # groups always branch to the first matching target
+
+        if len(jumps) > 0:
+            return jumps[0]
         else:
             return None

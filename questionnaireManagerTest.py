@@ -84,14 +84,14 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert qManager.is_valid_response(response) == True
 
-        q = qManager.get_next_question()
+        q = qManager.get_next_question(response)
 
         assert isinstance(q, TextBlock) == True
 
         assert qManager.is_valid_response('anything you like') == True
         assert qManager.get_question_errors() == None
 
-        q = qManager.get_next_question()
+        q = qManager.get_next_question(response)
 
         assert isinstance(q, MultipleChoiceQuestion)
         assert q.question_text == 'Which colour marble would you prefer?'
@@ -181,7 +181,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert isinstance(q1, QuestionGroup) == True
 
-        q2 = qManager.get_next_question()
+        q2 = qManager.get_next_question(None)
 
         assert isinstance(q2, QuestionGroup) == True
 
@@ -268,7 +268,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert q_manager.get_total_questions() == 2
 
-        q2 = q_manager.get_next_question()
+        q2 = q_manager.get_next_question(None)
 
         assert q_manager.get_current_question_index() == 2
 
@@ -293,7 +293,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert q_manager.get_total_questions() == 2
 
-        q2 = q_manager.get_next_question()
+        q2 = q_manager.get_next_question(None)
 
         q_manager.jump_to_question('start')
 

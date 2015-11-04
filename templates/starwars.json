@@ -82,7 +82,16 @@
                     ],
                     "questionReference": "q3",
                     "displayConditions": [],
-                    "branchConditions": [],
+                    "branchConditions": [ {
+                            "jumpTo": {
+                                "question":"sectionThree",
+                                "condition": {
+                                    "value": {
+                                        "is":"Episode 1: The Phantom Menance"
+                                    }
+                                }
+                            }
+                        }],
                     "questionHelp": "Please select one only",
                     "questionType": "MultipleChoice",
                     "validation": {
@@ -145,17 +154,7 @@
                     ],
                     "questionReference": "q4",
                     "displayConditions": [],
-                    "branchConditions": [
-                        {
-                            "jumpTo": {
-                                "question":"sectionThree",
-                                "condition": {
-                                    "value": {
-                                        "is":"Jar Jar Binks"
-                                    }
-                                }
-                            }
-                        }],
+                    "branchConditions": [],
                     "questionHelp": "Please tick all that apply",
                     "questionType": "CheckBox",
                     "validation": {

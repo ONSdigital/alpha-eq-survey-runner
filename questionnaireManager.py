@@ -35,8 +35,12 @@ class QuestionnaireManager:
                     self.completed = True
                     self.current_question = None
                 else:
-                    self.jump_to_question(resume_data['_last'])
-                    self.get_next_question()
+                    last_question_reference = resume_data['_last']
+                    self.jump_to_question(last_question_reference)
+                    if last_question_reference in resume_data.keys():
+                        self.get_next_question(resume_data[last_question_reference])
+                    else:
+                        self.get_next_question(None)
 
     def _add_question(self, question):
         self.questions.append(question)
@@ -90,7 +94,13 @@ class QuestionnaireManager:
     def get_current_question(self):
         return self.current_question
 
-    def get_next_question(self):
+    def get_next_question(self, response):
+
+        if response and self.current_question.branches(response):
+            target_question = self.current_question.get_branch_target(response)
+            self.branch_to_question(target_question)
+            return self.current_question
+
         if self.question_index + 1 < len(self.questions):
             self.question_index += 1
             self.current_question = self.questions[self.question_index]
@@ -101,6 +111,7 @@ class QuestionnaireManager:
             self.resume_data['_last'] = 'completed'
             return None
 
+
     def jump_to_question(self, questionnaire_location):
         # can only jump to a previously seen question
         if questionnaire_location in self.resume_data.keys():
@@ -110,6 +121,15 @@ class QuestionnaireManager:
                     self.question_index = index
                     self.current_question = self.questions[self.question_index]
                 index += 1
+        self.resume_data['_last'] = self.current_question.reference
+
+    def branch_to_question(self, questionnaire_location):
+        index = 0
+        for question in self.questions:
+            if question.reference == questionnaire_location:
+                self.question_index = index
+                self.current_question = self.questions[self.question_index]
+            index += 1
         self.resume_data['_last'] = self.current_question.reference
 
     def get_question_by_reference(self, reference):
