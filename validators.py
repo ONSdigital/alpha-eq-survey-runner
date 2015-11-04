@@ -36,7 +36,7 @@ class Numeric(Validator):
         super(Numeric, self).__init__(schema)
 
     def is_valid(self, response):
-        return unicode(response).isnumeric()
+        return not response or response.isspace() or unicode(response).isnumeric()
 
     def get_error(self, response):
         return 'is not numeric'

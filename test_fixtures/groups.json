@@ -116,6 +116,25 @@
           "dndType": "item",
           "questionType": "InputText",
           "type": "text_question"
+        },
+        {
+          "questionText": "Number2",
+          "questionHelp": "Number2",
+          "questionError": "Number2",
+          "questionReference": "q6",
+          "children": [],
+          "validation": {
+            "required": false,
+            "numeric": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "InputText",
+          "type": "number_question"
         }
       ],
       "validation": {
@@ -222,24 +241,6 @@
           "questionHelp": "text2",
           "questionError": "text2",
           "questionReference": "q5",
-          "children": [],
-          "validation": {
-            "required": true
-          },
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "InputText",
-          "type": "text_question"
-        },
-        {
-          "questionText": "text3",
-          "questionHelp": "text3",
-          "questionError": "text3",
-          "questionReference": "q6",
           "children": [],
           "validation": {
             "required": true
