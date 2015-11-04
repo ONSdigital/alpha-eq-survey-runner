@@ -29,8 +29,8 @@ class Question(object):
         for validation in validation_schema.keys():
             # find the validaton class and instantiate it
             RuleClass = getattr(importlib.import_module('validators'), validation.capitalize())
+            # this loads the class from the validators.py file
             rule = RuleClass(validation_schema[validation])
-
             rules.append(rule)
 
         return rules

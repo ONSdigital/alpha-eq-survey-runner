@@ -116,6 +116,25 @@
           "dndType": "item",
           "questionType": "InputText",
           "type": "text_question"
+        },
+        {
+          "questionText": "Number2",
+          "questionHelp": "Number2",
+          "questionError": "Number2",
+          "questionReference": "q6",
+          "children": [],
+          "validation": {
+            "required": false,
+            "numeric": true
+          },
+          "displayProperties": {},
+          "displayConditions": [],
+          "skipConditions": [],
+          "branchConditions": [],
+          "parts": [],
+          "dndType": "item",
+          "questionType": "InputText",
+          "type": "number_question"
         }
       ],
       "validation": {

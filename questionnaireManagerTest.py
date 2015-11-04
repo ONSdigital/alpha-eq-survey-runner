@@ -199,11 +199,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'q1':'1',           # Numeric required field
+            'q1': '1',          # Numeric required field
             'q2': None,         # Rich text text, no response required
             'q3': 'option1',    # Multi-choice, option 1
-            'q4':'Coption1',    # Checkbox, selected
-            'q5':'Some Text'    # required free text field
+            'q4': 'Coption1',   # Checkbox, selected
+            'q5': 'Some Text',  # required free text field
+            'q6': None          # Optional numeric
         }
 
         assert qManager.is_valid_response(responses) == True
@@ -220,11 +221,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'q1':'',            # Numeric required field
+            'q1': '',            # Numeric required field
             'q2': None,         # Rich text text, no response required
             'q3': 'option6',    # Multi-choice, there is no option6
             'q4': None,         # Checkbox requires selection
-            'q5': ' '           # required free text field
+            'q5': ' ',          # required free text field
+            'q6': 'a'           # numeric free text field
         }
 
         assert qManager.is_valid_response(responses) == False
@@ -238,7 +240,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert 'q5' in errors.keys()
 
         assert 'required' in errors['q1']
-        assert 'is not numeric' in errors['q1']
 
         assert 'invalid option' in errors['q3']
 
@@ -246,10 +247,11 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'required' in errors['q5']
 
+        assert 'is not numeric' in errors['q6']
+
         q1Errors = qManager.get_question_errors('q1')
 
         assert 'required' in q1Errors
-        assert 'is not numeric' in q1Errors
 
     def test_progress(self):
         qData = self._loadFixture('groups.json')
