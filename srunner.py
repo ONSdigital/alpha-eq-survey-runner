@@ -78,6 +78,10 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
     if not session.get('uid'):
         session['uid'] = uuid.uuid4()
 
+    if not quest_session_id:
+        quest_session_id = uuid.uuid4()
+        return redirect(request.base_url + '/' + str(quest_session_id) + '/')
+
     preview = False
 
     if request.args.get('preview'):
@@ -102,7 +106,10 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                 q_manager.start_questionnaire()
         elif 'next' in request.form:
             # validate response
-            user_responses = request.form
+            user_responses = {}
+            for key in request.form.keys():
+                if key != 'next' and key != 'start':
+                    user_responses[key] = request.form[key]
 
             q_manager.store_response(user_responses)
 

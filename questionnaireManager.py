@@ -31,6 +31,12 @@ class QuestionnaireManager:
         self.question_index = questionnaire_state['index']
         self.responses = questionnaire_state['responses']
 
+        # validate any previous data
+        for index in range(0, self.question_index + 1):
+            question = self.questions[index]
+            if question.reference in self.responses:
+                question.is_valid_response(self.responses[question.reference])
+
         self.current_question = self.questions[self.question_index]
 
     def _add_question(self, question):
@@ -73,16 +79,22 @@ class QuestionnaireManager:
         return True
 
     def get_question_warnings(self, reference=None):
-        if self.current_question:
-            return self.current_question.get_warnings(reference)
-        else:
-            return []
+        if reference in self.responses.keys():
+            if reference is None and self.current_question:
+                return self.current_question.get_warnings()
+            elif reference:
+                return self.get_question_by_reference(reference).get_warnings()
+
+        return []
 
     def get_question_errors(self, reference=None):
-        if self.current_question:
-            return self.current_question.get_errors(reference)
-        else:
-            return []
+        if reference in self.responses.keys():
+            if reference is None and self.current_question:
+                return self.current_question.get_errors()
+            elif reference:
+                return self.get_question_by_reference(reference).get_errors()
+
+        return []
 
     def get_current_question(self):
         if not self.completed:
