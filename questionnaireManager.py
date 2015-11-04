@@ -61,15 +61,6 @@ class QuestionnaireManager:
             'responses': self.responses
         }
 
-    def resume_questionnaire(self, resume_data):
-        self.started = True
-        self.question_index = 0
-        self.current_question = self.questions[self.question_index]
-        self._load_resume_data(resume_data)
-
-    def get_resume_data(self):
-        return self.resume_data
-
     def store_response(self, response):
         self.responses[self.current_question.reference] = response
 
@@ -94,7 +85,10 @@ class QuestionnaireManager:
             return []
 
     def get_current_question(self):
-        return self.current_question
+        if not self.completed:
+            return self.current_question
+        else:
+            return None
 
     def get_next_question(self, response):
 
