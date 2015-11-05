@@ -101,6 +101,15 @@ class CheckBoxQuestion(Question):
     def __init__(self, question_schema):
         super(CheckBoxQuestion, self).__init__(question_schema)
 
+    def is_valid_response(self, response):
+        if isinstance(response, list):
+            for item in response:
+                if not super(CheckBoxQuestion, self).is_valid_response(item):
+                    return False
+            return True
+        else:
+            return super(CheckBoxQuestion, self).is_valid_response(response)
+
 
 class InputTextQuestion(Question):
     def __init__(self, question_schema):

@@ -125,7 +125,13 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
             user_responses = {}
             for key in request.form.keys():
                 if key != 'next' and key != 'start':
-                    user_responses[key] = request.form[key]
+                    response = request.form.getlist(key)
+                    if len(response) > 1:
+                        user_responses[key] = response
+                    elif len(response) == 0:
+                        user_responses[key] = None
+                    else:
+                        user_responses[key] = response[0]
 
             q_manager.store_response(user_responses)
 
