@@ -143,3 +143,11 @@ class QuestionnaireManager:
 
     def complete_questionnaire(self):
         self.completed = True
+
+    def get_history(self):
+        history = {}
+        for reference in self.responses.keys():
+            question = self.get_question_by_reference(reference)
+            history[question] = question.is_valid_response(self.responses[question.reference])
+
+        return history

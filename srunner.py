@@ -76,6 +76,15 @@ def set_session_data(quest_session_id, session_id, data):
     app.logger.debug(result)
     return result
 
+def get_jump_link(request, reference):
+    jump_url = request.base_url + '?jumpTo=' + reference
+    if 'debug' in request.args.keys():
+        jump_url += '&debug=' + request.args['debug']
+    return jump_url
+
+@app.context_processor
+def inject_jump_link():
+    return dict(get_jump_link=get_jump_link)
 
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'), strict_slashes=False)
 @app.route('/questionnaire/<int:questionnaire_id>/<quest_session_id>', methods=('GET', 'POST'), strict_slashes=False)
@@ -136,10 +145,10 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         if jump_to:
             q_manager.jump_to_question(jump_to)
             set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
-            jump_url = request.base_url
+            base_url = request.base_url
             if 'debug' in request.args.keys():
-                jump_url += '?debug=' + request.args['debug']
-            return redirect(jump_url, 302)
+                base_url += '?debug=' + request.args['debug']
+            return redirect(base_url, 302)
 
         if q_manager.started:
             question = q_manager.get_current_question()
