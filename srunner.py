@@ -123,6 +123,11 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         return redirect(redirect_url, 302)
 
     else:
+        # if request.method == 'GET':
+        #     jump_to = request.args.get('jumpTo')
+        #     if jump_to:
+        #         q_manager.jump_to_question(jump_to)
+
         if q_manager.started:
             question = q_manager.get_current_question()
 
