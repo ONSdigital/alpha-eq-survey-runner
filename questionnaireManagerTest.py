@@ -337,5 +337,23 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(sectionTwoQ1, InputTextQuestion) == True
         assert sectionTwoQ1.reference == 'q1'
 
+    def test_skip_conditions_added_by_branching(self):
+        qData = self._loadFixture('starwars.json')
+
+        qManager = QuestionnaireManager(qData, {})
+
+        sectionOneQ3 = qManager.get_question_by_reference('sectionOne:q3')
+
+        assert sectionOneQ3.has_branch_conditions()
+
+        sectionTwo = qManager.get_question_by_reference('sectionTwo')
+
+        assert len(sectionTwo.skip_conditions) == 1
+
+        sectionThree = qManager.get_question_by_reference('sectionThree')
+
+        assert len(sectionThree.skip_conditions) == 0
+
+
 if __name__ == '__main__':
     unittest.main()

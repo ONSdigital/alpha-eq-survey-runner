@@ -18,6 +18,7 @@ class Question(object):
         self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
         self.warnings = []
         self.errors = []
+        self.parent = None
 
     @staticmethod
     def factory(schema):
@@ -87,6 +88,12 @@ class Question(object):
     def get_question_by_reference(self, reference):
         return None
 
+    def get_reference(self):
+        if self.parent:
+            return self.parent.get_reference() + ':' + self.reference
+        else:
+            return self.reference
+
 class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema):
         super(MultipleChoiceQuestion, self).__init__(question_schema)
@@ -150,6 +157,7 @@ class QuestionGroup(Question):
             question = Question.factory(child)
             if not question.reference:
                 question.reference = 'q' + str(index)
+            question.parent = self
             self.children.append(question)
 
     def is_valid_response(self, responses):

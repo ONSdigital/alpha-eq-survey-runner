@@ -30,13 +30,20 @@ class QuestionnaireManager:
             self._add_question(question)
 
     def _ensure_valid_routing(self):
-        for question in self.questions:
+        for question_index, question in enumerate(self.questions):
             if question.has_branch_conditions():
+                target_questions = {}
                 for condition in question.get_branch_conditions():
                     # evaluate the condition
-                    target_question = self.get_question_by_reference(condition.target)
-                    skip_condition = SkipCondition(question.reference, condition.state)
-                    target_question.skip_conditions.append(skip_condition)
+                    target_questions[self.get_question_by_reference(condition.target)] = SkipCondition(question.reference, condition.state)
+
+                for candidate_index in range(question_index, len(self.questions)):
+                    for target_question in target_questions.keys():
+                        candidate_question = self.questions[candidate_index]
+
+                        if candidate_question.get_reference() != target_question.get_reference():
+                            candidate_question.skip_conditions.append(target_questions[target_question])
+
 
 
     def _load_questionnaire_state(self, questionnaire_state):
