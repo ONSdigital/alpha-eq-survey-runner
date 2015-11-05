@@ -117,6 +117,9 @@ class QuestionnaireManager:
 
     def jump_to_question(self, questionnaire_location):
         # can only jump to a previously seen question
+        if self.completed:
+            self.completed = False
+            
         if questionnaire_location in self.responses.keys():
             index = 0
             for question in self.questions:

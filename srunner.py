@@ -86,6 +86,10 @@ def get_jump_link(request, reference):
 def inject_jump_link():
     return dict(get_jump_link=get_jump_link)
 
+@app.context_processor
+def inject_isinstance():
+    return dict(isinstance=isinstance)
+
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'), strict_slashes=False)
 @app.route('/questionnaire/<int:questionnaire_id>/<quest_session_id>', methods=('GET', 'POST'), strict_slashes=False)
 def questionnaire_viewer(questionnaire_id, quest_session_id=None):

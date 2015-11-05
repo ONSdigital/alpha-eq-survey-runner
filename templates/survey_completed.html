@@ -4,17 +4,52 @@
 <h1>{{questionnaire.title}}</h1>
 <p>Thank you for completing the Questionnaire, You gave us the following answers:</p>
 
-{% if responses %}
-<dl>
-{% for question in questionnaire.questions %}
-  {% if question.reference in responses.keys() and question.type != 'TextBlock' %}
-    <dt>{{question.question_text }}</dt>
-    <dd>{{ responses[question.reference]}}</dd>
-  {% endif %}
-{% endfor %}
-</dl>
-{% endif %}
+{% if questionnaire.get_history() %}
+    <ul>
+        {% for section in questionnaire.questions %}
+        <li>
+          <div>
+            <div class="header">
+              <a href="{{ get_jump_link(request, section.reference) }}">{{ section.question_text }}</a> <input type="checkbox" disabled readonly {% if questionnaire.get_history()[section] %}checked="checked"{% endif %}>
+            </div>
+            <div>
+              {% for question in section.children %}
+                {% if question.type != 'TextBlock' %}
+                  <p>We said:</p>
+                  <blockquote>
+                    {{ question.question_text | safe }}
+                  </blockquote>
+                  {% if question.reference in responses[section.reference] %}
+                    <p>You said:</p>
+                    <blockquote>
+                        {% if question.type == 'CheckBoxQuestion' %}
+                          <p>
+                          {% for response in responses[section.reference][question.reference] %}
+                            {{ response }}<br>
+                          {% endfor %}
+                          </p>
+                        {% else %}
+                          <p>{{ responses[section.reference][question.reference] }}</p>
+                        {% endif %}
+                    </blockquote>
+                  {% endif %}
 
+                  {% if question.errors %}
+                    {% for error in question.errors %}
+                      {{ error }}
+                    {% endfor %}
+                  {% endif %}
+
+                {% endif %}
+
+              {% endfor %}
+            </div>
+          </div>
+
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
 
 {% endblock content %}
