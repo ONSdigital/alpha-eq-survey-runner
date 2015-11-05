@@ -4,12 +4,11 @@ import requests
 import os
 import json
 from flask_cassandra import CassandraCluster
-from jsonforms import convert_to_wtform
-import random
 import logging
 from logging import StreamHandler
 import uuid
 from questionnaireManager import QuestionnaireManager
+from settings import APP_FIXTURES
 
 app = Flask(__name__)
 app.debug = True
@@ -27,6 +26,13 @@ app.logger.addHandler(file_handler)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
 
+
+def _load_fixture(filename):
+    q_data = None
+    with open(os.path.join(APP_FIXTURES, filename)) as f:
+        q_data = f.read()
+        f.close()
+    return q_data
 
 @app.route('/')
 def hello():
@@ -80,7 +86,10 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
     if not quest_session_id:
         quest_session_id = uuid.uuid4()
-        return redirect(request.base_url + '/' + str(quest_session_id) + '/')
+        new_url = request.base_url + '/' + str(quest_session_id) + '/'
+        if 'debug' in request.args.keys():
+            new_url += '?debug=' + request.args['debug']
+        return redirect(new_url)
 
     preview = False
 
@@ -88,7 +97,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         preview = True
 
     if 'debug' in request.args:
-        q_schema = render_template('starwars.json')
+        q_schema = _load_fixture('starwars.json')
     else:
         q_schema = get_form_schema(questionnaire_id)
 

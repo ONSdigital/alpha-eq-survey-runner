@@ -278,5 +278,44 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert q_manager.get_current_question_index() == 2
 
+    def test_jump(self):
+        qData = self._loadFixture('groups.json')
+
+        # can't jump unless we have resume data
+        resumeData = {
+            'started': False,
+            'completed': False,
+            'index': 0,
+            'responses': {
+                "start":{
+                    'q1': '1',          # Numeric required field
+                    'q2': None,         # Rich text text, no response required
+                    'q3': 'option1',    # Multi-choice, option 1
+                    'q4': 'option1',   # Checkbox, selected
+                    'q5': 'Some Text',  # required free text field
+                    'q6': None          # Optional numeric
+                }
+            }
+        }
+
+        q_manager = QuestionnaireManager(qData, resumeData)
+        q_manager.start_questionnaire()
+
+        q1 = q_manager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        assert q_manager.get_current_question_index() == 1
+
+        assert q_manager.get_total_questions() == 2
+
+        q2 = q_manager.get_next_question(None)
+
+        q_manager.jump_to_question('start')
+
+        current_question = q_manager.get_current_question()
+        assert current_question.reference == q1.reference
+        assert q_manager.get_current_question_index() == 1
+
 if __name__ == '__main__':
     unittest.main()
