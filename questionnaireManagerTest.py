@@ -259,12 +259,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'required' in errors['q5']
 
-        assert 'is not numeric' in errors['q6']
-
-        q1Errors = qManager.get_question_errors('q1')
-
-        assert 'required' in q1Errors
-
     def test_progress(self):
         qData = self._loadFixture('groups.json')
         resume_data = {}
@@ -283,37 +277,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q2 = q_manager.get_next_question(None)
 
         assert q_manager.get_current_question_index() == 2
-
-    # def test_jump(self):
-    #     qData = self._loadFixture('groups.json')
-    #
-    #     # can't jump unless we have resume data
-    #     resumeData = {
-    #         'started' : False,
-    #         'completed' : False,
-    #         'index' : 0,
-    #         'responses' : {
-    #         }
-    #     }
-    #
-    #     q_manager = QuestionnaireManager(qData, resumeData)
-    #     q_manager.start_questionnaire()
-    #
-    #     q1 = q_manager.get_current_question()
-    #
-    #     assert isinstance(q1, QuestionGroup) == True
-    #
-    #     assert q_manager.get_current_question_index() == 1
-    #
-    #     assert q_manager.get_total_questions() == 2
-    #
-    #     q2 = q_manager.get_next_question(None)
-    #
-    #     q_manager.jump_to_question('start')
-    #
-    #     current_question = q_manager.get_current_question()
-    #     assert current_question.reference == q1.reference
-    #     assert q_manager.get_current_question_index() == 1
 
 if __name__ == '__main__':
     unittest.main()

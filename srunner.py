@@ -97,11 +97,9 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
     if quest_session_id is not None:
         questionnaire_state = get_session_data(quest_session_id, str(session['uid']))
 
-
+    q_manager = QuestionnaireManager(q_schema, questionnaire_state)
 
     if request.method == 'POST':
-        q_manager = QuestionnaireManager(q_schema, questionnaire_state)
-
         if 'start' in request.form:
                 q_manager.start_questionnaire()
         elif 'next' in request.form:
@@ -116,7 +114,6 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
             if q_manager.is_valid_response(user_responses):
                 q_manager.get_next_question(user_responses)
 
-
         set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
 
         redirect_url = request.base_url
@@ -125,34 +122,25 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
         return redirect(redirect_url, 302)
 
+    else:
+        if q_manager.started:
+            question = q_manager.get_current_question()
 
-    questionnaire_state = get_session_data(quest_session_id, str(session['uid']))
+            if q_manager.completed:
+                return render_template('survey_completed.html',
+                                        responses=q_manager.get_responses(),
+                                        questionnaire=q_manager,
+                                        request=request)
 
-    q_manager = QuestionnaireManager(q_schema, questionnaire_state)
-
-    # if request.method == 'GET':
-    #     jump_to = request.args.get('jumpTo')
-    #     if jump_to:
-    #         q_manager.jump_to_question(jump_to)
-
-    if q_manager.started:
-        question = q_manager.get_current_question()
-
-        if q_manager.completed:
-            return render_template('survey_completed.html',
-                                    responses=q_manager.get_responses(),
+            return render_template('questions/' + question.type + '.html',
+                                    question=question,
+                                    user_response=q_manager.get_responses(question.reference),
                                     questionnaire=q_manager,
                                     request=request)
-
-        return render_template('questions/' + question.type + '.html',
-                                question=question,
-                                user_response=q_manager.get_responses(question.reference),
-                                questionnaire=q_manager,
-                                request=request)
-    else:
-        return render_template('survey_intro.html',
-                                questionnaire=q_manager,
-                                request=request)
+        else:
+            return render_template('survey_intro.html',
+                                    questionnaire=q_manager,
+                                    request=request)
 
 
 if __name__ == '__main__':

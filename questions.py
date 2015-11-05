@@ -1,6 +1,7 @@
 import importlib
 from branching import JumpTo
 
+
 class Question(object):
     def __init__(self, question_schema):
         self._schema = question_schema

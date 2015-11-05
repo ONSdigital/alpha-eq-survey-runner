@@ -10,6 +10,7 @@ class QuestionnaireManager:
         self.completed = False
         self.questions = []
         self.responses = {}
+        self.current_question = None
         self._load_questionnaire_data(json.loads(questionnaire_schema))
         if questionnaire_state:
             self._load_questionnaire_state(questionnaire_state)
@@ -20,6 +21,8 @@ class QuestionnaireManager:
         self.overview = questionnaire_data['overview']
         for index, schema in enumerate(questionnaire_data['questions']):
             question = Question.factory(schema)
+            # all questions need references - should really be set by the author
+            # but if not lets set them
             if not question.reference:
                 question.reference = 'q' + str(index)
                 
@@ -61,9 +64,9 @@ class QuestionnaireManager:
 
     def get_questionnaire_state(self):
         return {
-            'started' : self.started,
-            'completed' : self.completed,
-            'index' : self.question_index,
+            'started': self.started,
+            'completed': self.completed,
+            'index': self.question_index,
             'responses': self.responses
         }
 
@@ -72,29 +75,24 @@ class QuestionnaireManager:
 
     def is_valid_response(self, user_answer):
         if self.current_question:
-            valid = self.current_question.is_valid_response(user_answer)
-
-            return valid
-
+            return self.current_question.is_valid_response(user_answer)
         return True
 
     def get_question_warnings(self, reference=None):
-        if reference in self.responses.keys():
-            if reference is None and self.current_question:
-                return self.current_question.get_warnings()
-            elif reference:
-                return self.get_question_by_reference(reference).get_warnings()
-
-        return []
+        if reference is None and self.current_question:
+            return self.current_question.get_warnings()
+        elif reference in self.responses.keys():
+            return self.get_question_by_reference(reference).get_warnings()
+        else:
+            return []
 
     def get_question_errors(self, reference=None):
-        if reference in self.responses.keys():
-            if reference is None and self.current_question:
-                return self.current_question.get_errors()
-            elif reference:
-                return self.get_question_by_reference(reference).get_errors()
-
-        return []
+        if reference is None and self.current_question:
+            return self.current_question.get_errors()
+        elif reference in self.responses.keys():
+            return self.get_question_by_reference(reference).get_errors()
+        else:
+            return []
 
     def get_current_question(self):
         if not self.completed:
@@ -103,7 +101,6 @@ class QuestionnaireManager:
             return None
 
     def get_next_question(self, response):
-
         if response and self.current_question.branches(response):
             target_question = self.current_question.get_branch_target(response)
             self.branch_to_question(target_question)
@@ -117,7 +114,6 @@ class QuestionnaireManager:
             self.current_question = None
             self.completed = True
             return None
-
 
     def jump_to_question(self, questionnaire_location):
         # can only jump to a previously seen question
@@ -137,6 +133,7 @@ class QuestionnaireManager:
                 self.current_question = self.questions[self.question_index]
             index += 1
 
+    # will use in template
     def get_question_by_reference(self, reference):
         for question in self.questions:
             if question.reference == reference:

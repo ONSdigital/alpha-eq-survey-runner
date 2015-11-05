@@ -4,9 +4,6 @@ class Condition(object):
         self.trigger = args[1]
         self.state = args[2]
 
-    def matches(self):
-        return False
-
 
 class JumpTo(Condition):
     def __init__(self, target, trigger, state):
