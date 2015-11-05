@@ -14,7 +14,7 @@ class Question(object):
         self.parts = self._build_parts(question_schema['parts'])
         self.children = None
         self.display_conditions = None
-        self.skip_conditions = None
+        self.skip_conditions = []
         self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
         self.warnings = []
         self.errors = []
@@ -78,6 +78,14 @@ class Question(object):
     def get_errors(self, reference=None):
         return self.errors or None
 
+    def get_branch_conditions(self):
+        return self.branch_conditions
+
+    def has_branch_conditions(self):
+        return len(self.branch_conditions) > 0
+
+    def get_question_by_reference(self, reference):
+        return None
 
 class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema):
@@ -187,3 +195,31 @@ class QuestionGroup(Question):
             return jumps[0]
         else:
             return None
+
+    def get_branch_conditions(self):
+        conditions = []
+        for child in self.children:
+            if child.has_branch_conditions():
+                child_conditions = child.get_branch_conditions()
+                for child_condition in child_conditions:
+                    child_condition.trigger = self.reference + ':' + child_condition.trigger
+                    conditions.append(child_condition)
+
+        return conditions
+
+    def has_branch_conditions(self):
+        return len(self.get_branch_conditions()) > 0
+
+    def get_question_by_reference(self, reference):
+
+        address_parts = reference.split(':')
+        if len(address_parts) == 1:
+            for question in self.children:
+                if question.reference == reference:
+                    return question
+        else:
+            this_level = address_parts.pop(0)
+            for question in self.children:
+                if question.reference == this_level:
+                    return question.get_question_by_reference(':'.join(address_parts))
+

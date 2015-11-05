@@ -1,6 +1,6 @@
 from questions import Question
 import json
-
+from branching import SkipCondition
 
 class QuestionnaireManager:
     def __init__(self, questionnaire_schema, questionnaire_state):
@@ -12,6 +12,7 @@ class QuestionnaireManager:
         self.responses = {}
         self.current_question = None
         self._load_questionnaire_data(json.loads(questionnaire_schema))
+        self._ensure_valid_routing()
         if questionnaire_state:
             self._load_questionnaire_state(questionnaire_state)
 
@@ -27,6 +28,16 @@ class QuestionnaireManager:
                 question.reference = 'q' + str(index)
                 
             self._add_question(question)
+
+    def _ensure_valid_routing(self):
+        for question in self.questions:
+            if question.has_branch_conditions():
+                for condition in question.get_branch_conditions():
+                    # evaluate the condition
+                    target_question = self.get_question_by_reference(condition.target)
+                    skip_condition = SkipCondition(question.reference, condition.state)
+                    target_question.skip_conditions.append(skip_condition)
+
 
     def _load_questionnaire_state(self, questionnaire_state):
         self.started = questionnaire_state['started']
@@ -119,7 +130,7 @@ class QuestionnaireManager:
         # can only jump to a previously seen question
         if self.completed:
             self.completed = False
-            
+
         if questionnaire_location in self.responses.keys():
             index = 0
             for question in self.questions:
@@ -138,11 +149,18 @@ class QuestionnaireManager:
 
     # will use in template
     def get_question_by_reference(self, reference):
-        for question in self.questions:
-            if question.reference == reference:
-                return question
 
-        return None
+        address_parts = reference.split(':')
+        if len(address_parts) == 1:
+            for question in self.questions:
+                if question.reference == reference:
+                    return question
+        else:
+            this_level = address_parts.pop(0)
+            for question in self.questions:
+                if question.reference == this_level:
+                    return question.get_question_by_reference(':'.join(address_parts))
+
 
     def complete_questionnaire(self):
         self.completed = True

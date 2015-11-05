@@ -317,5 +317,25 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert current_question.reference == q1.reference
         assert q_manager.get_current_question_index() == 1
 
+    def test_get_question_by_reference(self):
+
+        qData = self._loadFixture('starwars.json')
+
+        qManager = QuestionnaireManager(qData, {})
+
+        sectionOne = qManager.get_question_by_reference('sectionOne')
+
+        assert sectionOne.reference == 'sectionOne'
+
+        sectionOneQ1 = qManager.get_question_by_reference('sectionOne:q1')
+
+        assert isinstance(sectionOneQ1, TextBlock) == True
+        assert sectionOneQ1.reference == 'q1'
+
+        sectionTwoQ1 = qManager.get_question_by_reference('sectionTwo:q1')
+
+        assert isinstance(sectionTwoQ1, InputTextQuestion) == True
+        assert sectionTwoQ1.reference == 'q1'
+
 if __name__ == '__main__':
     unittest.main()
