@@ -132,10 +132,14 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         return redirect(redirect_url, 302)
 
     else:
-        # if request.method == 'GET':
-        #     jump_to = request.args.get('jumpTo')
-        #     if jump_to:
-        #         q_manager.jump_to_question(jump_to)
+        jump_to = request.args.get('jumpTo')
+        if jump_to:
+            q_manager.jump_to_question(jump_to)
+            set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
+            jump_url = request.base_url
+            if 'debug' in request.args.keys():
+                jump_url += '?debug=' + request.args['debug']
+            return redirect(jump_url, 302)
 
         if q_manager.started:
             question = q_manager.get_current_question()
