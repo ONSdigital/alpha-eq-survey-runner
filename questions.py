@@ -3,7 +3,8 @@ from branching import JumpTo
 
 
 class Question(object):
-    def __init__(self, question_schema):
+    def __init__(self, question_schema, parent=None):
+        self.parent = parent
         self._schema = question_schema
         self.type = question_schema['questionType']
         self.question_text = question_schema['questionText']
@@ -18,15 +19,14 @@ class Question(object):
         self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
         self.warnings = []
         self.errors = []
-        self.parent = None
 
     @staticmethod
-    def factory(schema):
-        if schema['questionType'] == 'InputText': return InputTextQuestion(schema)
-        if schema['questionType'] == 'TextBlock': return TextBlock(schema)
-        if schema['questionType'] == 'MultipleChoice': return MultipleChoiceQuestion(schema)
-        if schema['questionType'] == 'QuestionGroup': return QuestionGroup(schema)
-        if schema['questionType'] == 'CheckBox': return CheckBoxQuestion(schema)
+    def factory(schema, parent=None):
+        if schema['questionType'] == 'InputText': return InputTextQuestion(schema, parent)
+        if schema['questionType'] == 'TextBlock': return TextBlock(schema, parent)
+        if schema['questionType'] == 'MultipleChoice': return MultipleChoiceQuestion(schema, parent)
+        if schema['questionType'] == 'QuestionGroup': return QuestionGroup(schema, parent)
+        if schema['questionType'] == 'CheckBox': return CheckBoxQuestion(schema, parent)
 
     def _build_validation(self, validation_schema):
         rules = []
@@ -50,14 +50,14 @@ class Question(object):
         branch_conditions = []
         for condition in branch_conditions_schema:
              if condition['jumpTo']:
-                jumpTo = JumpTo(condition['jumpTo']['question'], self.reference, condition['jumpTo']['condition']['value']['is'])
+                jumpTo = JumpTo(condition['jumpTo']['question'], self.get_reference(), condition['jumpTo']['condition']['value']['is'])
                 branch_conditions.append(jumpTo)
 
         return branch_conditions
 
     def branches(self, response):
         for rule in self.branch_conditions:
-            if rule.trigger == self.reference and rule.state == response:
+            if rule.trigger == self.get_reference() and rule.state == response:
                 return rule.target
 
         return None
@@ -85,18 +85,24 @@ class Question(object):
     def has_branch_conditions(self):
         return len(self.branch_conditions) > 0
 
+    def get_skip_conditions(self):
+        return self.skip_conditions
+
+    def has_skip_conditions(self):
+        return len(self.skip_conditions) > 0
+
     def get_question_by_reference(self, reference):
         return None
 
     def get_reference(self):
         if self.parent:
-            return self.parent.get_reference() + ':' + self.reference
+            return self.parent.get_reference() + ':' + self._reference
         else:
-            return self.reference
+            return self._reference
 
 class MultipleChoiceQuestion(Question):
-    def __init__(self, question_schema):
-        super(MultipleChoiceQuestion, self).__init__(question_schema)
+    def __init__(self, question_schema, parent=None):
+        super(MultipleChoiceQuestion, self).__init__(question_schema, parent)
 
     def is_valid_response(self, response):
         valid = super(MultipleChoiceQuestion, self).is_valid_response(response)
@@ -113,8 +119,8 @@ class MultipleChoiceQuestion(Question):
 
 
 class CheckBoxQuestion(Question):
-    def __init__(self, question_schema):
-        super(CheckBoxQuestion, self).__init__(question_schema)
+    def __init__(self, question_schema, parent=None):
+        super(CheckBoxQuestion, self).__init__(question_schema, parent)
 
     def is_valid_response(self, response):
         if isinstance(response, list):
@@ -127,13 +133,13 @@ class CheckBoxQuestion(Question):
 
 
 class InputTextQuestion(Question):
-    def __init__(self, question_schema):
-        super(InputTextQuestion, self).__init__(question_schema)
+    def __init__(self, question_schema, parent=None):
+        super(InputTextQuestion, self).__init__(question_schema, parent)
 
 
 class TextBlock(Question):
-    def __init__(self, question_schema):
-        super(TextBlock, self).__init__(question_schema)
+    def __init__(self, question_schema, parent=None):
+        super(TextBlock, self).__init__(question_schema, parent)
 
     def is_valid_response(self, request):
         return True
@@ -146,7 +152,7 @@ class TextBlock(Question):
 
 
 class QuestionGroup(Question):
-    def __init__(self, question_schema):
+    def __init__(self, question_schema, parent=None):
         super(QuestionGroup, self).__init__(question_schema)
         self.children = []
         self.errors = {}
@@ -154,22 +160,21 @@ class QuestionGroup(Question):
 
     def _load_children(self, children_schema):
         for index, child in enumerate(children_schema):
-            question = Question.factory(child)
-            if not question.reference:
-                question.reference = 'q' + str(index)
-            question.parent = self
+            question = Question.factory(child, self)
+            if not question._reference:
+                question._reference = 'q' + str(index)
             self.children.append(question)
 
     def is_valid_response(self, responses):
         self.errors = {}
         for question in self.children:
-            if question.reference in responses.keys():
-                response = responses[question.reference]
+            if question.get_reference() in responses.keys():
+                response = responses[question.get_reference()]
             else:
                 response = None
 
             if not question.is_valid_response(response):
-                self.errors[question.reference] = question.get_errors()
+                self.errors[question.get_reference()] = question.get_errors()
 
         return len(self.errors) == 0
 
@@ -187,8 +192,8 @@ class QuestionGroup(Question):
     def branches(self, responses):
         jumps = []
         for child in self.children:
-            if child.reference in responses.keys():
-                jump = child.branches(responses[child.reference])
+            if child.get_reference() in responses.keys():
+                jump = child.branches(responses[child.get_reference()])
                 if jump:
                     jumps.append(jump)
 
@@ -210,7 +215,6 @@ class QuestionGroup(Question):
             if child.has_branch_conditions():
                 child_conditions = child.get_branch_conditions()
                 for child_condition in child_conditions:
-                    child_condition.trigger = self.reference + ':' + child_condition.trigger
                     conditions.append(child_condition)
 
         return conditions
@@ -223,11 +227,10 @@ class QuestionGroup(Question):
         address_parts = reference.split(':')
         if len(address_parts) == 1:
             for question in self.children:
-                if question.reference == reference:
+                if question._reference == reference:
                     return question
         else:
             this_level = address_parts.pop(0)
             for question in self.children:
-                if question.reference == this_level:
+                if question._reference == this_level:
                     return question.get_question_by_reference(':'.join(address_parts))
-

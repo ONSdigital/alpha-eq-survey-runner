@@ -171,7 +171,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
             return render_template('questions/' + question.type + '.html',
                                     question=question,
-                                    user_response=q_manager.get_responses(question.reference),
+                                    user_response=q_manager.get_responses(),
                                     questionnaire=q_manager,
                                     request=request)
         else:

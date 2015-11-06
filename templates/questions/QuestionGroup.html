@@ -7,7 +7,7 @@
 {% if questionnaire.get_history() %}
     <ul>
         {% for question in questionnaire.get_history().keys() %}
-        <li><a href="{{ get_jump_link(request, question.reference) }}">{{ question.question_text }}</a> <input type="checkbox" disabled readonly {% if questionnaire.get_history()[question] %}checked="checked"{% endif %}></li>
+        <li><a href="{{ get_jump_link(request, question.get_reference()) }}">{{ question.question_text }}</a> <input type="checkbox" disabled readonly {% if questionnaire.get_history()[question] %}checked="checked"{% endif %}></li>
         {% endfor %}
     </ul>
 {% endif %}
