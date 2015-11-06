@@ -48,7 +48,6 @@ class QuestionnaireManager:
                             candidate_question.skip_conditions.append(target_questions[target_question])
 
 
-
     def _load_questionnaire_state(self, questionnaire_state):
         self.started = questionnaire_state['started']
         self.completed = questionnaire_state['completed']
@@ -62,16 +61,32 @@ class QuestionnaireManager:
             if question.get_reference() in self.history.keys():
                 question.is_valid_response(self.responses)
 
+        # evaluate skip conditions and skip matching questions
+        for question in self.questions:
+            if question.has_skip_conditions():
+                conditions = question.get_skip_conditions()
+                for condition in conditions:
+                    if self.condition_met(condition):
+                        question.skipping = True
+
         self.current_question = self.questions[self.question_index]
 
     def _add_question(self, question):
         self.questions.append(question)
 
     def get_current_question_index(self):
-        return self.question_index + 1
+        current_position = 1
+        for index, question in enumerate(self.questions):
+            if index < self.question_index and not question.skipping:
+                current_position += 1
+        return current_position
 
     def get_total_questions(self):
-        return len(self.questions)
+        total = 0
+        for question in self.questions:
+            if not question.skipping:
+                total += 1
+        return total
 
     def get_responses(self, *args):
         if len(args) == 1 and args[0] in self.responses.keys():
@@ -188,11 +203,6 @@ class QuestionnaireManager:
         history_with_question_objects = {}
         for reference in self.history.keys():
             question = self.get_question_by_reference(reference)
-            if question.has_skip_conditions():
-                conditions = question.get_skip_conditions()
-                for condition in conditions:
-                    if self.condition_met(condition):
-                        question.skipping = True
 
             if not question.skipping:
                 history_with_question_objects[question] = self.history[reference]
