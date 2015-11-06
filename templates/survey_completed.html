@@ -7,10 +7,11 @@
 {% if questionnaire.get_history() %}
     <ul>
         {% for section in questionnaire.questions %}
+        {% if not section.skipping %}
         <li>
           <div>
             <div class="header">
-              <a href="{{ get_jump_link(request, section.reference) }}">{{ section.question_text }}</a> <input type="checkbox" disabled readonly {% if questionnaire.get_history()[section] %}checked="checked"{% endif %}>
+              <a href="{{ get_jump_link(request, section.get_reference()) }}">{{ section.question_text }}</a> <input type="checkbox" disabled readonly {% if questionnaire.get_history()[section] %}checked="checked"{% endif %}>
             </div>
             <div>
               {% for question in section.children %}
@@ -19,17 +20,17 @@
                   <blockquote>
                     {{ question.question_text | safe }}
                   </blockquote>
-                  {% if question.reference in responses[section.reference] %}
+                  {% if question.get_reference() in responses %}
                     <p>You said:</p>
                     <blockquote>
                         {% if question.type == 'CheckBoxQuestion' %}
                           <p>
-                          {% for response in responses[section.reference][question.reference] %}
+                          {% for response in responses[question.get_reference()] %}
                             {{ response }}<br>
                           {% endfor %}
                           </p>
                         {% else %}
-                          <p>{{ responses[section.reference][question.reference] }}</p>
+                          <p>{{ responses[question.get_reference()] }}</p>
                         {% endif %}
                     </blockquote>
                   {% endif %}
@@ -47,6 +48,7 @@
           </div>
 
         </li>
+        {% endif %}
         {% endfor %}
     </ul>
 {% endif %}

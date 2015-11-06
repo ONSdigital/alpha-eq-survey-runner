@@ -5,6 +5,7 @@ from branching import JumpTo
 class Question(object):
     def __init__(self, question_schema, parent=None):
         self.parent = parent
+        self.skipping = False
         self._schema = question_schema
         self.type = question_schema['questionType']
         self.question_text = question_schema['questionText']

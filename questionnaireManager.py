@@ -40,7 +40,7 @@ class QuestionnaireManager:
                     # evaluate the condition
                     target_questions[self.get_question_by_reference(condition.target)] = SkipCondition(condition.trigger, condition.state)
 
-                for candidate_index in range(question_index, len(self.questions)):
+                for candidate_index in range(question_index + 1, len(self.questions)):
                     for target_question in target_questions.keys():
                         candidate_question = self.questions[candidate_index]
 
@@ -188,7 +188,14 @@ class QuestionnaireManager:
         history_with_question_objects = {}
         for reference in self.history.keys():
             question = self.get_question_by_reference(reference)
-            history_with_question_objects[question] = self.history[reference]
+            if question.has_skip_conditions():
+                conditions = question.get_skip_conditions()
+                for condition in conditions:
+                    if self.condition_met(condition):
+                        question.skipping = True
+
+            if not question.skipping:
+                history_with_question_objects[question] = self.history[reference]
 
         return history_with_question_objects
 
