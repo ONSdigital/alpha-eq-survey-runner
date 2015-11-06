@@ -10,7 +10,7 @@ class Question(object):
         self.type = question_schema['questionType']
         self.question_text = question_schema['questionText']
         self.question_help = question_schema['questionHelp']
-        self.reference = question_schema['questionReference']
+        self._reference = question_schema['questionReference']
         self.display_properties = None
         self.validation = self._build_validation(question_schema['validation'])
         self.parts = self._build_parts(question_schema['parts'])
@@ -126,8 +126,9 @@ class CheckBoxQuestion(Question):
     def is_valid_response(self, response):
         if isinstance(response, list):
             for item in response:
-                if not super(CheckBoxQuestion, self).is_valid_response(item):
-                    return False
+                if item: # we send a blank with every checkbox question, otherwise they don't show up
+                    if not super(CheckBoxQuestion, self).is_valid_response(item):
+                        return False
             return True
         else:
             return super(CheckBoxQuestion, self).is_valid_response(response)
