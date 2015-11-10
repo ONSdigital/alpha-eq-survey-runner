@@ -15,7 +15,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q1",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "",
@@ -33,7 +33,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q2",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "Please only enter one character, i.e. Han Solo",
@@ -80,9 +80,18 @@
                             "value": "Episode 7: The Force Awakens"
                         }
                     ],
-                    "questionReference": "",
+                    "questionReference": "q3",
                     "displayConditions": [],
-                    "branchConditions": [],
+                    "branchConditions": [ {
+                            "jumpTo": {
+                                "question":"sectionThree",
+                                "condition": {
+                                    "value": {
+                                        "is":"Episode 1: The Phantom Menance"
+                                    }
+                                }
+                            }
+                        }],
                     "questionHelp": "Please select one only",
                     "questionType": "MultipleChoice",
                     "validation": {
@@ -143,7 +152,7 @@
                             "value": "C3P0"
                         }
                     ],
-                    "questionReference": "",
+                    "questionReference": "q4",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "Please tick all that apply",
@@ -179,7 +188,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q1",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "Please only enter a number",
@@ -216,7 +225,7 @@
                     "displayProperties": {},
                     "skipConditions": [],
                     "parts": [],
-                    "questionReference": "",
+                    "questionReference": "q1",
                     "displayConditions": [],
                     "branchConditions": [],
                     "questionHelp": "This question is optional",

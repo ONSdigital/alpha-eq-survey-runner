@@ -1,8 +1,8 @@
 <article>
   {% block question_template %}
   {% endblock question_template %}
-  {% if questionnaire.get_question_errors(question.reference) %}
-      {% for error in questionnaire.get_question_errors(question.reference) %}
+  {% if question.get_errors() %}
+      {% for error in question.get_errors() %}
   <small class="error">{{error}}</small>
       {% endfor %}
   {% endif %}
