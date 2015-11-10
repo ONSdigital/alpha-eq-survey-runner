@@ -150,6 +150,8 @@ aside div:before {
   font-weight: 600;
   text-shadow: 0 -1px 0 rgba(0,0,0,0.1);
   margin-left: 10px;
+  appearance: none;
+  border:none;
 }
 
 .btn:hover {
@@ -178,21 +180,46 @@ footer {
 }
 
 article {
-  margin-bottom:2rem;
+  margin-bottom:3rem;
   font-size: 14px;
   font-weight: 400;
   color: #888;
 }
 
-article label span {
-  font-size: 16px;
-  font-weight: 600;
-  color: #444;
+article input[type="radio"], article input[type="checkbox"] {
+  margin: 5px 10px auto 0;
+  float: left;
+  clear: left;
+  display: block;
 }
 
-article input[type="text"], article input[type="number"], article input[type="radio"], article input[type="checkbox"], article textarea, article select {
-  margin-top:0.6rem;
+article input[type="text"], article input[type="number"], article textarea, article select {
+  float: none;
+  display: block;
 }
+
+input[type="checkbox"] + label, input[type="radio"] + label {
+  display: block;
+}
+
+span.error, small.error {
+  margin-top:-20px;
+  background:#f6f6f6;
+  border-bottom:2px solid red;
+  color:#222;
+}
+
+ul.multiple-choice {
+  list-style-type: none;
+  padding:0 0 20px 0;
+  margin:0 0 3rem 0;
+  columns: 2;
+}
+
+ul.multiple-choice li {
+  margin:10px 0;
+}
+
 
 article textarea {
   min-height: 200px;
@@ -215,6 +242,7 @@ input:focus::-moz-placeholder, textarea:focus::-moz-placeholder {
 input:focus:-ms-input-placeholder, textarea:focus:-ms-input-placeholder {
   color: transparent;
 }
+
 
 /* mqs TBD */
 @media all and (max-width: 780px) {

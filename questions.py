@@ -5,6 +5,7 @@ class Question(object):
         self._schema = question_schema
         self.type = question_schema['questionType']
         self.question_text = question_schema['questionText']
+        self.question_help = question_schema['questionHelp']
         self.reference = question_schema['questionReference']
         self.display_properties = None
         self.validation = self._build_validation(question_schema['validation'])
