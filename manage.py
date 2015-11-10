@@ -15,7 +15,7 @@ def create_sessions_schema():
     app.config['CASSANDRA_NODES'] = ['cassandra']  # can be a string or list of nodes
     print "Connecting to Cassandra cluster..."
     # @todo: make this clever enough to try to connect and then retry exponetially.
-    time.sleep(5)
+    time.sleep(30)
     session = cassandra.connect()
     if app.debug:
         cql = "CREATE KEYSPACE IF NOT EXISTS sessionstore WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };"
