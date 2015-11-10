@@ -59,14 +59,16 @@ header span img {
   height: auto; }
 
 header span.logo {
-  left: 0;
-  top: 12%;
-  width: 22%; }
+  left: 30px;
+  top: 30px;
+  width: 12%;
+  min-width: 120px; }
 
 header span.crest {
-  right: 0;
-  top: 14%;
-  width: 8.5%; }
+  right: 30px;
+  top: 30px;
+  width: 4.5%;
+  min-width: 40px; }
 
 main {
   background: #fff;
