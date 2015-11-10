@@ -2,7 +2,8 @@
 
 {% block question_template %}
   <!-- text question -->
-  <label><span>{{ question.question_text }}</span>
+  <h3><span>{{ question.question_text }}</h3>
+    <p>{{ question.question_help }}</p>
     <input type="text" name="{{question.reference}}" placeholder="{{ question.question_help }}" value="{{user_response[question.reference] or ''}}"/>
   </label>
 {% endblock question_template %}
