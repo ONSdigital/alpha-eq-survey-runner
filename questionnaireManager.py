@@ -1,6 +1,6 @@
 from questions import Question
 import json
-
+from branching import SkipCondition
 
 class QuestionnaireManager:
     def __init__(self, questionnaire_schema, questionnaire_state):
@@ -10,8 +10,10 @@ class QuestionnaireManager:
         self.completed = False
         self.questions = []
         self.responses = {}
+        self.history = {}
         self.current_question = None
         self._load_questionnaire_data(json.loads(questionnaire_schema))
+        self._ensure_valid_routing()
         if questionnaire_state:
             self._load_questionnaire_state(questionnaire_state)
 
@@ -21,24 +23,51 @@ class QuestionnaireManager:
         self.overview = questionnaire_data['overview']
         for index, schema in enumerate(questionnaire_data['questions']):
             question = Question.factory(schema)
+
+            # TODO: Remove this as it breaks encapsulation.  References should be set in the schema instead
             # all questions need references - should really be set by the author
             # but if not lets set them
-            if not question.reference:
-                question.reference = 'q' + str(index)
+            if not question._reference:
+                question._reference = 'q' + str(index)
                 
             self._add_question(question)
+
+    def _ensure_valid_routing(self):
+        for question_index, question in enumerate(self.questions):
+            if question.has_branch_conditions():
+                target_questions = {}
+                for condition in question.get_branch_conditions():
+                    # evaluate the condition
+                    target_questions[self.get_question_by_reference(condition.target)] = SkipCondition(condition.trigger, condition.state)
+
+                for candidate_index in range(question_index + 1, len(self.questions)):
+                    for target_question in target_questions.keys():
+                        candidate_question = self.questions[candidate_index]
+
+                        if candidate_question.get_reference() != target_question.get_reference():
+                            candidate_question.skip_conditions.append(target_questions[target_question])
+
 
     def _load_questionnaire_state(self, questionnaire_state):
         self.started = questionnaire_state['started']
         self.completed = questionnaire_state['completed']
         self.question_index = questionnaire_state['index']
         self.responses = questionnaire_state['responses']
+        self.history = questionnaire_state['history']
 
         # validate any previous data
         for index in range(0, self.question_index + 1):
             question = self.questions[index]
-            if question.reference in self.responses:
-                question.is_valid_response(self.responses[question.reference])
+            if question.get_reference() in self.history.keys():
+                question.is_valid_response(self.responses)
+
+        # evaluate skip conditions and skip matching questions
+        for question in self.questions:
+            if question.has_skip_conditions():
+                conditions = question.get_skip_conditions()
+                for condition in conditions:
+                    if self.condition_met(condition):
+                        question.skipping = True
 
         self.current_question = self.questions[self.question_index]
 
@@ -46,10 +75,18 @@ class QuestionnaireManager:
         self.questions.append(question)
 
     def get_current_question_index(self):
-        return self.question_index + 1
+        current_position = 1
+        for index, question in enumerate(self.questions):
+            if index < self.question_index and not question.skipping:
+                current_position += 1
+        return current_position
 
     def get_total_questions(self):
-        return len(self.questions)
+        total = 0
+        for question in self.questions:
+            if not question.skipping:
+                total += 1
+        return total
 
     def get_responses(self, *args):
         if len(args) == 1 and args[0] in self.responses.keys():
@@ -67,11 +104,16 @@ class QuestionnaireManager:
             'started': self.started,
             'completed': self.completed,
             'index': self.question_index,
-            'responses': self.responses
+            'responses': self.responses,
+            'history': self.history
         }
 
     def store_response(self, response):
-        self.responses[self.current_question.reference] = response
+        for ref in response.keys():
+            self.responses[ref] = response[ref]
+
+        self.history[self.current_question.get_reference()] = self.current_question.is_valid_response(response)
+
 
     def is_valid_response(self, user_answer):
         if self.current_question:
@@ -117,29 +159,61 @@ class QuestionnaireManager:
 
     def jump_to_question(self, questionnaire_location):
         # can only jump to a previously seen question
-        if questionnaire_location in self.responses.keys():
-            index = 0
-            for question in self.questions:
-                if question.reference == questionnaire_location:
-                    self.question_index = index
-                    self.current_question = self.questions[self.question_index]
-                index += 1
+        if self.completed:
+            self.completed = False
+
+        for key in self.responses.keys():
+            if key.startswith(questionnaire_location):
+                index = 0
+                for question in self.questions:
+                    if question.get_reference() == questionnaire_location:
+                        self.question_index = index
+                        self.current_question = self.questions[self.question_index]
+                    index += 1
+
 
     def branch_to_question(self, questionnaire_location):
         index = 0
         for question in self.questions:
-            if question.reference == questionnaire_location:
+            if question.get_reference() == questionnaire_location:
                 self.question_index = index
                 self.current_question = self.questions[self.question_index]
             index += 1
 
     # will use in template
     def get_question_by_reference(self, reference):
-        for question in self.questions:
-            if question.reference == reference:
-                return question
 
-        return None
+        address_parts = reference.split(':')
+        if len(address_parts) == 1:
+            for question in self.questions:
+                if question._reference == reference:
+                    return question
+        else:
+            this_level = address_parts.pop(0)
+            for question in self.questions:
+                if question._reference == this_level:
+                    return question.get_question_by_reference(':'.join(address_parts))
+
 
     def complete_questionnaire(self):
         self.completed = True
+
+    def get_history(self):
+        # load the question objects
+        history_with_question_objects = {}
+        for reference in self.history.keys():
+            question = self.get_question_by_reference(reference)
+
+            if not question.skipping:
+                history_with_question_objects[question] = self.history[reference]
+
+        return history_with_question_objects
+
+
+    def condition_met(self, condition):
+       return condition.state == self.get_response_by_reference(condition.trigger)
+
+    def get_response_by_reference(self, reference):
+        if reference in self.responses:
+            return self.responses[reference]
+        return None

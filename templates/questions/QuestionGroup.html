@@ -4,6 +4,14 @@
 
 <p>Viewing Section {{questionnaire.get_current_question_index()}} of {{questionnaire.get_total_questions()}} - {{questionnaire.get_current_question().question_text}}</p>
 
+{% if questionnaire.get_history() %}
+    <ul>
+        {% for question in questionnaire.get_history().keys() %}
+        <li><a href="{{ get_jump_link(request, question.get_reference()) }}">{{ question.question_text }}</a> <input type="checkbox" disabled readonly {% if questionnaire.get_history()[question] %}checked="checked"{% endif %}></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 {% for question in question.children %}
 {% include 'questions/' + question.type + '.html' %}
 {% endfor %}

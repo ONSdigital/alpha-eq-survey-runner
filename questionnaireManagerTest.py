@@ -112,6 +112,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'started' : True,
             'completed' : False,
             'index' : 1,
+            'history': {},
             'responses' : {
                 'q1': '123'
             }
@@ -121,7 +122,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert q.reference == 'q2'
+        assert q.get_reference() == 'q2'
 
     def test_resume_from_text_block(self):
         qData = self._loadFixture('test_survey.json')
@@ -129,6 +130,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'started' : True,
             'completed' : False,
             'index' : 2,
+            'history': {},
             'responses' : {
                 'q1': '123',
                 'q2': None
@@ -139,7 +141,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert q.reference == 'q3'
+        assert q.get_reference() == 'q3'
         assert qManager.completed == False
 
     def test_resume_from_last_question(self):
@@ -148,6 +150,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'started' : True,
             'completed' : False,
             'index' : 2,
+            'history': {},
             'responses' : {
                 'q1': '123',
                 'q2':None,
@@ -159,7 +162,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert q.reference == 'q3'
+        assert q.get_reference() == 'q3'
         assert qManager.completed == False
 
     def test_resume_completed_questionnaire(self):
@@ -168,6 +171,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'started' : True,
             'completed' : True,
             'index' : 2,
+            'history': {},
             'responses' : {
                 'q1': '123',
                 'q2':None,
@@ -211,12 +215,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'q1': '1',          # Numeric required field
-            'q2': None,         # Rich text text, no response required
-            'q3': 'option1',    # Multi-choice, option 1
-            'q4': 'Coption1',   # Checkbox, selected
-            'q5': 'Some Text',  # required free text field
-            'q6': None          # Optional numeric
+            'start:q1': '1',          # Numeric required field
+            'start:q2': None,         # Rich text text, no response required
+            'start:q3': 'option1',    # Multi-choice, option 1
+            'start:q4': 'Coption1',   # Checkbox, selected
+            'start:q5': 'Some Text',  # required free text field
+            'start:q6': None          # Optional numeric
         }
 
         assert qManager.is_valid_response(responses) == True
@@ -233,31 +237,31 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'q1': '',            # Numeric required field
-            'q2': None,         # Rich text text, no response required
-            'q3': 'option6',    # Multi-choice, there is no option6
-            'q4': None,         # Checkbox requires selection
-            'q5': ' ',          # required free text field
-            'q6': 'a'           # numeric free text field
+            'start:q1': '',            # Numeric required field
+            'start:q2': None,         # Rich text text, no response required
+            'start:q3': 'option6',    # Multi-choice, there is no option6
+            'start:q4': None,         # Checkbox requires selection
+            'start:q5': ' ',          # required free text field
+            'start:q6': 'a'           # numeric free text field
         }
 
         assert qManager.is_valid_response(responses) == False
 
         errors = qManager.get_question_errors()
 
-        assert 'q1' in errors.keys()
-        assert 'q2' not in errors.keys()
-        assert 'q3' in errors.keys()
-        assert 'q4' in errors.keys()
-        assert 'q5' in errors.keys()
+        assert 'start:q1' in errors.keys()
+        assert 'start:q2' not in errors.keys()
+        assert 'start:q3' in errors.keys()
+        assert 'start:q4' in errors.keys()
+        assert 'start:q5' in errors.keys()
 
-        assert 'required' in errors['q1']
+        assert 'required' in errors['start:q1']
 
-        assert 'invalid option' in errors['q3']
+        assert 'invalid option' in errors['start:q3']
 
-        assert 'required' in errors['q4']
+        assert 'required' in errors['start:q4']
 
-        assert 'required' in errors['q5']
+        assert 'required' in errors['start:q5']
 
     def test_progress(self):
         qData = self._loadFixture('groups.json')
@@ -277,6 +281,99 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q2 = q_manager.get_next_question(None)
 
         assert q_manager.get_current_question_index() == 2
+
+    def test_jump(self):
+        qData = self._loadFixture('groups.json')
+
+        # can't jump unless we have resume data
+        resumeData = {
+            'started': True,
+            'completed': False,
+            'index': 1,
+            'history': {},
+            'responses': {
+                'start:q1': '1',          # Numeric required field
+                'start:q2': None,         # Rich text text, no response required
+                'start:q3': 'option1',    # Multi-choice, option 1
+                'start:q4': 'option1',   # Checkbox, selected
+                'start:q5': 'Some Text',  # required free text field
+                'start:q6': None          # Optional numeric
+            }
+        }
+
+        q_manager = QuestionnaireManager(qData, resumeData)
+
+        # take us to the start of the questionnaire
+        q_manager.start_questionnaire()
+
+        start = q_manager.get_current_question()
+
+        assert isinstance(start, QuestionGroup) == True
+
+        assert start.get_reference() == 'start'
+
+
+        assert q_manager.get_current_question_index() == 1
+
+        assert q_manager.get_total_questions() == 2
+
+        next_question = q_manager.get_next_question(None)
+
+        assert next_question.get_reference() == 'q1' # automatically generated reference 'q1'
+
+        q_manager.jump_to_question('start')
+
+        current_question = q_manager.get_current_question()
+
+        assert current_question.get_reference() == start.get_reference()
+        assert q_manager.get_current_question_index() == 1
+
+    def test_get_question_by_reference(self):
+
+        qData = self._loadFixture('starwars.json')
+
+        qManager = QuestionnaireManager(qData, {})
+
+        sectionOne = qManager.get_question_by_reference('sectionOne')
+
+        assert sectionOne.get_reference() == 'sectionOne'
+
+        sectionOneQ1 = qManager.get_question_by_reference('sectionOne:q1')
+
+        assert isinstance(sectionOneQ1, TextBlock) == True
+        assert sectionOneQ1.get_reference() == 'sectionOne:q1'
+        # check 'private' internal reference
+        assert sectionOneQ1._reference == 'q1'
+
+        sectionTwoQ1 = qManager.get_question_by_reference('sectionTwo:q1')
+
+        assert isinstance(sectionTwoQ1, InputTextQuestion) == True
+        assert sectionTwoQ1.get_reference() == 'sectionTwo:q1'
+        # check 'private' internal reference
+        assert sectionTwoQ1._reference == 'q1'
+
+    def test_skip_conditions_added_by_branching(self):
+        qData = self._loadFixture('starwars.json')
+
+        qManager = QuestionnaireManager(qData, {})
+
+        sectionOneQ3 = qManager.get_question_by_reference('sectionOne:q3')
+
+        assert sectionOneQ3.has_branch_conditions()
+
+        sectionTwo = qManager.get_question_by_reference('sectionTwo')
+
+        assert len(sectionTwo.skip_conditions) == 1
+
+        skipCondition = sectionTwo.skip_conditions[0]
+
+        assert skipCondition.trigger == "sectionOne:q3"
+        assert skipCondition.state == "Episode 1: The Phantom Menance"
+
+        sectionThree = qManager.get_question_by_reference('sectionThree')
+
+        assert len(sectionThree.skip_conditions) == 0
+
 
 if __name__ == '__main__':
     unittest.main()
