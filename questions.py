@@ -28,6 +28,7 @@ class Question(object):
         if schema['questionType'] == 'MultipleChoice': return MultipleChoiceQuestion(schema, parent)
         if schema['questionType'] == 'QuestionGroup': return QuestionGroup(schema, parent)
         if schema['questionType'] == 'CheckBox': return CheckBoxQuestion(schema, parent)
+        if schema['questionType'] == 'Dropdown': return DropdownQuestion(schema, parent)
 
     def _build_validation(self, validation_schema):
         rules = []
@@ -137,6 +138,11 @@ class CheckBoxQuestion(Question):
 class InputTextQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(InputTextQuestion, self).__init__(question_schema, parent)
+
+
+class DropdownQuestion(Question):
+    def __init__(self, question_schema, parent=None):
+        super(DropdownQuestion, self).__init__(question_schema, parent)
 
 
 class TextBlock(Question):
