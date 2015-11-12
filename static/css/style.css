@@ -39,7 +39,8 @@ header h2 {
   text-align: center;
   font-size: initial;
   font-size: calc(1.5vw + 1.5vh);
-  transition: all 0.2s; }
+  -webkit-transition: all 0.2s;
+          transition: all 0.2s; }
 
 header p {
   font-style: italic;
@@ -49,7 +50,8 @@ header p {
   color: #fff;
   font-size: initial;
   font-size: calc(0.6vw + 0.5vh);
-  transition: all 0.2s; }
+  -webkit-transition: all 0.2s;
+          transition: all 0.2s; }
 
 header span {
   position: absolute; }
@@ -61,13 +63,13 @@ header span img {
 header span.logo {
   left: 30px;
   top: 30px;
-  width: 12%;
+  width: 14%;
   min-width: 120px; }
 
 header span.crest {
   right: 30px;
   top: 30px;
-  width: 4.5%;
+  width: 5.5%;
   min-width: 40px; }
 
 main {
@@ -142,7 +144,8 @@ aside div:before {
 .btn {
   display: inline-block;
   padding: 10px 20px;
-  transition: 0.3s;
+  -webkit-transition: 0.3s;
+          transition: 0.3s;
   color: white;
   font-size: 14px;
   background: #cdcccd;
@@ -151,7 +154,9 @@ aside div:before {
   font-weight: 600;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.1);
   margin-left: 10px;
-  appearance: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
   border: none; }
 
 .btn:hover {
@@ -205,7 +210,12 @@ ul.multiple-choice {
   list-style-type: none;
   padding: 0 0 20px 0;
   margin: 0 0 3rem 0;
-  columns: 2; }
+  -webkit-columns: 2;
+     -moz-columns: 2;
+          columns: 2;
+  -webkit-column-count: 2;
+     -moz-column-count: 2;
+          column-count: 2; }
 
 ul.multiple-choice li {
   margin: 10px 0; }

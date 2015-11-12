@@ -62,13 +62,13 @@ header span img {
 header span.logo {
   left: 30px;
   top: 30px;
-  width: 12%;
+  width: 14%;
   min-width:120px;
 }
 header span.crest {
   right: 30px;
   top: 30px;
-  width: 4.5%;
+  width: 5.5%;
   min-width:40px;
 }
 main {
@@ -216,6 +216,7 @@ ul.multiple-choice {
   padding:0 0 20px 0;
   margin:0 0 3rem 0;
   columns: 2;
+  column-count: 2;
 }
 
 ul.multiple-choice li {
