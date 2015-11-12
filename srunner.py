@@ -162,6 +162,8 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
         if q_manager.started:
             question = q_manager.get_current_question()
+            if not question:
+                return render_template('survey_error.html', questionnaire=q_manager, error="This survey has no questions")
 
             if q_manager.completed:
                 return render_template('survey_completed.html',
@@ -169,7 +171,8 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                                         questionnaire=q_manager,
                                         request=request)
 
-            return render_template('questions/' + question.type + '.html',
+            else:
+                return render_template('questions/' + question.type + '.html',
                                     question=question,
                                     user_response=q_manager.get_responses(),
                                     questionnaire=q_manager,

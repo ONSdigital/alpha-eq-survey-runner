@@ -56,20 +56,21 @@ class QuestionnaireManager:
         self.history = questionnaire_state['history']
 
         # validate any previous data
-        for index in range(0, self.question_index + 1):
-            question = self.questions[index]
-            if question.get_reference() in self.history.keys():
-                question.is_valid_response(self.responses)
+        if len(self.questions) != 0:
+            for index in range(0, self.question_index + 1):
+                question = self.questions[index]
+                if question.get_reference() in self.history.keys():
+                    question.is_valid_response(self.responses)
 
-        # evaluate skip conditions and skip matching questions
-        for question in self.questions:
-            if question.has_skip_conditions():
-                conditions = question.get_skip_conditions()
-                for condition in conditions:
-                    if self.condition_met(condition):
-                        question.skipping = True
+            # evaluate skip conditions and skip matching questions
+            for question in self.questions:
+                if question.has_skip_conditions():
+                    conditions = question.get_skip_conditions()
+                    for condition in conditions:
+                        if self.condition_met(condition):
+                            question.skipping = True
 
-        self.current_question = self.questions[self.question_index]
+            self.current_question = self.questions[self.question_index]
 
     def _add_question(self, question):
         self.questions.append(question)
@@ -97,7 +98,8 @@ class QuestionnaireManager:
     def start_questionnaire(self):
         self.started = True
         self.question_index = 0
-        self.current_question = self.questions[self.question_index]
+        if len(self.questions) != 0:
+            self.current_question = self.questions[self.question_index]
 
     def get_questionnaire_state(self):
         return {
