@@ -160,6 +160,45 @@
                     "validation": {
                         "required": true
                     }
+                },
+                {
+                    "questionType": "Dropdown",
+                    "questionError": "Just one answer",
+                    "questionText": "Which Droid would purchase?",
+                    "displayConditions": [],
+                    "questionReference": "q5",
+                    "children": [],
+                    "parts": [
+                        {
+                            "type": "option",
+                            "value": "BB8"
+                        },
+                        {
+                            "type": "option",
+                            "value": "R2D2"
+                        },
+                        {
+                            "type": "option",
+                            "value": "C3P0"
+                        },
+                        {
+                            "type": "option",
+                            "value": "IG-88"
+                        },
+                        {
+                            "type": "option",
+                            "value": "2-1B"
+                        }
+                    ],
+                    "dndType": "item",
+                    "branchConditions": [],
+                    "displayProperties": {},
+                    "questionHelp": "Only select one",
+                    "validation": {
+                        "required": true
+                    },
+                    "type": "dropdown_question",
+                    "skipConditions": []
                 }
             ],
             "id": 0,
