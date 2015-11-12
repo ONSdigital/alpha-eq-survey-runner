@@ -4,6 +4,6 @@
   <!-- text question -->
   <h3><span>{{ question.question_text }}</h3>
     <p>{{ question.question_help }}</p>
-    <input type="text" name="{{question.get_reference()}}" placeholder="{{ question.question_help }}" value="{{user_response[question.get_reference()] or ''}}"/>
+    <input type="text" name="{{question.get_reference()}}" placeholder="" value="{{user_response[question.get_reference()] or ''}}"/>
   </label>
 {% endblock question_template %}

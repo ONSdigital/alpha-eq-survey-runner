@@ -49,13 +49,13 @@
                 </li>
                 <li>Need help?
                   <data><i class="fa fa-phone"></i>&nbsp;<a href="tel:0800 000 000">0800 5454 64646</a></data>
-                  <data><i class="fa fa-envelope-o"></i>&nbsp;<a href="mailto:help@help.com?subject=Questionnaire {{ questionnaire.title }} - {{ questionnaire.questionnaire_id }}">help@helpme.com</data>
+                  <data><i class="fa fa-envelope-o"></i>&nbsp;<a href="mailto:help@help.com?subject=Questionnaire {{ questionnaire.title }} - {{ questionnaire.questionnaire_id }}">help@helpme.com</a></data>
                 </li>
               </ul>
               <aside class="large-10 large-offset-1">
                 <div>
                   <h6><b>Return to this survey (on any device) at</b></h6>
-                  <a href="" title="go to the {{questionnaire.title}} survey">{{request.url}}</a>
+                  <a class="hyphenate" href="{{request.url}}" title="go to the {{questionnaire.title}} survey">{{request.url}}</a>
                 </div>
               </aside>
               <div class="large-10 large-offset-1 survey-body">
