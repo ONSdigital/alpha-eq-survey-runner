@@ -2,6 +2,7 @@
 
 from flask.ext.script import Manager
 from flask_cassandra import CassandraCluster
+from flask import request
 import time
 
 from srunner import app

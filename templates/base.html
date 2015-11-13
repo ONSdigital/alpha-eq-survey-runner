@@ -7,10 +7,10 @@
   <title>{{questionnaire.title}}</title>
   <link rel="stylesheet" href="/static/css/foundation.css"/>
   <link rel="stylesheet" href="/static/css/style.css"/>
+  <link rel="stylesheet" href="/static/css/icons.css"/>
   <script src="/static/js/vendor/modernizr.js"></script>
   <!-- probably should swap these out for local for performance -->
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,400italic' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -33,9 +33,22 @@
     <form method="post">
       <section class="row">
         <div class="large-12">
-          <main>
+          <main class="clearfix">
             {% block startpage %}{% endblock startpage %}
-              <div class="large-10 large-offset-1 survey-body">
+              {% if current == "question" and questionnaire.get_history() %}
+              <div class="large-3 columns survey-nav">
+                <h6>Questionnaire Sections <!--Section {{questionnaire.get_current_question_index()}} of {{questionnaire.get_total_questions()}} - {{questionnaire.get_current_question().question_text}}--></h6>
+                <em>Required to complete survey</em>
+                {% if questionnaire.get_history() %}
+                    <ul class="section-list">
+                        {% for question in questionnaire.get_history().keys() %}
+                        <li>{% if questionnaire.get_history()[question] %}<i class="icon-Circle-Check-2 done"></i>{% else %}<i class="icon-Circle-Minus-1"></i>{% endif %}<a href="{{ get_jump_link(request, question.get_reference()) }}">{{ question.question_text }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+              </div>
+              {% endif %}
+              <div class="{% if current != "question" or not questionnaire.get_history() %}large-10 large-offset-1{% else %}large-9{% endif %} columns  survey-body">
                   {% block content %}
                     {% block pageBody %}{% endblock pageBody %}
                   {% endblock %}

@@ -27,6 +27,14 @@ a,
   font-family: 'Open Sans', sans-serif;
 }
 
+h3 {
+  font-size:1.5rem;
+}
+
+h6 {
+  margin-bottom: -3px;
+}
+
 a {
   /* Careful, this breaks the word wherever it is without a hyphen */
   overflow-wrap: break-word;
@@ -151,6 +159,35 @@ aside div:before {
 .survey-body {
   padding: 40px inherit;
 }
+.survey-nav {
+  padding: 40px inherit;
+}
+.section-list {
+  list-style-type: none;
+  margin:10px 0;
+  padding: 0;
+}
+
+.survey-nav em {
+  font-size: 11px;
+  color:#666;
+  margin-bottom: 20px
+}
+
+.section-list li {
+  font-size:0.85rem;
+  padding: 5px 0;
+}
+
+.section-list li i {
+  margin-right: 7px;
+  color:#ccc;
+}
+
+.section-list li i.done {
+  color:green;
+}
+
 .actions {
   text-align: right;
 }
