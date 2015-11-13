@@ -27,6 +27,18 @@ a,
   font-family: 'Open Sans', sans-serif;
 }
 
+a {
+  /* Careful, this breaks the word wherever it is without a hyphen */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  /* Adds a hyphen where the word breaks */
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+}
+
 header {
   background: #003d59;
   position: relative;
@@ -39,7 +51,7 @@ header h2 {
   font-weight: 200;
   text-align: center;
   font-size: initial;
-  font-size: calc(1.5vw + 1.5vh);
+  font-size: calc(1.6vw + 1.6vh);
   transition: all 0.2s;
 }
 header p {
@@ -49,7 +61,7 @@ header p {
   font-size: 16px;
   color: #fff;
   font-size: initial;
-  font-size: calc(0.6vw + 0.5vh);
+  font-size: calc(0.7vw + 0.7vh);
   transition: all 0.2s;
 }
 header span {
@@ -63,13 +75,13 @@ header span.logo {
   left: 30px;
   top: 30px;
   width: 14%;
-  min-width:120px;
+  min-width:160px;
 }
 header span.crest {
   right: 30px;
   top: 30px;
   width: 5.5%;
-  min-width:40px;
+  min-width:60px;
 }
 main {
   background: #fff;
@@ -110,18 +122,20 @@ main {
   margin-right: 5px;
 }
 aside {
-  margin: 20px 0;
+  margin: 20px auto;
   padding: 30px;
   background: #f5f8fa;
   box-shadow: 0 2px 1px 0 rgba(0,0,0,0.07);
   border-radius: 2px;
   text-align: center;
+  width:100%;
 }
 aside div {
   display: inline-block;
-  margin: 0 -90px 0 0;
+  margin: 0 -90px 0 90px;
   text-align: left;
   position: relative;
+  width:90%;
 }
 aside div:before {
   content: "";
