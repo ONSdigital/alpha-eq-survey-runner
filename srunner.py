@@ -165,7 +165,8 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                 return render_template('survey_completed.html',
                                         responses=q_manager.get_responses(),
                                         questionnaire=q_manager,
-                                        request=request)
+                                        request=request,
+                                        current="completed")
             else:
                 question = q_manager.get_current_question()
                 if question:
@@ -173,14 +174,19 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                                     question=question,
                                     user_response=q_manager.get_responses(),
                                     questionnaire=q_manager,
-                                    request=request)
+                                    request=request,
+                                    current="question")
                 else:
-                    return render_template('survey_error.html', questionnaire=q_manager, error="This survey has no questions")
+                    return render_template('survey_error.html',
+                                           questionnaire=q_manager,
+                                           error="This survey has no questions",
+                                           active="error")
 
         else:
             return render_template('survey_intro.html',
                                     questionnaire=q_manager,
-                                    request=request)
+                                    request=request,
+                                    current="intro")
 
 
 if __name__ == '__main__':
