@@ -1,0 +1,64 @@
+{
+    "overview": "This is a questionnaire to test stuff",
+    "title": "welcome to my survey about crayons",
+    "questionnaire_title": "Hope",
+    "questions": [
+        {
+            "questionText": "Section1",
+            "questionHelp": "",
+            "questionError": "",
+            "questionReference": "start",
+            "questionType": "QuestionGroup",
+            "dndType": "group",
+            "type": "group",
+            "children": [
+                {
+                    "questionText": "Multi 1",
+                    "questionHelp": "Multi 1",
+                    "questionError": "Multi 1",
+                    "questionReference": "q3",
+                    "children": [],
+                    "validation": {
+                        "required": true
+                    },
+                    "displayProperties": {},
+                    "displayConditions": [],
+                    "skipConditions": [],
+                    "branchConditions": [
+                        {
+                            "jumpTo": {
+                                "question": "",
+                                "condition": {
+                                    "value": {
+                                        "is": ""
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    "parts": [
+                        {
+                            "type": "option",
+                            "value": "option1"
+                        },
+                        {
+                            "type": "option",
+                            "value": "option2"
+                        }
+                    ],
+                    "dndType": "item",
+                    "questionType": "MultipleChoice",
+                    "type": "radio_question"
+                }
+            ],
+            "validation": {
+                "required": true
+            },
+            "displayProperties": {},
+            "displayConditions": [],
+            "skipConditions": [],
+            "branchConditions": [],
+            "parts": []
+        }
+    ]
+}

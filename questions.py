@@ -51,7 +51,7 @@ class Question(object):
     def _build_branch_conditions(self, branch_conditions_schema):
         branch_conditions = []
         for condition in branch_conditions_schema:
-             if condition['jumpTo']:
+             if condition['jumpTo'] and condition['jumpTo']['condition']['value']['is']:
                 jumpTo = JumpTo(condition['jumpTo']['question'], self.get_reference(), condition['jumpTo']['condition']['value']['is'])
                 branch_conditions.append(jumpTo)
 
