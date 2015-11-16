@@ -374,6 +374,15 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert len(sectionThree.skip_conditions) == 0
 
+    def test_empty_routing_rule(self):
+        q_data = self._loadFixture('empty-rule-schema.json')
+
+        q_manager = QuestionnaireManager(q_data, {});
+        q_manager.start_questionnaire()
+
+        question = q_manager.get_current_question()
+
+        assert not question.has_branch_conditions()
 
 if __name__ == '__main__':
     unittest.main()
