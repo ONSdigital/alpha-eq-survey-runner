@@ -38,7 +38,7 @@
               {% if current == "question" and questionnaire.get_history() %}
               <div class="large-3 columns survey-nav">
                 <h6>Questionnaire Sections <!--Section {{questionnaire.get_current_question_index()}} of {{questionnaire.get_total_questions()}} - {{questionnaire.get_current_question().question_text}}--></h6>
-                <em>Required to complete survey</em>
+                <em>Visited sections</em>
                 {% if questionnaire.get_history() %}
                     <ul class="section-list">
                         {% for question in questionnaire.get_history().keys() %}
