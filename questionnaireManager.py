@@ -1,6 +1,7 @@
 from questions import Question
 import json
 from branching import SkipCondition
+from collections import OrderedDict
 
 class QuestionnaireManager:
     def __init__(self, questionnaire_schema, questionnaire_state):
@@ -10,7 +11,7 @@ class QuestionnaireManager:
         self.completed = False
         self.questions = []
         self.responses = {}
-        self.history = {}
+        self.history = []
         self.current_question = None
         self._load_questionnaire_data(json.loads(questionnaire_schema))
         self._ensure_valid_routing()
@@ -47,7 +48,6 @@ class QuestionnaireManager:
                         if candidate_question.get_reference() != target_question.get_reference():
                             candidate_question.skip_conditions.append(target_questions[target_question])
 
-
     def _load_questionnaire_state(self, questionnaire_state):
         self.started = questionnaire_state['started']
         self.completed = questionnaire_state['completed']
@@ -59,7 +59,7 @@ class QuestionnaireManager:
         if len(self.questions) != 0:
             for index in range(0, self.question_index + 1):
                 question = self.questions[index]
-                if question.get_reference() in self.history.keys():
+                if self._exists_in_history(question.get_reference()):
                     question.is_valid_response(self.responses)
 
             # evaluate skip conditions and skip matching questions
@@ -113,9 +113,29 @@ class QuestionnaireManager:
     def store_response(self, response):
         for ref in response.keys():
             self.responses[ref] = response[ref]
+        self._store_in_history(response)
 
-        self.history[self.current_question.get_reference()] = self.current_question.is_valid_response(response)
+    def _store_in_history(self, response):
+        if self.current_question:
+            if not self._exists_in_history(self.current_question.get_reference()):
+                history = {}
+                self.history.append(history)
+            else:
+                history = self._find_history(self.current_question.get_reference())
+            history['reference'] = self.current_question.get_reference()
+            history['valid'] = self.current_question.is_valid_response(response)
 
+    def _exists_in_history(self, reference):
+        for history in self.history:
+            if history['reference'] == reference:
+                return True
+        return False
+
+    def _find_history(self, reference):
+        for history in self.history:
+            if history['reference'] == reference:
+                return history
+        return None
 
     def is_valid_response(self, user_answer):
         if self.current_question:
@@ -173,7 +193,6 @@ class QuestionnaireManager:
                         self.current_question = self.questions[self.question_index]
                     index += 1
 
-
     def branch_to_question(self, questionnaire_location):
         index = 0
         for question in self.questions:
@@ -202,15 +221,14 @@ class QuestionnaireManager:
 
     def get_history(self):
         # load the question objects
-        history_with_question_objects = {}
-        for reference in self.history.keys():
-            question = self.get_question_by_reference(reference)
+        history_with_question_objects = OrderedDict()
+        for history in self.history:
+            question = self.get_question_by_reference(history['reference'])
 
             if not question.skipping:
-                history_with_question_objects[question] = self.history[reference]
+                history_with_question_objects[question] = history['valid']
 
         return history_with_question_objects
-
 
     def condition_met(self, condition):
        return condition.state == self.get_response_by_reference(condition.trigger)
