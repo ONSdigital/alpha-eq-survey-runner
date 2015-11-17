@@ -116,17 +116,18 @@ class QuestionnaireManager:
         self._store_in_history(response)
 
     def _store_in_history(self, response):
-        if not self._exists_in_history(self.current_question.get_reference()):
-            history = {}
-            self.history.append(history)
-        else:
-            history = self._find_history(self.current_question.get_reference())
-        history['reference'] = self.current_question.get_reference()
-        history['valid'] = self.current_question.is_valid_response(response)
+        if self.current_question:
+            if not self._exists_in_history(self.current_question.get_reference()):
+                history = {}
+                self.history.append(history)
+            else:
+                history = self._find_history(self.current_question.get_reference())
+            history['reference'] = self.current_question.get_reference()
+            history['valid'] = self.current_question.is_valid_response(response)
 
     def _exists_in_history(self, reference):
         for history in self.history:
-            if history['reference'] == qreference:
+            if history['reference'] == reference:
                 return True
         return False
 

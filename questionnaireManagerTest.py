@@ -384,5 +384,34 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert not question.has_branch_conditions()
 
+    def test_history_order_correct(self):
+        q_data = self._loadFixture('groups.json')
+
+        q_manager = QuestionnaireManager(q_data, {})
+        q_manager.start_questionnaire()
+
+        q1 = q_manager.get_current_question()
+
+        response = {
+                'start:q1': '1',          # Numeric required field
+                'start:q2': None,         # Rich text text, no response required
+                'start:q3': 'option1',    # Multi-choice, option 1
+                'start:q4': 'option1',   # Checkbox, selected
+                'start:q5': 'Some Text',  # required free text field
+                'start:q6': None          # Optional numeric
+            }
+
+        q_manager.store_response(response)
+
+        assert q1 == q_manager.get_history().keys()[0]
+
+        q2 = q_manager.get_next_question(response)
+
+        response['q1:q2'] = 'anything you like'
+
+        q_manager.store_response(response)
+
+        assert q2 == q_manager.get_history().keys()[1]
+
 if __name__ == '__main__':
     unittest.main()
