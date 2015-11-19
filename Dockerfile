@@ -1,4 +1,4 @@
-FROM python:2.7.9
+FROM python:2.7.10
 
 RUN mkdir /opt/eq-survey-runner
 add ./requirements.txt /opt/eq-survey-runner/requirements.txt
