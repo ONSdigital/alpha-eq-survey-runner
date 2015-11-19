@@ -60,7 +60,8 @@ class Question(object):
     def branches(self, response):
         for rule in self.branch_conditions:
             if rule.trigger == self.get_reference() and rule.state == response:
-                return rule.target
+                # need to append the EQ_ rule.target comes from the schema
+                return "EQ_" + rule.target
 
         return None
 
@@ -98,9 +99,9 @@ class Question(object):
 
     def get_reference(self):
         if self.parent:
-            return self.parent.get_reference() + ':' + self._reference
+            return self.parent.get_reference() + '_' + self._reference
         else:
-            return self._reference
+            return "EQ_" + self._reference
 
 class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema, parent=None):
@@ -232,7 +233,7 @@ class QuestionGroup(Question):
 
     def get_question_by_reference(self, reference):
 
-        address_parts = reference.split(':')
+        address_parts = reference.split('_')
         if len(address_parts) == 1:
             for question in self.children:
                 if question._reference == reference:
@@ -241,4 +242,4 @@ class QuestionGroup(Question):
             this_level = address_parts.pop(0)
             for question in self.children:
                 if question._reference == this_level:
-                    return question.get_question_by_reference(':'.join(address_parts))
+                    return question.get_question_by_reference('_'.join(address_parts))

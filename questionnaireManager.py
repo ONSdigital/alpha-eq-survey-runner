@@ -203,8 +203,10 @@ class QuestionnaireManager:
 
     # will use in template
     def get_question_by_reference(self, reference):
+        if reference.startswith("EQ_"):
+            reference = reference.replace("EQ_", "")
 
-        address_parts = reference.split(':')
+        address_parts = reference.split('_')
         if len(address_parts) == 1:
             for question in self.questions:
                 if question._reference == reference:
@@ -213,8 +215,7 @@ class QuestionnaireManager:
             this_level = address_parts.pop(0)
             for question in self.questions:
                 if question._reference == this_level:
-                    return question.get_question_by_reference(':'.join(address_parts))
-
+                    return question.get_question_by_reference('_'.join(address_parts))
 
     def complete_questionnaire(self):
         self.completed = True
