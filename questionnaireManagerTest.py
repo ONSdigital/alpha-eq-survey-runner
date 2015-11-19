@@ -258,9 +258,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert 'This field is required' in errors['EQ_start_q1']
 
         assert 'invalid option' in errors['EQ_start_q3']
-
         assert 'This field is required' in errors['EQ_start_q4']
         assert 'This field is required' in errors['EQ_start_q5']
+
 
     def test_progress(self):
         qData = self._loadFixture('groups.json')
