@@ -20,9 +20,14 @@
                     "branchConditions": [],
                     "questionHelp": "",
                     "questionType": "TextBlock",
-                    "validation": {
-                        "required": true
-                    }
+                    "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ]
                 },
                 {
                     "type": "text_question",
@@ -38,9 +43,20 @@
                     "branchConditions": [],
                     "questionHelp": "Please only enter one character, i.e. Han Solo",
                     "questionType": "InputText",
-                    "validation": {
-                        "required": true
-                    }
+                    "validation": [
+                        {
+                            "condition": "max",
+                            "value": 3,
+                            "type": "warning",
+                            "message" : "Over text limit"
+                        },
+                         {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ]
                 },
                 {
                     "type": "radio_question",
@@ -94,9 +110,14 @@
                         }],
                     "questionHelp": "Please select one only",
                     "questionType": "MultipleChoice",
-                    "validation": {
-                        "required": true
-                    }
+                    "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ]
                 },
                 {
                     "type": "check_box_question",
@@ -157,9 +178,14 @@
                     "branchConditions": [],
                     "questionHelp": "Please tick all that apply",
                     "questionType": "CheckBox",
-                    "validation": {
-                        "required": true
-                    }
+                      "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ]
                 },
                 {
                     "questionType": "Dropdown",
@@ -194,11 +220,14 @@
                     "branchConditions": [],
                     "displayProperties": {},
                     "questionHelp": "Only select one",
-                    "validation": {
-                        "required": true
-                    },
-                    "type": "dropdown_question",
-                    "skipConditions": []
+                    "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ]
                 }
             ],
             "id": 0,
@@ -212,9 +241,14 @@
             "branchConditions": [],
             "questionHelp": "",
             "questionType": "QuestionGroup",
-            "validation": {
-                "required": true
-            }
+            "validation": [
+                {
+                    "condition": "required",
+                    "value": true,
+                    "type": "error",
+                    "message" : "This field is required"
+                }
+            ]
         },
         {
             "children": [
@@ -232,10 +266,15 @@
                     "branchConditions": [],
                     "questionHelp": "Please only enter a number",
                     "questionType": "InputText",
-                    "validation": {
-                        "required": true,
-                        "numeric": true
-                    }
+                     "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ]
+
                 }
             ],
             "id": 2,
@@ -249,9 +288,14 @@
             "branchConditions": [],
             "questionHelp": "",
             "questionType": "QuestionGroup",
-            "validation": {
-                "required": true
-            }
+            "validation": [
+                {
+                    "condition": "required",
+                    "value": true,
+                    "type": "error",
+                    "message" : "This field is required"
+                }
+            ]
         },
         {
             "children": [
@@ -269,9 +313,15 @@
                     "branchConditions": [],
                     "questionHelp": "This question is optional",
                     "questionType": "InputText",
-                    "validation": {
-                        "required": true
-                    }
+                     "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ]
+
                 }
             ],
             "id": 1,
@@ -285,9 +335,15 @@
             "branchConditions": [],
             "questionHelp": "",
             "questionType": "QuestionGroup",
-            "validation": {
-                "required": true
-            }
+            "validation": [
+                {
+                    "condition": "required",
+                    "value": true,
+                    "type": "error",
+                    "message": "This field is required"
+                }
+            ]
+
         }
     ]
 }
