@@ -114,7 +114,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'index' : 1,
             'history': {},
             'responses' : {
-                'q1': '123'
+                'EQ_q1': '123'
             }
         }
 
@@ -122,7 +122,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert q.get_reference() == 'q2'
+        assert q.get_reference() == 'EQ_q2'
 
     def test_resume_from_text_block(self):
         qData = self._loadFixture('test_survey.json')
@@ -132,8 +132,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'index' : 2,
             'history': {},
             'responses' : {
-                'q1': '123',
-                'q2': None
+                'EQ_q1': '123',
+                'EQ_q2': None
             }
         }
 
@@ -141,7 +141,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert q.get_reference() == 'q3'
+        assert q.get_reference() == 'EQ_q3'
         assert qManager.completed == False
 
     def test_resume_from_last_question(self):
@@ -152,9 +152,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'index' : 2,
             'history': {},
             'responses' : {
-                'q1': '123',
-                'q2':None,
-                'q3':None
+                'EQ_q1': '123',
+                'EQ_q2':None,
+                'EQ_q3':None
             }
         }
 
@@ -162,7 +162,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert q.get_reference() == 'q3'
+        assert q.get_reference() == 'EQ_q3'
         assert qManager.completed == False
 
     def test_resume_completed_questionnaire(self):
@@ -173,9 +173,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'index' : 2,
             'history': {},
             'responses' : {
-                'q1': '123',
-                'q2':None,
-                'q3':None
+                'EQ_q1': '123',
+                'EQ_q2':None,
+                'EQ_q3':None
             }
         }
 
@@ -215,12 +215,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'start:q1': '1',          # Numeric required field
-            'start:q2': None,         # Rich text text, no response required
-            'start:q3': 'option1',    # Multi-choice, option 1
-            'start:q4': 'Coption1',   # Checkbox, selected
-            'start:q5': 'Some Text',  # required free text field
-            'start:q6': None          # Optional numeric
+            'EQ_start_q1': '1',          # Numeric required field
+            'EQ_start_q2': None,         # Rich text text, no response required
+            'EQ_start_q3': 'option1',    # Multi-choice, option 1
+            'EQ_start_q4': 'Coption1',   # Checkbox, selected
+            'EQ_start_q5': 'Some Text',  # required free text field
+            'EQ_start_q6': None          # Optional numeric
         }
 
         assert qManager.is_valid_response(responses) == True
@@ -237,31 +237,31 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'start:q1': '',            # Numeric required field
-            'start:q2': None,         # Rich text text, no response required
-            'start:q3': 'option6',    # Multi-choice, there is no option6
-            'start:q4': None,         # Checkbox requires selection
-            'start:q5': ' ',          # required free text field
-            'start:q6': 'a'           # numeric free text field
+            'EQ_start_q1': '',            # Numeric required field
+            'EQ_start_q2': None,         # Rich text text, no response required
+            'EQ_start_q3': 'option6',    # Multi-choice, there is no option6
+            'EQ_start_q4': None,         # Checkbox requires selection
+            'EQ_start_q5': ' ',          # required free text field
+            'EQ_start_q6': 'a'           # numeric free text field
         }
 
         assert qManager.is_valid_response(responses) == False
 
         errors = qManager.get_question_errors()
 
-        assert 'start:q1' in errors.keys()
-        assert 'start:q2' not in errors.keys()
-        assert 'start:q3' in errors.keys()
-        assert 'start:q4' in errors.keys()
-        assert 'start:q5' in errors.keys()
+        assert 'EQ_start_q1' in errors.keys()
+        assert 'EQ_start_q2' not in errors.keys()
+        assert 'EQ_start_q3' in errors.keys()
+        assert 'EQ_start_q4' in errors.keys()
+        assert 'EQ_start_q5' in errors.keys()
 
-        assert 'required' in errors['start:q1']
+        assert 'required' in errors['EQ_start_q1']
 
-        assert 'invalid option' in errors['start:q3']
+        assert 'invalid option' in errors['EQ_start_q3']
 
-        assert 'required' in errors['start:q4']
+        assert 'required' in errors['EQ_start_q4']
 
-        assert 'required' in errors['start:q5']
+        assert 'required' in errors['EQ_start_q5']
 
     def test_progress(self):
         qData = self._loadFixture('groups.json')
@@ -292,12 +292,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'index': 1,
             'history': {},
             'responses': {
-                'start:q1': '1',          # Numeric required field
-                'start:q2': None,         # Rich text text, no response required
-                'start:q3': 'option1',    # Multi-choice, option 1
-                'start:q4': 'option1',   # Checkbox, selected
-                'start:q5': 'Some Text',  # required free text field
-                'start:q6': None          # Optional numeric
+                'EQ_start_q1': '1',          # Numeric required field
+                'EQ_start_q2': None,         # Rich text text, no response required
+                'EQ_start_q3': 'option1',    # Multi-choice, option 1
+                'EQ_start_q4': 'option1',   # Checkbox, selected
+                'EQ_start_q5': 'Some Text',  # required free text field
+                'EQ_start_q6': None          # Optional numeric
             }
         }
 
@@ -310,8 +310,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert isinstance(start, QuestionGroup) == True
 
-        assert start.get_reference() == 'start'
-
+        assert start.get_reference() == 'EQ_start'
 
         assert q_manager.get_current_question_index() == 1
 
@@ -319,9 +318,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         next_question = q_manager.get_next_question(None)
 
-        assert next_question.get_reference() == 'q1' # automatically generated reference 'q1'
+        assert next_question.get_reference() == 'EQ_q1' # automatically generated reference 'q1'
 
-        q_manager.jump_to_question('start')
+        q_manager.jump_to_question('EQ_start')
 
         current_question = q_manager.get_current_question()
 
@@ -336,19 +335,19 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         sectionOne = qManager.get_question_by_reference('sectionOne')
 
-        assert sectionOne.get_reference() == 'sectionOne'
+        assert sectionOne.get_reference() == 'EQ_sectionOne'
 
-        sectionOneQ1 = qManager.get_question_by_reference('sectionOne:q1')
+        sectionOneQ1 = qManager.get_question_by_reference('sectionOne_q1')
 
         assert isinstance(sectionOneQ1, TextBlock) == True
-        assert sectionOneQ1.get_reference() == 'sectionOne:q1'
+        assert sectionOneQ1.get_reference() == 'EQ_sectionOne_q1'
         # check 'private' internal reference
         assert sectionOneQ1._reference == 'q1'
 
-        sectionTwoQ1 = qManager.get_question_by_reference('sectionTwo:q1')
+        sectionTwoQ1 = qManager.get_question_by_reference('sectionTwo_q1')
 
         assert isinstance(sectionTwoQ1, InputTextQuestion) == True
-        assert sectionTwoQ1.get_reference() == 'sectionTwo:q1'
+        assert sectionTwoQ1.get_reference() == 'EQ_sectionTwo_q1'
         # check 'private' internal reference
         assert sectionTwoQ1._reference == 'q1'
 
@@ -357,17 +356,17 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager = QuestionnaireManager(qData, {})
 
-        sectionOneQ3 = qManager.get_question_by_reference('sectionOne:q3')
+        sectionOneQ3 = qManager.get_question_by_reference('EQ_sectionOne_q3')
 
         assert sectionOneQ3.has_branch_conditions()
 
-        sectionTwo = qManager.get_question_by_reference('sectionTwo')
+        sectionTwo = qManager.get_question_by_reference('EQ_sectionTwo')
 
         assert len(sectionTwo.skip_conditions) == 1
 
         skipCondition = sectionTwo.skip_conditions[0]
 
-        assert skipCondition.trigger == "sectionOne:q3"
+        assert skipCondition.trigger == "EQ_sectionOne_q3"
         assert skipCondition.state == "Episode 1: The Phantom Menance"
 
         sectionThree = qManager.get_question_by_reference('sectionThree')
@@ -393,12 +392,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q1 = q_manager.get_current_question()
 
         response = {
-                'start:q1': '1',          # Numeric required field
-                'start:q2': None,         # Rich text text, no response required
-                'start:q3': 'option1',    # Multi-choice, option 1
-                'start:q4': 'option1',   # Checkbox, selected
-                'start:q5': 'Some Text',  # required free text field
-                'start:q6': None          # Optional numeric
+                'EQ_start_q1': '1',          # Numeric required field
+                'EQ_start_q2': None,         # Rich text text, no response required
+                'EQ_start_q3': 'option1',    # Multi-choice, option 1
+                'EQ_start_q4': 'option1',   # Checkbox, selected
+                'EQ_start_q5': 'Some Text',  # required free text field
+                'EQ_start_q6': None          # Optional numeric
             }
 
         q_manager.store_response(response)
@@ -407,7 +406,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q2 = q_manager.get_next_question(response)
 
-        response['q1:q2'] = 'anything you like'
+        response['EQ_q1_q2'] = 'anything you like'
 
         q_manager.store_response(response)
 
