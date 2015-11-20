@@ -537,12 +537,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'EQ_START_q1': '5',          # Numeric required field
-            'EQ_START_q2': None,         # Rich text text, no response required
-            'EQ_START_q3': 'option1',    # Multi-choice, option 1
-            'EQ_START_q4': 'Coption1',   # Checkbox, selected
-            'EQ_START_q5': 'Some Text',  # required free text field
-            'EQ_START_q6': None          # Optional numeric
+            'EQ_start_q1': '5',          # Numeric required field
+            'EQ_start_q2': None,         # Rich text text, no response required
+            'EQ_start_q3': 'option1',    # Multi-choice, option 1
+            'EQ_start_q4': 'Coption1',   # Checkbox, selected
+            'EQ_start_q5': 'Some Text',  # required free text field
+            'EQ_start_q6': None          # Optional numeric
         }
 
         assert qManager.is_valid_response(responses) == False
