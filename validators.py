@@ -12,6 +12,7 @@ class Validator(object):
     def get_type(self):
          return self._schema['type']
 
+
 # Required field
 class Required(Validator):
     def __init__(self, schema):
@@ -25,6 +26,7 @@ class Required(Validator):
             # value not required
             return True
 
+
 # Numeric Field
 class Numeric(Validator):
     def __init__(self, schema):
@@ -35,10 +37,45 @@ class Numeric(Validator):
 
 
 # Max length
-class Max(Validator):
+class Maxlength(Validator):
     def __init__(self, schema):
-        super(Max, self).__init__(schema)
+        super(Maxlength, self).__init__(schema)
 
     def is_valid(self, response):
-        return  (unicode(response).__len__() <= self._schema['value'])
+        return unicode(response).__len__() <= self._schema['value']
 
+
+# Less than
+class Lessthan(Validator):
+    def __init__(self, schema):
+        super(Lessthan, self).__init__(schema)
+
+    def is_valid(self, response):
+        return unicode(response).isnumeric() and int(response) < self._schema['value']
+
+
+# Great than
+class Greaterthan(Validator):
+    def __init__(self, schema):
+        super(Greaterthan, self).__init__(schema)
+
+    def is_valid(self, response):
+        return unicode(response).isnumeric() and int(response) > self._schema['value']
+
+
+# Equal
+class Equal(Validator):
+    def __init__(self, schema):
+        super(Equal, self).__init__(schema)
+
+    def is_valid(self, response):
+        return unicode(response).isnumeric() and int(response) == self._schema['value']
+
+
+# Not equal
+class Notequal(Validator):
+    def __init__(self, schema):
+        super(Notequal, self).__init__(schema)
+
+    def is_valid(self, response):
+        return unicode(response).isnumeric() and int(response) != self._schema['value']

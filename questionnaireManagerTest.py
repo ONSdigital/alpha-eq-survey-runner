@@ -411,5 +411,146 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert q2 == q_manager.get_history().keys()[1]
 
+    def test_validate_fail_maxlength(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        responses = {
+            'EQ_start_q1': '1',          # Numeric required field
+            'EQ_start_q2': None,         # Rich text text, no response required
+            'EQ_start_q3': 'option1',    # Multi-choice, option 1
+            'EQ_start_q4': 'Coption1',   # Checkbox, selected
+            'EQ_start_q5': 'Some Text, extra text to make it fail',  # required free text field
+            'EQ_start_q6': None          # Optional numeric
+        }
+
+        assert qManager.is_valid_response(responses) ==False
+
+        errors = qManager.get_question_errors()
+
+        assert 'EQ_start_q5' in errors.keys()
+        assert 'This field is to big' in errors['EQ_start_q5']
+
+
+    def test_validate_fail_lessthan(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        responses = {
+            'EQ_start_q1': '11',          # Numeric required field
+            'EQ_start_q2': None,         # Rich text text, no response required
+            'EQ_start_q3': 'option1',    # Multi-choice, option 1
+            'EQ_start_q4': 'Coption1',   # Checkbox, selected
+            'EQ_start_q5': 'Some Text',  # required free text field
+            'EQ_start_q6': None          # Optional numeric
+        }
+
+        assert qManager.is_valid_response(responses) ==False
+
+        errors = qManager.get_question_errors()
+
+        assert 'EQ_start_q1' in errors.keys()
+        assert 'This field should be less then 11' in errors['EQ_start_q1']
+
+
+
+    def test_validate_fail_greaterthan(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        responses = {
+            'EQ_start_q1': '0',          # Numeric required field
+            'EQ_start_q2': None,         # Rich text text, no response required
+            'EQ_start_q3': 'option1',    # Multi-choice, option 1
+            'EQ_start_q4': 'Coption1',   # Checkbox, selected
+            'EQ_start_q5': 'Some Text',  # required free text field
+            'EQ_start_q6': None          # Optional numeric
+        }
+
+        assert qManager.is_valid_response(responses) ==False
+
+        errors = qManager.get_question_errors()
+
+        assert 'EQ_start_q1' in errors.keys()
+        assert 'This field  should be greater then 0' in errors['EQ_start_q1']
+
+
+    def test_validate_fail_equal(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        responses = {
+            'EQ_start_q1': '5',          # Numeric required field
+            'EQ_start_q2': None,         # Rich text text, no response required
+            'EQ_start_q3': 'option1',    # Multi-choice, option 1
+            'EQ_start_q4': 'Coption1',   # Checkbox, selected
+            'EQ_start_q5': 'Some Text',  # required free text field
+            'EQ_start_q6': None          # Optional numeric
+        }
+
+        assert qManager.is_valid_response(responses) ==False
+
+        errors = qManager.get_question_errors()
+
+        assert 'EQ_start_q1' in errors.keys()
+        assert 'not 5' in errors['EQ_start_q1']
+
+
+
+    def test_validate_fail_notequal(self):
+        qData = self._loadFixture('groups.json')
+        resumeData = {}
+
+        qManager = QuestionnaireManager(qData, resumeData)
+        qManager.start_questionnaire()
+
+        q1 = qManager.get_current_question()
+
+        assert isinstance(q1, QuestionGroup) == True
+
+        responses = {
+            'EQ_START_q1': '5',          # Numeric required field
+            'EQ_START_q2': None,         # Rich text text, no response required
+            'EQ_START_q3': 'option1',    # Multi-choice, option 1
+            'EQ_START_q4': 'Coption1',   # Checkbox, selected
+            'EQ_START_q5': 'Some Text',  # required free text field
+            'EQ_START_q6': None          # Optional numeric
+        }
+
+        assert qManager.is_valid_response(responses) == False
+
+        errors = qManager.get_question_errors()
+
+        assert 'EQ_start_q1' in errors.keys()
+        assert 'not 5' in errors['EQ_start_q1']
+
 if __name__ == '__main__':
     unittest.main()

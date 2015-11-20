@@ -30,6 +30,30 @@
               "value": true,
               "type": "error",
               "message" : "This field should be a number"
+            },
+             {
+               "condition": "lessthan",
+               "value": 11,
+               "type": "error",
+               "message" : "This field should be less then 11"
+             },
+            {
+              "condition": "greaterthan",
+              "value": 0,
+              "type": "error",
+              "message" : "This field  should be greater then 0"
+            },
+            {
+              "condition": "notequal",
+              "value": 5,
+              "type": "error",
+              "message" : "not 5"
+            },
+            {
+              "condition": "equal",
+              "value": 1,
+              "type": "error",
+              "message" : "only 1 today"
             }
           ],
           "displayProperties": {},
@@ -136,6 +160,12 @@
               "value": true,
               "type": "error",
               "message" : "This field is required"
+            },
+             {
+              "condition": "maxlength",
+              "value": 12,
+              "type": "error",
+              "message" : "This field is to big"
             }
           ],
           "displayProperties": {},
