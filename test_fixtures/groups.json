@@ -18,10 +18,20 @@
           "questionError": "Number1",
           "questionReference": "q1",
           "children": [],
-          "validation": {
-            "required": true,
-            "numeric": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            },
+            {
+              "condition": "numeric",
+              "value": true,
+              "type": "error",
+              "message" : "This field should be a number"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -37,9 +47,14 @@
           "questionError": "",
           "questionReference": "q2",
           "children": [],
-          "validation": {
-            "required": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -55,9 +70,14 @@
           "questionError": "Multi 1",
           "questionReference": "q3",
           "children": [],
-          "validation": {
-            "required": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -82,9 +102,14 @@
           "questionError": "check1",
           "questionReference": "q4",
           "children": [],
-          "validation": {
-            "required": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -105,9 +130,14 @@
           "questionError": "text1",
           "questionReference": "q5",
           "children": [],
-          "validation": {
-            "required": true
-          },
+           "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -123,10 +153,20 @@
           "questionError": "Number2",
           "questionReference": "q6",
           "children": [],
-          "validation": {
-            "required": false,
-            "numeric": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": false,
+              "type": "error",
+              "message" : "This field is required"
+            },
+            {
+              "condition": "numeric",
+              "value": true,
+              "type": "error",
+              "message" : "This field should be a number"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -137,9 +177,14 @@
           "type": "number_question"
         }
       ],
-      "validation": {
-        "required": true
-      },
+      "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
       "displayProperties": {},
       "displayConditions": [],
       "skipConditions": [],
@@ -159,9 +204,14 @@
           "questionError": "",
           "questionReference": "q1",
           "children": [],
-          "validation": {
-            "required": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -177,9 +227,14 @@
           "questionError": "multi2",
           "questionReference": "q2",
           "children": [],
-          "validation": {
-            "required": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -200,9 +255,14 @@
           "questionError": "check2",
           "questionReference": "q3",
           "children": [],
-          "validation": {
-            "required": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -223,10 +283,20 @@
           "questionError": "number2",
           "questionReference": "q4",
           "children": [],
-          "validation": {
-            "required": true,
-            "numeric": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            },
+            {
+              "condition": "numeric",
+              "value": true,
+              "type": "error",
+              "message" : "This field should be a number"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -242,9 +312,14 @@
           "questionError": "text2",
           "questionReference": "q5",
           "children": [],
-          "validation": {
-            "required": true
-          },
+          "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
           "displayProperties": {},
           "displayConditions": [],
           "skipConditions": [],
@@ -255,9 +330,14 @@
           "type": "text_question"
         }
       ],
-      "validation": {
-        "required": true
-      },
+      "validation": [
+            {
+              "condition": "required",
+              "value": true,
+              "type": "error",
+              "message" : "This field is required"
+            }
+          ],
       "displayProperties": {},
       "displayConditions": [],
       "skipConditions": [],

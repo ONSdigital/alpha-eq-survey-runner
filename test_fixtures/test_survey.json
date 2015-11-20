@@ -10,10 +10,14 @@
       "questionError": "Sorry - that doesn't look like a valid entry.",
       "questionReference": "q1",
       "children": [],
-      "validation": {
-        "required": true,
-        "numeric":true
-      },
+      "validation": [
+        {
+          "condition": "required",
+          "value": true,
+          "type": "error",
+          "message" : "This field is required"
+        }
+      ],
       "displayProperties": {},
       "displayConditions": [],
       "skipConditions": [],
@@ -31,9 +35,14 @@
       "branchConditions": [],
       "displayProperties": {},
       "questionHelp": "",
-      "validation": {
-        "required": true
-      },
+      "validation": [
+        {
+          "condition": "required",
+          "value": true,
+          "type": "error",
+          "message" : "This field is required"
+        }
+      ],
       "skipConditions": []
     },
     {
@@ -43,9 +52,14 @@
       "questionError": "That isn't a valid answer",
       "questionReference": "q3",
       "children": [],
-      "validation": {
-        "required": true
-      },
+      "validation": [
+        {
+          "condition": "required",
+          "value": true,
+          "type": "error",
+          "message" : "This field is required"
+        }
+      ],
       "displayProperties": {},
       "displayConditions": [],
       "skipConditions": [],

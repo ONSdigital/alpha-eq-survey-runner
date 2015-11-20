@@ -45,7 +45,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert qManager.is_valid_response(response) == True
 
         assert qManager.get_question_errors() == None
-        assert qManager.get_question_warnings() == None
+
 
     def test_miss_required_question(self):
         qData = self._loadFixture('test_survey.json')
@@ -61,13 +61,13 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         response = 'Lots'
 
-        assert qManager.is_valid_response(response) == False
+        assert qManager.is_valid_response(response) == True
 
         response = '   '
 
         assert qManager.is_valid_response(response) == False
 
-        assert 'required' in qManager.get_question_errors()
+        assert 'This field is required' in qManager.get_question_errors()
 
     def test_next_question(self):
         qData = self._loadFixture('test_survey.json')
@@ -255,13 +255,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert 'EQ_start_q4' in errors.keys()
         assert 'EQ_start_q5' in errors.keys()
 
-        assert 'required' in errors['EQ_start_q1']
+        assert 'This field is required' in errors['EQ_start_q1']
 
         assert 'invalid option' in errors['EQ_start_q3']
 
-        assert 'required' in errors['EQ_start_q4']
-
-        assert 'required' in errors['EQ_start_q5']
+        assert 'This field is required' in errors['EQ_start_q4']
+        assert 'This field is required' in errors['EQ_start_q5']
 
     def test_progress(self):
         qData = self._loadFixture('groups.json')
