@@ -242,7 +242,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q3': 'option6',    # Multi-choice, there is no option6
             'EQ_start_q4': None,         # Checkbox requires selection
             'EQ_start_q5': ' ',          # required free text field
-            'EQ_start_q6': 'a'           # numeric free text field
+            'EQ_start_q6': ''           # numeric free text field
         }
 
         assert qManager.is_valid_response(responses) == False
@@ -423,6 +423,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
+
             'EQ_start_q1': '1',          # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option1',    # Multi-choice, option 1
@@ -437,6 +438,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'EQ_start_q5' in errors.keys()
         assert 'This field is to big' in errors['EQ_start_q5']
+
 
 
     def test_validate_fail_lessthan(self):
@@ -457,6 +459,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
             'EQ_start_q5': 'Some Text',  # required free text field
             'EQ_start_q6': None          # Optional numeric
+
         }
 
         assert qManager.is_valid_response(responses) ==False
@@ -465,6 +468,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'EQ_start_q1' in errors.keys()
         assert 'This field should be less then 11' in errors['EQ_start_q1']
+
 
 
 
@@ -522,7 +526,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'EQ_start_q1' in errors.keys()
         assert 'not 5' in errors['EQ_start_q1']
-
 
 
     def test_validate_fail_notequal(self):
