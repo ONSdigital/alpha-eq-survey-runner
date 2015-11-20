@@ -18,9 +18,14 @@
                     "questionError": "Multi 1",
                     "questionReference": "q3",
                     "children": [],
-                    "validation": {
-                        "required": true
-                    },
+                    "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                     ],
                     "displayProperties": {},
                     "displayConditions": [],
                     "skipConditions": [],
@@ -51,9 +56,14 @@
                     "type": "radio_question"
                 }
             ],
-            "validation": {
-                "required": true
-            },
+            "validation": [
+                {
+                     "condition": "required",
+                     "value": true,
+                     "type": "error",
+                     "message" : "This field is required"
+                 }
+            ],
             "displayProperties": {},
             "displayConditions": [],
             "skipConditions": [],

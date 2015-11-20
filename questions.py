@@ -32,11 +32,12 @@ class Question(object):
 
     def _build_validation(self, validation_schema):
         rules = []
-        for validation in validation_schema.keys():
+
+        for validation in validation_schema:
             # find the validaton class and instantiate it
-            RuleClass = getattr(importlib.import_module('validators'), validation.capitalize())
+            RuleClass = getattr(importlib.import_module('validators'), validation['condition'].capitalize())
             # this loads the class from the validators.py file
-            rule = RuleClass(validation_schema[validation])
+            rule = RuleClass(validation)
             rules.append(rule)
 
         return rules
@@ -69,15 +70,23 @@ class Question(object):
         return self.branches(response)
 
     def is_valid_response(self, response):
-        self.errors = []
-        for rule in self.validation:
-            if not rule.is_valid(response):
-                self.errors.append(rule.get_error(response))
 
-        return len(self.errors) == 0
+        self.errors = []
+        self.warnings=[]
+        for rule in self.validation:
+            if rule.get_type() == 'error':
+                if not rule.is_valid(response):
+                    self.errors.append(rule.get_message(response))
+                    self.warnings=[]
+                    break
+            elif rule.get_type() == 'warning':
+                if not rule.is_valid(response):
+                    self.warnings.append(rule.get_message(response))
+
+        return len(self.warnings) +len(self.errors)  == 0
 
     def get_warnings(self, reference=None):
-        return None
+        return self.warnings or None
 
     def get_errors(self, reference=None):
         return self.errors or None

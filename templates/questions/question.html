@@ -6,5 +6,10 @@
       {% for error in question.get_errors() %}
   <small class="error">{{error}}</small>
       {% endfor %}
+   {% elif question.get_warnings() %}
+      {% for warning in question.get_warnings() %}
+  <small class="warning">{{warning}}</small>
+      {% endfor %}
   {% endif %}
+
 </article>
