@@ -17,9 +17,6 @@ Foundation(app)
 cassandra = CassandraCluster()
 
 app.config['CASSANDRA_NODES'] = [os.environ.get('CASSANDRA_NODE', 'cassandra')]
-with app.app_context():
-    cassandra_session = cassandra.connect()
-    cassandra_session.set_keyspace("sessionstore")
 
 # log to stderr
 file_handler = StreamHandler()
@@ -60,9 +57,10 @@ def get_form_schema(questionnaire_id):
 
 
 def get_session_data(quest_session_id, session_id):
+    cassandra_session = cassandra.connect()
+    cassandra_session.set_keyspace("sessionstore")
     cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
     r = cassandra_session.execute(cql)
-
     if r:
         payload = json.loads(r[0].data)
         return payload
@@ -70,6 +68,8 @@ def get_session_data(quest_session_id, session_id):
 
 
 def set_session_data(quest_session_id, session_id, data):
+    cassandra_session = cassandra.connect()
+    cassandra_session.set_keyspace("sessionstore")
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
     result = cassandra_session.execute(cql)
