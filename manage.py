@@ -4,6 +4,7 @@ from flask.ext.script import Manager
 from flask_cassandra import CassandraCluster
 from flask import request
 import time
+import os
 
 from srunner import app
 
@@ -13,7 +14,8 @@ manager = Manager(app)
 @manager.command
 def create_sessions_schema():
     cassandra = CassandraCluster()
-    app.config['CASSANDRA_NODES'] = ['cassandra']  # can be a string or list of nodes
+    app.config['CASSANDRA_NODES'] = [os.environ.get('CASSANDRA_NODE', 'cassandra')]
+
     print "Connecting to Cassandra cluster..."
     # @todo: make this clever enough to try to connect and then retry exponetially.
     time.sleep(30)
