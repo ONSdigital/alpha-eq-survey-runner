@@ -12,6 +12,8 @@ class QuestionnaireManager:
         self.questions = []
         self.responses = {}
         self.history = []
+        self.warningsAccepted = []
+        self.justifications={}
         self.current_question = None
         self._load_questionnaire_data(json.loads(questionnaire_schema))
         self._ensure_valid_routing()
@@ -49,18 +51,21 @@ class QuestionnaireManager:
                             candidate_question.skip_conditions.append(target_questions[target_question])
 
     def _load_questionnaire_state(self, questionnaire_state):
+
         self.started = questionnaire_state['started']
         self.completed = questionnaire_state['completed']
         self.question_index = questionnaire_state['index']
         self.responses = questionnaire_state['responses']
         self.history = questionnaire_state['history']
+        self.warningsAccepted = questionnaire_state['warningsAccepted']
+        self.justifications= questionnaire_state['justifications']
 
         # validate any previous data
         if len(self.questions) != 0:
             for index in range(0, self.question_index + 1):
                 question = self.questions[index]
                 if self._exists_in_history(question.get_reference()):
-                    question.is_valid_response(self.responses)
+                    question.is_valid_response(self.responses,self.warningsAccepted)
 
             # evaluate skip conditions and skip matching questions
             for question in self.questions:
@@ -95,6 +100,15 @@ class QuestionnaireManager:
         else:
             return self.responses
 
+    def get_justifications(self, *args):
+        if len(args) == 1 and args[0] in self.justifications.keys():
+            return self.justifications[args[0]]
+        else:
+            return self.justifications
+
+    def get_warningsAccepted(self, *args):
+        return self.warningsAccepted
+
     def start_questionnaire(self):
         self.started = True
         self.question_index = 0
@@ -107,13 +121,25 @@ class QuestionnaireManager:
             'completed': self.completed,
             'index': self.question_index,
             'responses': self.responses,
-            'history': self.history
+            'history': self.history,
+            'warningsAccepted': self.warningsAccepted,
+            'justifications': self.justifications
         }
 
     def store_response(self, response):
         for ref in response.keys():
             self.responses[ref] = response[ref]
         self._store_in_history(response)
+
+    def store_warnings(self, warningsAccepted):
+
+        for warning in warningsAccepted:
+            if warning not in self.warningsAccepted or '':
+                self.warningsAccepted.append(warning)
+
+    def store_justifications(self, justifications):
+        for ref in justifications.keys():
+            self.justifications[ref] = justifications[ref]
 
     def _store_in_history(self, response):
         if self.current_question:
@@ -122,8 +148,9 @@ class QuestionnaireManager:
                 self.history.append(history)
             else:
                 history = self._find_history(self.current_question.get_reference())
+
             history['reference'] = self.current_question.get_reference()
-            history['valid'] = self.current_question.is_valid_response(response)
+            history['valid'] = self.current_question.is_valid_response(response,self.warningsAccepted)
 
     def _exists_in_history(self, reference):
         for history in self.history:
@@ -137,9 +164,9 @@ class QuestionnaireManager:
                 return history
         return None
 
-    def is_valid_response(self, user_answer):
+    def is_valid_response(self, user_answer, warningsAccepted):
         if self.current_question:
-            return self.current_question.is_valid_response(user_answer)
+            return self.current_question.is_valid_response(user_answer, warningsAccepted)
         return True
 
     def get_question_warnings(self, reference=None):

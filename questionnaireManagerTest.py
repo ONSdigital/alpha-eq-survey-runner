@@ -41,8 +41,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q.question_text == "How many marbles do you have"
 
         response = '15'
+        warningsaccepted=[]
 
-        assert qManager.is_valid_response(response) == True
+        assert qManager.is_valid_response(response,warningsaccepted) == True
 
         assert qManager.get_question_errors() == None
 
@@ -60,12 +61,13 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q.question_text == "How many marbles do you have"
 
         response = 'Lots'
+        warningsaccepted=[]
 
-        assert qManager.is_valid_response(response) == True
+        assert qManager.is_valid_response(response,warningsaccepted) == True
 
         response = '   '
 
-        assert qManager.is_valid_response(response) == False
+        assert qManager.is_valid_response(response,warningsaccepted) == False
 
         assert 'This field is required' in qManager.get_question_errors()
 
@@ -81,14 +83,14 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q.question_text == "How many marbles do you have"
 
         response = '35'
-
-        assert qManager.is_valid_response(response) == True
+        warningsaccepted=[]
+        assert qManager.is_valid_response(response,warningsaccepted) == True
 
         q = qManager.get_next_question(response)
 
         assert isinstance(q, TextBlock) == True
 
-        assert qManager.is_valid_response('anything you like') == True
+        assert qManager.is_valid_response('anything you like',warningsaccepted) == True
         assert qManager.get_question_errors() == None
 
         q = qManager.get_next_question(response)
@@ -97,13 +99,13 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q.question_text == 'Which colour marble would you prefer?'
 
         invalid_response_1 = ' '
-        assert qManager.is_valid_response(invalid_response_1) == False
+        assert qManager.is_valid_response(invalid_response_1,warningsaccepted) == False
 
         invalid_response_2 = 'Purple'
-        assert qManager.is_valid_response(invalid_response_2) == False
+        assert qManager.is_valid_response(invalid_response_2,warningsaccepted) == False
 
         valid_response = 'Blue'
-        assert qManager.is_valid_response(valid_response) == True
+        assert qManager.is_valid_response(valid_response, warningsaccepted) == True
 
     def test_resume_questionnaire(self):
         qData = self._loadFixture('test_survey.json')
@@ -113,6 +115,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'completed' : False,
             'index' : 1,
             'history': {},
+            'warningsAccepted':[],
+            'justifications':{},
             'responses' : {
                 'EQ_q1': '123'
             }
@@ -131,6 +135,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'completed' : False,
             'index' : 2,
             'history': {},
+            'warningsAccepted':[],
+            'justifications':{},
             'responses' : {
                 'EQ_q1': '123',
                 'EQ_q2': None
@@ -151,6 +157,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'completed' : False,
             'index' : 2,
             'history': {},
+            'warningsAccepted':[],
+            'justifications':{},
             'responses' : {
                 'EQ_q1': '123',
                 'EQ_q2':None,
@@ -172,6 +180,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'completed' : True,
             'index' : 2,
             'history': {},
+            'warningsAccepted':[],
+            'justifications':{},
             'responses' : {
                 'EQ_q1': '123',
                 'EQ_q2':None,
@@ -222,8 +232,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q5': 'Some Text',  # required free text field
             'EQ_start_q6': None          # Optional numeric
         }
-
-        assert qManager.is_valid_response(responses) == True
+        warningsaccepted=[]
+        assert qManager.is_valid_response(responses, warningsaccepted) == True
 
     def test_group_fail_validation(self):
         qData = self._loadFixture('groups.json')
@@ -242,10 +252,11 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q3': 'option6',    # Multi-choice, there is no option6
             'EQ_start_q4': None,         # Checkbox requires selection
             'EQ_start_q5': ' ',          # required free text field
-            'EQ_start_q6': 'a'           # numeric free text field
+            'EQ_start_q6': ''           # numeric free text field
         }
+        warningsaccepted=[]
 
-        assert qManager.is_valid_response(responses) == False
+        assert qManager.is_valid_response(responses,warningsaccepted) == False
 
         errors = qManager.get_question_errors()
 
@@ -258,9 +269,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert 'This field is required' in errors['EQ_start_q1']
 
         assert 'invalid option' in errors['EQ_start_q3']
-
         assert 'This field is required' in errors['EQ_start_q4']
         assert 'This field is required' in errors['EQ_start_q5']
+
 
     def test_progress(self):
         qData = self._loadFixture('groups.json')
@@ -290,6 +301,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'completed': False,
             'index': 1,
             'history': {},
+            'warningsAccepted':[],
+            'justifications':{},
             'responses': {
                 'EQ_start_q1': '1',          # Numeric required field
                 'EQ_start_q2': None,         # Rich text text, no response required
@@ -423,6 +436,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
+
             'EQ_start_q1': '1',          # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option1',    # Multi-choice, option 1
@@ -430,13 +444,14 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q5': 'Some Text, extra text to make it fail',  # required free text field
             'EQ_start_q6': None          # Optional numeric
         }
-
-        assert qManager.is_valid_response(responses) ==False
+        warningsaccepted=[]
+        assert qManager.is_valid_response(responses,warningsaccepted) ==False
 
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q5' in errors.keys()
         assert 'This field is to big' in errors['EQ_start_q5']
+
 
 
     def test_validate_fail_lessthan(self):
@@ -457,14 +472,16 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
             'EQ_start_q5': 'Some Text',  # required free text field
             'EQ_start_q6': None          # Optional numeric
-        }
 
-        assert qManager.is_valid_response(responses) ==False
+        }
+        warningsaccepted=[]
+        assert qManager.is_valid_response(responses,warningsaccepted) ==False
 
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q1' in errors.keys()
         assert 'This field should be less then 11' in errors['EQ_start_q1']
+
 
 
 
@@ -487,8 +504,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q5': 'Some Text',  # required free text field
             'EQ_start_q6': None          # Optional numeric
         }
-
-        assert qManager.is_valid_response(responses) ==False
+        warningsaccepted =[]
+        assert qManager.is_valid_response(responses,warningsaccepted) ==False
 
         errors = qManager.get_question_errors()
 
@@ -515,14 +532,13 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q5': 'Some Text',  # required free text field
             'EQ_start_q6': None          # Optional numeric
         }
-
-        assert qManager.is_valid_response(responses) ==False
+        warningsaccepted=[]
+        assert qManager.is_valid_response(responses,warningsaccepted) ==False
 
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q1' in errors.keys()
         assert 'not 5' in errors['EQ_start_q1']
-
 
 
     def test_validate_fail_notequal(self):
@@ -545,12 +561,36 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q6': None          # Optional numeric
         }
 
-        assert qManager.is_valid_response(responses) == False
+        warningsaccepted=[]
+        assert qManager.is_valid_response(responses,warningsaccepted) ==False
 
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q1' in errors.keys()
         assert 'not 5' in errors['EQ_start_q1']
+
+
+    def test_validation_warnings(self):
+        qData = self._loadFixture('test_survey.json')
+
+        # Instantiate the questionnaire manager... There is no resume data
+        qManager = QuestionnaireManager(qData, {})
+        qManager.start_questionnaire()
+
+        q = qManager.get_current_question()
+
+        assert isinstance(q, InputTextQuestion) == True
+        assert q.question_text == "How many marbles do you have"
+
+        response = 'Lots and lots and lots'
+        warningsaccepted=[]
+
+        assert qManager.is_valid_response(response,warningsaccepted) == False
+
+        assert 'This field is long, are you sure?' in qManager.get_question_warnings()
+
+        warningsaccepted=['q1']
+        assert qManager.is_valid_response(response,warningsaccepted) == True
 
 if __name__ == '__main__':
     unittest.main()
