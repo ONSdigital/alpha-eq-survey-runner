@@ -23,7 +23,6 @@ with app.app_context():
         try:
             cassandra = CassandraCluster()
             cassandra_session = cassandra.connect()
-            cassandra_session.set_keyspace("sessionstore")
             break
         except NoHostAvailable:
             if attempt < 30:
@@ -72,6 +71,7 @@ def get_form_schema(questionnaire_id):
 
 
 def get_session_data(quest_session_id, session_id):
+    cassandra_session.set_keyspace("sessionstore")
     cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
     r = cassandra_session.execute(cql)
     if r:
@@ -81,6 +81,7 @@ def get_session_data(quest_session_id, session_id):
 
 
 def set_session_data(quest_session_id, session_id, data):
+    cassandra_session.set_keyspace("sessionstore")
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
     result = cassandra_session.execute(cql)
