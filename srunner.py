@@ -26,7 +26,8 @@ with app.app_context():
             cassandra_session.set_keyspace("sessionstore")
             break
         except NoHostAvailable:
-            if attempt < 5:
+            if attempt < 30:
+                print "Trying cassandra connection, attempt number ", attempt
                 attempt += 1
                 time.sleep(attempt)
             else:
