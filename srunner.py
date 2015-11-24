@@ -3,43 +3,57 @@ from flask_zurb_foundation import Foundation
 import requests
 import os
 import json
+import logging
+from logging import StreamHandler
 from flask_cassandra import CassandraCluster
 import uuid
 from questionnaireManager import QuestionnaireManager
 from settings import APP_FIXTURES
 import time
 from cassandra.cluster import NoHostAvailable
-
-
-def create_sessions_schema():
-    print "Creating keyspace 'sessionstore'"
-    if app.debug:
-        cql = "CREATE KEYSPACE IF NOT EXISTS sessionstore WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };"
-    else:
-        cql = "CREATE KEYSPACE IF NOT EXISTS sessionstore WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };"
-    cassandra_session.execute(cql)
-    print "Creating table sessions."
-    cql_table = """CREATE TABLE IF NOT EXISTS SessionStore.sessions (
-              quest_session_id varchar,
-              data text,
-            session_id varchar,
-            PRIMARY KEY (quest_session_id)
-            ) ;"""
-    cassandra_session.execute(cql_table)
+from flask import g, current_app
 
 app = Flask(__name__)
 app.debug = True
 Foundation(app)
 
 app.config['CASSANDRA_NODES'] = [os.environ.get('CASSANDRA_NODE', 'cassandra')]
-with app.app_context():
+# log to stderr
+file_handler = StreamHandler()
+app.logger.setLevel(logging.DEBUG)  # set the desired logging level here
+app.logger.addHandler(file_handler)
+
+# @TODO change this env variable
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
+
+cassandra = CassandraCluster()
+
+
+def init_cassandra():
+    with app.app_context():
+        cassandra_session = connect_to_cassandra()
+        print "Creating keyspace 'sessionstore'"
+        if app.debug:
+            cql = "CREATE KEYSPACE IF NOT EXISTS sessionstore WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };"
+        else:
+            cql = "CREATE KEYSPACE IF NOT EXISTS sessionstore WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };"
+        cassandra_session.execute(cql)
+        print "Creating table sessions."
+        cql_table = """CREATE TABLE IF NOT EXISTS SessionStore.sessions (
+                  quest_session_id varchar,
+                  data text,
+                session_id varchar,
+                PRIMARY KEY (quest_session_id)
+                ) ;"""
+        cassandra_session.execute(cql_table)
+
+
+def connect_to_cassandra():
     attempt = 0
     while True:
         try:
-            cassandra = CassandraCluster()
-            cassandra_session = cassandra.connect()
-            create_sessions_schema()
-            cassandra_session.set_keyspace("sessionstore")
+            cassandra_session = cassandra.connection
             break
         except NoHostAvailable:
             if attempt < 30:
@@ -48,7 +62,13 @@ with app.app_context():
                 time.sleep(attempt)
             else:
                 raise
-    create_sessions_schema()
+    return cassandra_session
+
+
+def get_cassandra():
+    cassandra_session = connect_to_cassandra()
+    cassandra_session.set_keyspace("sessionstore")
+    return cassandra_session
 
 
 def _load_fixture(filename):
@@ -57,6 +77,7 @@ def _load_fixture(filename):
         q_data = f.read()
         f.close()
     return q_data
+
 
 @app.route('/')
 def hello():
@@ -81,7 +102,7 @@ def get_form_schema(questionnaire_id):
 
 def get_session_data(quest_session_id, session_id):
     cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
-    r = cassandra_session.execute(cql)
+    r = get_cassandra().execute(cql)
     if r:
         payload = json.loads(r[0].data)
         return payload
@@ -91,7 +112,7 @@ def get_session_data(quest_session_id, session_id):
 def set_session_data(quest_session_id, session_id, data):
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
-    result = cassandra_session.execute(cql)
+    result = get_cassandra().execute(cql)
     app.logger.debug(result)
     return result
 
@@ -210,5 +231,6 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
 
 if __name__ == '__main__':
+    init_cassandra()
     app.debug = True
     app.run(host="0.0.0.0", port=8080)
