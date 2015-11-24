@@ -9,14 +9,28 @@ from logging import StreamHandler
 import uuid
 from questionnaireManager import QuestionnaireManager
 from settings import APP_FIXTURES
+import time
+from cassandra.cluster import NoHostAvailable
 
 app = Flask(__name__)
 app.debug = True
 Foundation(app)
 
-cassandra = CassandraCluster()
-
 app.config['CASSANDRA_NODES'] = [os.environ.get('CASSANDRA_NODE', 'cassandra')]
+with app.app_context():
+    attempt = 0
+    while True:
+        try:
+            cassandra = CassandraCluster()
+            cassandra_session = cassandra.connect()
+            cassandra_session.set_keyspace("sessionstore")
+            break
+        except NoHostAvailable:
+            if attempt < 5:
+                attempt += 1
+                time.sleep(attempt)
+            else:
+                raise
 
 # log to stderr
 file_handler = StreamHandler()
@@ -57,8 +71,6 @@ def get_form_schema(questionnaire_id):
 
 
 def get_session_data(quest_session_id, session_id):
-    cassandra_session = cassandra.connect()
-    cassandra_session.set_keyspace("sessionstore")
     cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
     r = cassandra_session.execute(cql)
     if r:
@@ -68,8 +80,6 @@ def get_session_data(quest_session_id, session_id):
 
 
 def set_session_data(quest_session_id, session_id, data):
-    cassandra_session = cassandra.connect()
-    cassandra_session.set_keyspace("sessionstore")
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
     result = cassandra_session.execute(cql)
