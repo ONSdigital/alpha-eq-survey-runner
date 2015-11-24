@@ -8,4 +8,4 @@ WORKDIR /opt/eq-survey-runner
 EXPOSE 8080
 
 WORKDIR /opt/eq-survey-runner
-ENTRYPOINT python /opt/eq-survey-runner/manage.py create_sessions_schema && gunicorn -w 4 -b 0.0.0.0:8080 --config=gunicorn.py srunner:app
+ENTRYPOINT python gunicorn -w 4 -b 0.0.0.0:8080 --config=gunicorn.py srunner:app

@@ -4,13 +4,28 @@ import requests
 import os
 import json
 from flask_cassandra import CassandraCluster
-import logging
-from logging import StreamHandler
 import uuid
 from questionnaireManager import QuestionnaireManager
 from settings import APP_FIXTURES
 import time
 from cassandra.cluster import NoHostAvailable
+
+
+def create_sessions_schema():
+    print "Creating keyspace 'sessionstore'"
+    if app.debug:
+        cql = "CREATE KEYSPACE IF NOT EXISTS sessionstore WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };"
+    else:
+        cql = "CREATE KEYSPACE IF NOT EXISTS sessionstore WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };"
+    cassandra_session.execute(cql)
+    print "Creating table sessions."
+    cql_table = """CREATE TABLE IF NOT EXISTS SessionStore.sessions (
+              quest_session_id varchar,
+              data text,
+            session_id varchar,
+            PRIMARY KEY (quest_session_id)
+            ) ;"""
+    cassandra_session.execute(cql_table)
 
 app = Flask(__name__)
 app.debug = True
@@ -23,6 +38,8 @@ with app.app_context():
         try:
             cassandra = CassandraCluster()
             cassandra_session = cassandra.connect()
+            create_sessions_schema()
+            cassandra_session.set_keyspace("sessionstore")
             break
         except NoHostAvailable:
             if attempt < 30:
@@ -31,15 +48,7 @@ with app.app_context():
                 time.sleep(attempt)
             else:
                 raise
-
-# log to stderr
-file_handler = StreamHandler()
-app.logger.setLevel(logging.DEBUG)  # set the desired logging level here
-app.logger.addHandler(file_handler)
-
-# @TODO change this env variable
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
+    create_sessions_schema()
 
 
 def _load_fixture(filename):
@@ -71,7 +80,6 @@ def get_form_schema(questionnaire_id):
 
 
 def get_session_data(quest_session_id, session_id):
-    cassandra_session.set_keyspace("sessionstore")
     cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
     r = cassandra_session.execute(cql)
     if r:
@@ -81,7 +89,6 @@ def get_session_data(quest_session_id, session_id):
 
 
 def set_session_data(quest_session_id, session_id, data):
-    cassandra_session.set_keyspace("sessionstore")
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
     result = cassandra_session.execute(cql)
