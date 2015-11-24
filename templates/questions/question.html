@@ -8,7 +8,9 @@
       {% endfor %}
    {% elif question.get_warnings() %}
       {% for warning in question.get_warnings() %}
-  <small class="warning">{{warning}}</small>
+  <small class="warning">{{warning}}</small><input type="checkbox" name="warning_{{question.get_reference()}}" value="true"
+        {% if question.get_reference() in user_warningsAccepted %}checked="checked"{% endif %}>Accept warning<br/>
+    Can you provide a reason, for accepting the warning? <br/><input type="text" name="justification_{{question.get_reference()}}" value="{{user_justification[question.get_reference()] or ''}}">
       {% endfor %}
   {% endif %}
 

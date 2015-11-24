@@ -16,6 +16,12 @@
           "value": true,
           "type": "error",
           "message" : "This field is required"
+        },
+         {
+          "condition": "maxlength",
+          "value": 15,
+          "type": "warning",
+          "message" : "This field is long, are you sure?"
         }
       ],
       "displayProperties": {},

@@ -26,6 +26,8 @@ class Required(Validator):
             # value not required
             return True
 
+    def get_message(self, response):
+        return self._schema['message'] or "This field is requried"
 
 # Numeric Field
 class Numeric(Validator):
@@ -34,6 +36,9 @@ class Numeric(Validator):
 
     def is_valid(self, response):
         return not response or response.isspace() or unicode(response).isnumeric()
+
+    def get_message(self, response):
+        return self._schema['message'] or "This field should be a number"
 
 
 # Max length
@@ -44,6 +49,9 @@ class Maxlength(Validator):
     def is_valid(self, response):
         return unicode(response).__len__() <= self._schema['value']
 
+    def get_message(self, response):
+        return self._schema['message'] or "This field has exceeded maximum length"
+
 
 # Less than
 class Lessthan(Validator):
@@ -52,6 +60,9 @@ class Lessthan(Validator):
 
     def is_valid(self, response):
         return unicode(response).isnumeric() and int(response) < self._schema['value']
+
+    def get_message(self, response):
+        return self._schema['message'] or "This field should less than that"
 
 
 # Great than
@@ -62,6 +73,9 @@ class Greaterthan(Validator):
     def is_valid(self, response):
         return unicode(response).isnumeric() and int(response) > self._schema['value']
 
+    def get_message(self, response):
+        return self._schema['message'] or "This field should be a great than that"
+
 
 # Equal
 class Equal(Validator):
@@ -71,6 +85,9 @@ class Equal(Validator):
     def is_valid(self, response):
         return unicode(response).isnumeric() and int(response) == self._schema['value']
 
+    def get_message(self, response):
+        return self._schema['message'] or "This field should be equal to something else"
+
 
 # Not equal
 class Notequal(Validator):
@@ -79,3 +96,6 @@ class Notequal(Validator):
 
     def is_valid(self, response):
         return unicode(response).isnumeric() and int(response) != self._schema['value']
+
+    def get_message(self, response):
+        return self._schema['message'] or "This field should be not equal to that"

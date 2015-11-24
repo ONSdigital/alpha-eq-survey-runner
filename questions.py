@@ -20,6 +20,8 @@ class Question(object):
         self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
         self.warnings = []
         self.errors = []
+        self.allWarningsAccepted =True
+
 
     @staticmethod
     def factory(schema, parent=None):
@@ -69,21 +71,25 @@ class Question(object):
     def get_branch_target(self, response):
         return self.branches(response)
 
-    def is_valid_response(self, response):
+    def is_valid_response(self, response, warningAccepted):
 
         self.errors = []
-        self.warnings=[]
+        self.allWarningsAccepted =True
+
         for rule in self.validation:
             if rule.get_type() == 'error':
                 if not rule.is_valid(response):
                     self.errors.append(rule.get_message(response))
-                    self.warnings=[]
-                    break
             elif rule.get_type() == 'warning':
                 if not rule.is_valid(response):
+                    # All warnings need to be recorded to populate checkboxes and messages
                     self.warnings.append(rule.get_message(response))
+                    # If there is a single warning on the page which hasn't been accepted
+                    # submission should be blocked
+                    if not warningAccepted:
+                        self.allWarningsAccepted =False
 
-        return len(self.warnings) +len(self.errors)  == 0
+        return self.allWarningsAccepted and len(self.errors) == 0
 
     def get_warnings(self, reference=None):
         return self.warnings or None
@@ -116,8 +122,8 @@ class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(MultipleChoiceQuestion, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, response):
-        valid = super(MultipleChoiceQuestion, self).is_valid_response(response)
+    def is_valid_response(self, response,warningAccepted):
+        valid = super(MultipleChoiceQuestion, self).is_valid_response(response,False)
 
         if response is not None and not response.isspace():
             for part in self.parts:
@@ -134,15 +140,15 @@ class CheckBoxQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(CheckBoxQuestion, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, response):
+    def is_valid_response(self, response, warningsAccepted):
         if isinstance(response, list):
             for item in response:
                 if item: # we send a blank with every checkbox question, otherwise they don't show up
-                    if not super(CheckBoxQuestion, self).is_valid_response(item):
+                    if not super(CheckBoxQuestion, self).is_valid_response(item, False):
                         return False
             return True
         else:
-            return super(CheckBoxQuestion, self).is_valid_response(response)
+            return super(CheckBoxQuestion, self).is_valid_response(response,False)
 
 
 class InputTextQuestion(Question):
@@ -159,7 +165,7 @@ class TextBlock(Question):
     def __init__(self, question_schema, parent=None):
         super(TextBlock, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, request):
+    def is_valid_response(self, request, False):
         return True
 
     def get_warnings(self, reference=None):
@@ -183,15 +189,19 @@ class QuestionGroup(Question):
                 question._reference = 'q' + str(index)
             self.children.append(question)
 
-    def is_valid_response(self, responses):
+    def is_valid_response(self, responses, warningsAccepted):
         self.errors = {}
+        warning = False
+
         for question in self.children:
+
             if question.get_reference() in responses.keys():
                 response = responses[question.get_reference()]
+                warning = question.get_reference() in warningsAccepted
             else:
                 response = None
 
-            if not question.is_valid_response(response):
+            if not question.is_valid_response(response, warning):
                 self.errors[question.get_reference()] = question.get_errors()
 
         return len(self.errors) == 0

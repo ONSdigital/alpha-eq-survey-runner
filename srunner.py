@@ -140,9 +140,16 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         elif 'next' in request.form:
             # validate response
             user_responses = {}
+            warningsAccepted = []
+            justifications ={}
             for key in request.form.keys():
-                if key != 'next' and key != 'start':
-                    response = request.form.getlist(key)
+                response = request.form.getlist(key)
+                # Separate out warning checkbox responses from questionnaire question  responses
+                if key.startswith( 'warning_' ):
+                    warningsAccepted.append(key.replace("warning_", ""))
+                if key.startswith( 'justification_' ):
+                     justifications[key.replace("justification_", "")] = response[0]
+                elif key != 'next' and key != 'start':
                     if len(response) > 1:
                         user_responses[key] = response
                     elif len(response) == 0:
@@ -152,7 +159,13 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
             q_manager.store_response(user_responses)
 
-            if q_manager.is_valid_response(user_responses):
+            # Save the current accepted warnings to cassandra
+            q_manager.store_warnings(warningsAccepted)
+
+            # Save the justifications
+            q_manager.store_justifications(justifications)
+
+            if q_manager.is_valid_response(user_responses, warningsAccepted):
                 q_manager.get_next_question(user_responses)
 
         set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
@@ -186,6 +199,8 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                     return render_template('questions/' + question.type + '.html',
                                     question=question,
                                     user_response=q_manager.get_responses(),
+                                    user_warningsAccepted=q_manager.get_warningsAccepted(),
+                                    user_justification=q_manager.get_justifications(),
                                     questionnaire=q_manager,
                                     request=request,
                                     current="question")
