@@ -3,7 +3,9 @@ import json
 from branching import SkipCondition
 from collections import OrderedDict
 
-class QuestionnaireManager:
+
+class QuestionnaireManager(object):
+
     def __init__(self, questionnaire_schema, questionnaire_state):
         self.title = None
         self.question_index = 0
