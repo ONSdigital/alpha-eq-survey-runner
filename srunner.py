@@ -3,34 +3,17 @@ from flask_zurb_foundation import Foundation
 import requests
 import os
 import json
-from flask_cassandra import CassandraCluster
 import logging
 from logging import StreamHandler
 import uuid
 from questionnaireManager import QuestionnaireManager
 from settings import APP_FIXTURES
-import time
-from cassandra.cluster import NoHostAvailable
+import eq_cassandra
 
 app = Flask(__name__)
 app.debug = True
 Foundation(app)
 
-app.config['CASSANDRA_NODES'] = [os.environ.get('CASSANDRA_NODE', 'cassandra')]
-with app.app_context():
-    attempt = 0
-    while True:
-        try:
-            cassandra = CassandraCluster()
-            cassandra_session = cassandra.connect()
-            break
-        except NoHostAvailable:
-            if attempt < 30:
-                print "Trying cassandra connection, attempt number ", attempt
-                attempt += 1
-                time.sleep(attempt)
-            else:
-                raise
 
 # log to stderr
 file_handler = StreamHandler()
@@ -42,12 +25,15 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
 
 
+
+
 def _load_fixture(filename):
     q_data = None
     with open(os.path.join(APP_FIXTURES, filename)) as f:
         q_data = f.read()
         f.close()
     return q_data
+
 
 @app.route('/')
 def hello():
@@ -71,7 +57,6 @@ def get_form_schema(questionnaire_id):
 
 
 def get_session_data(quest_session_id, session_id):
-    cassandra_session.set_keyspace("sessionstore")
     cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
     r = cassandra_session.execute(cql)
     if r:
@@ -81,7 +66,6 @@ def get_session_data(quest_session_id, session_id):
 
 
 def set_session_data(quest_session_id, session_id, data):
-    cassandra_session.set_keyspace("sessionstore")
     cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
     app.logger.debug(cql)
     result = cassandra_session.execute(cql)
@@ -137,7 +121,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
     if request.method == 'POST':
         if 'start' in request.form:
                 q_manager.start_questionnaire()
-        elif 'next' in request.form:
+        elif 'next' in request.form and q_manager.started:
             # validate response
             user_responses = {}
             warningsAccepted = []
@@ -216,6 +200,8 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                                     request=request,
                                     current="intro")
 
+
+cassandra_cluster, cassandra_session = eq_cassandra.connect_to_cassandra("sessionstore")
 
 if __name__ == '__main__':
     app.debug = True
