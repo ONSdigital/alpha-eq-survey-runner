@@ -80,6 +80,7 @@ class Question(object):
             if rule.get_type() == 'error':
                 if not rule.is_valid(response):
                     self.errors.append(rule.get_message(response))
+                    break
             elif rule.get_type() == 'warning':
                 if not rule.is_valid(response):
                     # All warnings need to be recorded to populate checkboxes and messages

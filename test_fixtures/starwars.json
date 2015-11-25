@@ -44,17 +44,17 @@
                     "questionHelp": "Please only enter one character, i.e. Han Solo",
                     "questionType": "InputText",
                     "validation": [
-                        {
-                            "condition": "maxlength",
-                            "value": 3,
-                            "type": "warning",
-                            "message" : "Over text limit"
-                        },
                          {
                             "condition": "required",
                             "value": true,
                             "type": "error",
                             "message" : "This field is required"
+                        },
+                         {
+                            "condition": "maxlength",
+                            "value": "20",
+                            "type": "warning",
+                            "message" : "This field is quite is long"
                         }
                     ]
                 },
@@ -281,25 +281,25 @@
                         },
                           {
                             "condition": "lessthan",
-                            "value": 11,
+                            "value": "11",
                             "type": "error",
                             "message" : "This field should be less then 11"
                         },
                            {
                             "condition": "greaterthan",
-                            "value": 0,
+                            "value": "0",
                             "type": "error",
                             "message" : "This field  should be greater then 0"
                         },
                           {
                             "condition": "notequal",
-                            "value": 1,
+                            "value": "1",
                             "type": "error",
                             "message" : "Come on, really?"
                         },
                          {
                             "condition": "equal",
-                            "value": 10,
+                            "value": "10",
                             "type": "warning",
                             "message" : "you could always change it to 10"
                         }

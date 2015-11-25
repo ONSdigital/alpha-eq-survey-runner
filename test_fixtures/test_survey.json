@@ -19,7 +19,7 @@
         },
          {
           "condition": "maxlength",
-          "value": 15,
+          "value": "15",
           "type": "warning",
           "message" : "This field is long, are you sure?"
         }
