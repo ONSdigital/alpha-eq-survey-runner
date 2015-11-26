@@ -9,6 +9,7 @@ import uuid
 from questionnaireManager import QuestionnaireManager
 from settings import APP_FIXTURES
 import eq_cassandra
+import boto3
 
 app = Flask(__name__)
 app.debug = True
@@ -23,6 +24,14 @@ app.logger.addHandler(file_handler)
 # @TODO change this env variable
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
+
+
+# store the responses in a S3 bucket
+def submit_data(sessionid, data):
+    key = sessionid + '.json'
+    data_in_json = json.dumps(data)
+    s3 = boto3.resource('s3')
+    s3.Bucket('digitaleq').put_object(Key=key, Body=data_in_json)
 
 
 def _load_fixture(filename):
@@ -176,6 +185,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
         if q_manager.started:
             if q_manager.completed:
+                submit_data(quest_session_id, q_manager.get_questionnaire_state());
                 return render_template('survey_completed.html',
                                         responses=q_manager.get_responses(),
                                         questionnaire=q_manager,
