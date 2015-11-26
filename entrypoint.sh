@@ -1,2 +1,2 @@
 #! /bin/bash
-python srunner.py
+python eq_cassandra.py && python srunner.py
