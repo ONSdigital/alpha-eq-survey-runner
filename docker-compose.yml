@@ -4,6 +4,7 @@ web:
    - "8080:8080"
   volumes:
    - .:/opt/eq-survey-runner
+   - ~/.aws:/root/.aws
   environment:
     - MODE=dev
   links:
