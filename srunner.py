@@ -185,7 +185,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
         if q_manager.started:
             if q_manager.completed:
-                submit_data(quest_session_id, q_manager.get_questionnaire_state());
+                submit_data(quest_session_id, q_manager.get_submitted_data());
                 return render_template('survey_completed.html',
                                         responses=q_manager.get_responses(),
                                         questionnaire=q_manager,
