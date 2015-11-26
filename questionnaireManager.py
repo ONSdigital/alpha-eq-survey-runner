@@ -7,6 +7,8 @@ from collections import OrderedDict
 class QuestionnaireManager(object):
 
     def __init__(self, questionnaire_schema, questionnaire_state):
+        self.questionnaire_id = None
+        self.survey_id = None
         self.title = None
         self.question_index = 0
         self.started = False
@@ -23,7 +25,8 @@ class QuestionnaireManager(object):
             self._load_questionnaire_state(questionnaire_state)
 
     def _load_questionnaire_data(self, questionnaire_data):
-
+        self.survey_id = questionnaire_data['survey_id']
+        self.questionnaire_id = questionnaire_data['questionnaire_id']
         self.title = questionnaire_data['title']
         self.overview = questionnaire_data['overview']
         for index, schema in enumerate(questionnaire_data['questions']):
@@ -127,6 +130,18 @@ class QuestionnaireManager(object):
             'warningsAccepted': self.warningsAccepted,
             'justifications': self.justifications
         }
+
+    def get_submitted_data(self):
+        if self.completed:
+            return {
+                'surveyId': self.survey_id,
+                'questionnaireId': self.questionnaire_id,
+                'responses': self.responses,
+                'warningsAccepted': self.warningsAccepted,
+                'justifications': self.justifications
+            }
+        else:
+            return {}
 
     def store_response(self, response):
         for ref in response.keys():
