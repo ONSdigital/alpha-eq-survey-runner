@@ -4,6 +4,11 @@
 
 <b>Section: {{ question.question_text }}</b>
 
+{% if question.repeats() %}
+<input type="text" name="repetition" value="{{ question.get_repetition() }}"/>
+{% endif  %}
+
+
 {% for question in question.children %}
 {% include 'questions/' + question.type + '.html' %}
 {% endfor %}

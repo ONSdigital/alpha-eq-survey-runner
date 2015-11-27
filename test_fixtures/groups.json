@@ -63,7 +63,8 @@
           "parts": [],
           "dndType": "item",
           "questionType": "InputText",
-          "type": "number_question"
+          "type": "number_question",
+          "repeating":false
         },
         {
           "questionText": "<p>Rich1</p>",
@@ -86,7 +87,8 @@
           "parts": [],
           "dndType": "item",
           "questionType": "TextBlock",
-          "type": "rich_text_block"
+          "type": "rich_text_block",
+          "repeating":false
         },
         {
           "questionText": "Multi 1",
@@ -118,7 +120,8 @@
           ],
           "dndType": "item",
           "questionType": "MultipleChoice",
-          "type": "radio_question"
+          "type": "radio_question",
+          "repeating":false
         },
         {
           "questionText": "check1",
@@ -146,7 +149,8 @@
           ],
           "dndType": "item",
           "questionType": "CheckBox",
-          "type": "check_box_question"
+          "type": "check_box_question",
+          "repeating":false
         },
         {
           "questionText": "text1",
@@ -175,7 +179,8 @@
           "parts": [],
           "dndType": "item",
           "questionType": "InputText",
-          "type": "text_question"
+          "type": "text_question",
+          "repeating":false
         },
         {
           "questionText": "Number2",
@@ -204,7 +209,8 @@
           "parts": [],
           "dndType": "item",
           "questionType": "InputText",
-          "type": "number_question"
+          "type": "number_question",
+          "repeating":false
         }
       ],
       "validation": [
@@ -219,7 +225,8 @@
       "displayConditions": [],
       "skipConditions": [],
       "branchConditions": [],
-      "parts": []
+      "parts": [],
+      "repeating":false
     },
     {
       "questionText": "section2",
@@ -249,7 +256,8 @@
           "parts": [],
           "dndType": "item",
           "questionType": "TextBlock",
-          "type": "rich_text_block"
+          "type": "rich_text_block",
+          "repeating":false
         },
         {
           "questionText": "multi2",
@@ -277,7 +285,8 @@
           ],
           "dndType": "item",
           "questionType": "MultipleChoice",
-          "type": "radio_question"
+          "type": "radio_question",
+          "repeating":false
         },
         {
           "questionText": "check2",
@@ -305,7 +314,8 @@
           ],
           "dndType": "item",
           "questionType": "CheckBox",
-          "type": "check_box_question"
+          "type": "check_box_question",
+          "repeating":false
         },
         {
           "questionText": "number2",
@@ -334,7 +344,8 @@
           "parts": [],
           "dndType": "item",
           "questionType": "InputText",
-          "type": "number_question"
+          "type": "number_question",
+          "repeating":false
         },
         {
           "questionText": "text2",
@@ -357,7 +368,8 @@
           "parts": [],
           "dndType": "item",
           "questionType": "InputText",
-          "type": "text_question"
+          "type": "text_question",
+          "repeating":false
         }
       ],
       "validation": [
@@ -375,7 +387,8 @@
       "parts": [],
       "dndType": "group",
       "questionType": "QuestionGroup",
-      "type": "group"
+      "type": "group",
+      "repeating":false
     }
   ]
 }

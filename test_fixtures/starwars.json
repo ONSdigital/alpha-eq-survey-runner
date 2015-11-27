@@ -27,7 +27,8 @@
                             "type": "error",
                             "message" : "This field is required"
                         }
-                    ]
+                    ],
+                    "repeating":false
                 },
                 {
                     "type": "text_question",
@@ -56,7 +57,8 @@
                             "type": "warning",
                             "message" : "This field is quite is long"
                         }
-                    ]
+                    ],
+                    "repeating":false
                 },
                 {
                     "type": "radio_question",
@@ -117,7 +119,8 @@
                             "type": "error",
                             "message" : "This field is required"
                         }
-                    ]
+                    ],
+                    "repeating":false
                 },
                 {
                     "type": "check_box_question",
@@ -185,7 +188,8 @@
                             "type": "error",
                             "message" : "This field is required"
                         }
-                    ]
+                    ],
+                    "repeating":false
                 },
                 {
                     "questionType": "Dropdown",
@@ -224,10 +228,11 @@
                         {
                             "condition": "required",
                             "value": true,
-                            "type": "error",
+                            "type": "warning",
                             "message" : "This field is required"
                         }
-                    ]
+                    ],
+                    "repeating":false
                 }
             ],
             "id": 0,
@@ -248,7 +253,8 @@
                     "type": "error",
                     "message" : "This field is required"
                 }
-            ]
+            ],
+            "repeating":false
         },
         {
             "children": [
@@ -303,7 +309,8 @@
                             "type": "warning",
                             "message" : "you could always change it to 10"
                         }
-                    ]
+                    ],
+                    "repeating":false
 
                 }
             ],
@@ -325,7 +332,8 @@
                     "type": "error",
                     "message" : "This field is required"
                 }
-            ]
+            ],
+            "repeating":false
         },
         {
             "children": [
@@ -333,7 +341,7 @@
                     "type": "text_question",
                     "children": [],
                     "dndType": "item",
-                    "questionText": "Please suggest any future improvements for episode 8",
+                    "questionText": "How many future improvements can you suggest?",
                     "questionError": "",
                     "displayProperties": {},
                     "skipConditions": [],
@@ -341,7 +349,7 @@
                     "questionReference": "q1",
                     "displayConditions": [],
                     "branchConditions": [],
-                    "questionHelp": "This question is optional",
+                    "questionHelp": "Please enter a numeric value",
                     "questionType": "InputText",
                      "validation": [
                         {
@@ -349,9 +357,15 @@
                             "value": true,
                             "type": "error",
                             "message" : "This field is required"
+                        },
+                        {
+                            "condition": "numeric",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field should be a number"
                         }
-                    ]
-
+                    ],
+                    "repeating":false
                 }
             ],
             "id": 1,
@@ -372,8 +386,60 @@
                     "type": "error",
                     "message": "This field is required"
                 }
+            ],
+            "repeating":false
+        },
+        {
+            "children": [
+                {
+                    "type": "text_question",
+                    "children": [],
+                    "dndType": "item",
+                    "questionText": "Repeating unit",
+                    "questionError": "",
+                    "displayProperties": {},
+                    "skipConditions": [],
+                    "parts": [],
+                    "questionReference": "q1",
+                    "displayConditions": [],
+                    "branchConditions": [],
+                    "questionHelp": "Please enter an improvement",
+                    "questionType": "InputText",
+                     "validation": [
+                        {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ],
+                    "repeating":false
+                }
+            ],
+            "id": 3,
+            "questionText": "Future Improvements List",
+            "questionError": "",
+            "displayProperties": {},
+            "skipConditions": [],
+            "parts": [],
+            "questionReference": "sectionFour",
+            "displayConditions": [],
+            "branchConditions": [],
+            "repeating": {
+              "count": {
+                "value": "3"
+              }
+            },
+            "questionHelp": "",
+            "questionType": "QuestionGroup",
+            "validation": [
+                {
+                    "condition": "required",
+                    "value": true,
+                    "type": "error",
+                    "message": "This field is required"
+                }
             ]
-
         }
     ]
 }

@@ -134,12 +134,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                 if key.startswith( 'justification_' ):
                      justifications[key.replace("justification_", "")] = response[0]
                 elif key != 'next' and key != 'start':
-                    if len(response) > 1:
-                        user_responses[key] = response
-                    elif len(response) == 0:
-                        user_responses[key] = None
-                    else:
-                        user_responses[key] = response[0]
+                    user_responses[key] = response
 
             q_manager.store_response(user_responses)
 

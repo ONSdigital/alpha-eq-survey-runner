@@ -1,7 +1,12 @@
 <article>
-  
+
   {% block question_template %}
   {% endblock question_template %}
+
+  {% if question.repeats() %}
+  <input type="hidden" name="repetition" value="{{ question.get_repetition() }}"/>
+  {% endif  %}
+
   {% if question.get_errors() %}
       {% for error in question.get_errors() %}
   <small class="error">{{error}}</small>

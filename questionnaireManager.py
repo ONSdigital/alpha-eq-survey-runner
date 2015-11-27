@@ -3,9 +3,7 @@ import json
 from branching import SkipCondition
 from collections import OrderedDict
 
-
-class QuestionnaireManager(object):
-
+class QuestionnaireManager:
     def __init__(self, questionnaire_schema, questionnaire_state):
         self.title = None
         self.question_index = 0
@@ -15,7 +13,7 @@ class QuestionnaireManager(object):
         self.responses = {}
         self.history = []
         self.warningsAccepted = []
-        self.justifications={}
+        self.justifications = {}
         self.current_question = None
         self._load_questionnaire_data(json.loads(questionnaire_schema))
         self._ensure_valid_routing()
@@ -34,7 +32,7 @@ class QuestionnaireManager(object):
             # but if not lets set them
             if not question._reference:
                 question._reference = 'q' + str(index)
-                
+
             self._add_question(question)
 
     def _ensure_valid_routing(self):
@@ -56,28 +54,33 @@ class QuestionnaireManager(object):
 
         self.started = questionnaire_state['started']
         self.completed = questionnaire_state['completed']
-        self.question_index = questionnaire_state['index']
-        self.responses = questionnaire_state['responses']
+        self.user_data = questionnaire_state['user_data']
         self.history = questionnaire_state['history']
-        self.warningsAccepted = questionnaire_state['warningsAccepted']
-        self.justifications= questionnaire_state['justifications']
 
         # validate any previous data
         if len(self.questions) != 0:
-            for index in range(0, self.question_index + 1):
-                question = self.questions[index]
-                if self._exists_in_history(question.get_reference()):
-                    question.is_valid_response(self.responses,self.warningsAccepted)
+            # for index in range(0, self.question_index + 1):
+            #     question = self.questions[index]
+            #     if self._exists_in_history(question.get_reference()):
+            #         question.is_valid_response(self.responses, self.warningsAccepted)
 
-            # evaluate skip conditions and skip matching questions
             for question in self.questions:
+                # evaluate skip conditions and skip matching questions
                 if question.has_skip_conditions():
                     conditions = question.get_skip_conditions()
                     for condition in conditions:
                         if self.condition_met(condition):
                             question.skipping = True
 
-            self.current_question = self.questions[self.question_index]
+
+            for reference in self.user_data.keys():
+                question = self.get_question_by_reference(reference)
+                question.set_user_data(self.user_data[reference])
+
+            self.current_question = self.get_question_by_reference(questionnaire_state['current_question'])
+            self.question_index = self.get_current_question_index()
+
+
 
     def _add_question(self, question):
         self.questions.append(question)
@@ -121,27 +124,28 @@ class QuestionnaireManager(object):
         return {
             'started': self.started,
             'completed': self.completed,
-            'index': self.question_index,
-            'responses': self.responses,
+            'current_question': self.current_question.get_reference(),
             'history': self.history,
-            'warningsAccepted': self.warningsAccepted,
-            'justifications': self.justifications
+            'user_data' : self.user_data
         }
 
     def store_response(self, response):
-        for ref in response.keys():
-            self.responses[ref] = response[ref]
+        if 'repetition' in response:
+            index = int(response['repetition'])
+            for ref in response.keys():
+                if ref is not 'repetition':
+                    if ref not in self.responses:
+                        self.responses[ref] = []
+
+                    while len(self.responses[ref]) <= index:
+                        self.responses[ref].append('')
+
+                    self.responses[ref][index] = response[ref]
+        else:
+            for ref in response.keys():
+                self.responses[ref] = response[ref]
+
         self._store_in_history(response)
-
-    def store_warnings(self, warningsAccepted):
-
-        for warning in warningsAccepted:
-            if warning not in self.warningsAccepted or '':
-                self.warningsAccepted.append(warning)
-
-    def store_justifications(self, justifications):
-        for ref in justifications.keys():
-            self.justifications[ref] = justifications[ref]
 
     def _store_in_history(self, response):
         if self.current_question:
@@ -152,7 +156,7 @@ class QuestionnaireManager(object):
                 history = self._find_history(self.current_question.get_reference())
 
             history['reference'] = self.current_question.get_reference()
-            history['valid'] = self.current_question.is_valid_response(response,self.warningsAccepted)
+            history['valid'] = self.current_question.validate().is_valid()
 
     def _exists_in_history(self, reference):
         for history in self.history:
@@ -166,10 +170,10 @@ class QuestionnaireManager(object):
                 return history
         return None
 
-    def is_valid_response(self, user_answer, warningsAccepted):
+    def validate(self):
         if self.current_question:
-            return self.current_question.is_valid_response(user_answer, warningsAccepted)
-        return True
+            return self.current_question.validate()
+        return None
 
     def get_question_warnings(self, reference=None):
         if reference is None and self.current_question:
@@ -193,9 +197,13 @@ class QuestionnaireManager(object):
         else:
             return None
 
-    def get_next_question(self, response):
-        if response and self.current_question.branches(response):
-            target_question = self.current_question.get_branch_target(response)
+    def get_next_question(self):
+        if self.current_question.repeats():
+            self.current_question.repetition += 1
+            return self.current_question
+
+        if self.current_question.branches():
+            target_question = self.current_question.get_branch_target()
             self.branch_to_question(target_question)
             return self.current_question
 
@@ -232,6 +240,11 @@ class QuestionnaireManager(object):
 
     # will use in template
     def get_question_by_reference(self, reference):
+        repetition = 0
+        if ':' in reference:
+            repetition = int(reference[reference.index(':') + 1:])
+            reference = reference[:reference.index(':')]
+
         if reference.startswith("EQ_"):
             reference = reference.replace("EQ_", "")
 
@@ -239,11 +252,13 @@ class QuestionnaireManager(object):
         if len(address_parts) == 1:
             for question in self.questions:
                 if question._reference == reference:
+                    question.repetition = repetition
                     return question
         else:
             this_level = address_parts.pop(0)
             for question in self.questions:
                 if question._reference == this_level:
+                    question.repetition = repetition
                     return question.get_question_by_reference('_'.join(address_parts))
 
     def complete_questionnaire(self):
@@ -264,6 +279,19 @@ class QuestionnaireManager(object):
        return condition.state == self.get_response_by_reference(condition.trigger)
 
     def get_response_by_reference(self, reference):
-        if reference in self.responses:
-            return self.responses[reference]
+        question = self.get_question_by_reference(reference)
+
+        if question:
+            return question.get_answer()
+
         return None
+
+    def update(self, responses):
+        repetition = 0
+        if 'repetition' in responses.keys():
+            repetition = int(responses['repetition'])
+        for reference in responses.keys():
+            if reference != 'repetition':
+                question = self.get_question_by_reference(reference)
+                question.set_repetition(repetition)
+                question.update(responses[reference])

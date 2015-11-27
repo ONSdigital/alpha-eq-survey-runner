@@ -1,5 +1,6 @@
 import importlib
 from branching import JumpTo
+from validators import ValidationResult
 
 
 class Question(object):
@@ -11,6 +12,7 @@ class Question(object):
         self.question_text = question_schema['questionText']
         self.question_help = question_schema['questionHelp']
         self._reference = question_schema['questionReference']
+        self._repeating = self._build_repeating(question_schema['repeating'])
         self.display_properties = None
         self.validation = self._build_validation(question_schema['validation'])
         self.parts = self._build_parts(question_schema['parts'])
@@ -18,10 +20,31 @@ class Question(object):
         self.display_conditions = None
         self.skip_conditions = []
         self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
-        self.warnings = []
-        self.errors = []
-        self.allWarningsAccepted =True
+        self.warnings = {}
+        self.errors = {}
+        self.allWarningsAccepted = True
+        self.answers = []
+        self.accepted = []
+        self.justifications = []
+        self.set_repetition(0)
 
+    def set_user_data(self, user_data):
+        if 'answer' in user_data:
+            self.answers = user_data['answer']
+        if 'accepted' in user_data:
+            self.accepted = user_data['accepted']
+        if 'justifications' in user_data:
+            self.justifications = user_data['justifications']
+
+        if self.repeats():
+            self.set_repetition(len(self.answers))
+
+    def get_user_data(self):
+        return {
+            'answer': self.answers,
+            'accepted': self.accepted,
+            'justifications': self.justifications
+        }
 
     @staticmethod
     def factory(schema, parent=None):
@@ -44,6 +67,25 @@ class Question(object):
 
         return rules
 
+    def _build_repeating(self, schema):
+        if schema:
+            if 'count' in schema:
+                # we are repeating a specific number of times
+                if 'response' in schema['count']:
+                    # we are repeating based on a previous response
+                    return True
+
+                if 'value' in schema['count']:
+                    # not implemented, just here as a placeholder for the thought
+                    return True
+
+
+            if 'until' in schema:
+                # not implemented, just here as a placeholder for the thought
+                return False
+
+        return False
+
     def _build_parts(self, schema):
         parts = []
         for part in schema:
@@ -60,43 +102,44 @@ class Question(object):
 
         return branch_conditions
 
-    def branches(self, response):
+    def branches(self):
         for rule in self.branch_conditions:
-            if rule.trigger == self.get_reference() and rule.state == response:
+            if rule.trigger == self.get_reference() and rule.state == self.answers[self.repetition]:
                 # need to append the EQ_ rule.target comes from the schema
                 return "EQ_" + rule.target
 
         return None
 
-    def get_branch_target(self, response):
-        return self.branches(response)
+    def get_branch_target(self):
+        return self.branches()
 
-    def is_valid_response(self, response, warningAccepted):
+    def validate(self):
+        return self._validate_answer(self.answers[self.repetition])
 
+    def _validate_answer(self, answer):
         self.errors = []
-        self.allWarningsAccepted =True
-
+        self.warnings = []
         for rule in self.validation:
             if rule.get_type() == 'error':
-                if not rule.is_valid(response):
-                    self.errors.append(rule.get_message(response))
+                if not rule.is_valid(answer):
+                    self.errors.append(rule.get_message(answer))
                     break
             elif rule.get_type() == 'warning':
-                if not rule.is_valid(response):
+                if not rule.is_valid(answer):
                     # All warnings need to be recorded to populate checkboxes and messages
-                    self.warnings.append(rule.get_message(response))
-                    # If there is a single warning on the page which hasn't been accepted
-                    # submission should be blocked
-                    if not warningAccepted:
-                        self.allWarningsAccepted =False
+                    self.warnings.append(rule.get_message(answer))
 
-        return self.allWarningsAccepted and len(self.errors) == 0
+        return ValidationResult(self.errors, self.warnings, self.accepted[self.repetition])
+
 
     def get_warnings(self, reference=None):
-        return self.warnings or None
+        return self.warnings
 
     def get_errors(self, reference=None):
-        return self.errors or None
+        return self.errors
+
+    def get_accepted(self):
+        return self.accepted
 
     def get_branch_conditions(self):
         return self.branch_conditions
@@ -119,20 +162,43 @@ class Question(object):
         else:
             return "EQ_" + self._reference
 
+    def repeats(self):
+        return self._repeating
+
+    def get_repetition(self):
+        return self.repetition
+
+    def set_repetition(self, repetition):
+        while len(self.answers) <= repetition:
+            self.answers.append('')
+            self.justifications.append(False)
+            self.accepted.append(False)
+
+        self.repetition = repetition
+
+    def get_answer(self):
+        if self.repetition >= len(self.answers):
+            return None
+
+        return self.answers[self.repetition]
+
+    def update(self, answer):
+        self.answers[self.repetition] = answer
+
 class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(MultipleChoiceQuestion, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, response,warningAccepted):
-        valid = super(MultipleChoiceQuestion, self).is_valid_response(response,False)
+    def validate(self):
+        valid = super(MultipleChoiceQuestion, self).validate()
 
-        if response is not None and not response.isspace():
+        answer = self.get_answer()
+        if answer is not None and not answer.isspace():
             for part in self.parts:
-                if part == response:
-                    return True
+                if part == answer:
+                    return valid
 
-            self.errors.append('invalid option')
-            return False
+            valid.errors.append(unicode('Invalid option'))
 
         return valid
 
@@ -141,16 +207,17 @@ class CheckBoxQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(CheckBoxQuestion, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, response, warningsAccepted):
-        if isinstance(response, list):
-            for item in response:
-                if item: # we send a blank with every checkbox question, otherwise they don't show up
-                    if not super(CheckBoxQuestion, self).is_valid_response(item, False):
-                        return False
-            return True
-        else:
-            return super(CheckBoxQuestion, self).is_valid_response(response,False)
+    def validate(self):
+        result = ValidationResult([], [], False)
+        for answer in self.answers:
+            for item in answer:
+                itemResult = self._validate_answer(item)
+                result.errors += itemResult.errors
+                result.warnings += itemResult.warnings
+                if itemResult.accepted:
+                    result.accepted = True
 
+        return result
 
 class InputTextQuestion(Question):
     def __init__(self, question_schema, parent=None):
@@ -166,21 +233,14 @@ class TextBlock(Question):
     def __init__(self, question_schema, parent=None):
         super(TextBlock, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, request, False):
-        return True
-
-    def get_warnings(self, reference=None):
-        return None
-
-    def get_warnings(self, reference=None):
-        return None
+    def validate(self):
+        return ValidationResult([], [], [])
 
 
 class QuestionGroup(Question):
     def __init__(self, question_schema, parent=None):
         super(QuestionGroup, self).__init__(question_schema)
         self.children = []
-        self.errors = {}
         self._load_children(question_schema['children'])
 
     def _load_children(self, children_schema):
@@ -190,46 +250,50 @@ class QuestionGroup(Question):
                 question._reference = 'q' + str(index)
             self.children.append(question)
 
-    def is_valid_response(self, responses, warningsAccepted):
-        self.errors = {}
-        warning = False
-
+    def validate(self):
         for question in self.children:
+            childResult = question.validate()
 
-            if question.get_reference() in responses.keys():
-                response = responses[question.get_reference()]
-                warning = question.get_reference() in warningsAccepted
-            else:
-                response = None
+        return ValidationResult(self.get_errors(), self.get_warnings(), self.get_accepted())
 
-            if not question.is_valid_response(response, warning):
-                self.errors[question.get_reference()] = question.get_errors()
-
-        return len(self.errors) == 0
-
-    def get_warnings(self, reference=None):
-        return None
+    def get_warnings(self):
+        warnings = {}
+        for question in self.children:
+            warnings[question.get_reference()] = question.get_warnings()
+        return warnings
 
     def get_errors(self, reference=None):
         if reference is None:
-            return self.errors
-        elif reference in self.errors.keys():
-            return self.errors[reference]
-        else:
-            return None
+            errors = {}
+            for question in self.children:
+                errors[question.get_reference()] = question.get_errors()
+            return errors
 
-    def branches(self, responses):
+        elif reference:
+            question = self.get_question_by_reference(reference)
+            return question.get_errors()
+
+        else:
+            return {}
+
+    def get_accepted(self):
+        accepted = {}
+        for question in self.children:
+            accepted[question.get_reference()] = question.get_accepted()
+        return accepted
+
+    def branches(self):
         jumps = []
-        for child in self.children:
-            if child.get_reference() in responses.keys():
-                jump = child.branches(responses[child.get_reference()])
-                if jump:
-                    jumps.append(jump)
+        # for child in self.children:
+        #     if child.get_reference() in responses.keys():
+        #         jump = child.branches(responses[child.get_reference()])
+        #         if jump:
+        #             jumps.append(jump)
 
         return jumps
 
-    def get_branch_target(self, response):
-        jumps = self.branches(response)
+    def get_branch_target(self):
+        jumps = self.branches()
 
         # groups always branch to the first matching target
 
@@ -263,3 +327,6 @@ class QuestionGroup(Question):
             for question in self.children:
                 if question._reference == this_level:
                     return question.get_question_by_reference('_'.join(address_parts))
+
+    def _build_repeating(self, schema):
+        return super(QuestionGroup, self)._build_repeating(schema)

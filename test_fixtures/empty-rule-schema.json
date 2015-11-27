@@ -53,7 +53,8 @@
                     ],
                     "dndType": "item",
                     "questionType": "MultipleChoice",
-                    "type": "radio_question"
+                    "type": "radio_question",
+                    "repeating":false
                 }
             ],
             "validation": [
@@ -68,7 +69,8 @@
             "displayConditions": [],
             "skipConditions": [],
             "branchConditions": [],
-            "parts": []
+            "parts": [],
+            "repeating":false
         }
     ]
 }
