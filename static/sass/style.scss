@@ -255,25 +255,44 @@ input[type="checkbox"] + label, input[type="radio"] + label {
   display: block;
 }
 
-span.error, small.error {
+span.error, small.error, .error {
   margin-top:-20px;
   background:#f6f6f6;
   border-bottom:2px solid red;
   color:#222;
 }
 
+.warning-container i {
+  color:orange;
+}
+
+.warning-container {
+  margin-top:5px;
+}
+
+.warning-container p {
+  font-size: 14px;
+}
+
+.warning-container.error {
+  padding:20px;
+}
+
 ul.multiple-choice {
   list-style-type: none;
   padding:0 0 20px 0;
   margin:0 0 3rem 0;
-  columns: 2;
-  column-count: 2;
+  columns: 2 300px;
 }
 
 ul.multiple-choice li {
-  margin:10px 0;
+  vertical-align: top;
 }
 
+ul.multiple-choice li label {
+  margin:0 0 10px 0;
+  display: inline-block;
+}
 
 article textarea {
   min-height: 200px;

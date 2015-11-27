@@ -1,5 +1,5 @@
 <article>
-  
+
   {% block question_template %}
   {% endblock question_template %}
   {% if question.get_errors() %}
@@ -8,9 +8,13 @@
       {% endfor %}
    {% elif question.get_warnings() %}
       {% for warning in question.get_warnings() %}
-  <small class="warning">{{warning}}</small><input type="checkbox" name="warning_{{question.get_reference()}}" value="true"
-        {% if question.get_reference() in user_warningsAccepted %}checked="checked"{% endif %}>Accept warning<br/>
-    Can you provide a reason, for accepting the warning? <br/><input type="text" name="justification_{{question.get_reference()}}" value="{{user_justification[question.get_reference()] or ''}}">
+        <div class="warning-container error">
+          <p class="warning"><i class="fa fa-exclamation-triangle"></i>&nbsp;<b>{{warning}}</b></p>
+          <input type="checkbox" name="warning_{{question.get_reference()}}" value="true" {% if question.get_reference() in user_warningsAccepted %}checked="checked"{% endif %}>
+          <p>You can accept this warning and proceed by checking the box</p>
+          <p>Please provide a short explanation for accepting the warning</p>
+          <input type="text" placeholder="e.g This question was not relevant to me because..." name="justification_{{question.get_reference()}}" value="{{user_justification[question.get_reference()] or ''}}">
+        </div>
       {% endfor %}
   {% endif %}
 

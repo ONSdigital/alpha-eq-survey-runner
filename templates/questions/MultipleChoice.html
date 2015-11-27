@@ -5,7 +5,7 @@
 <p>{{ question.question_help }}</p>
 <ul class="multiple-choice">
 {% for part in question.parts %}
-  <li><input type="radio" name="{{question.get_reference()}}" value="{{part}}" id="{{ question.get_reference() ~ '_' ~ loop.index0 }}" {% if question.get_reference() in user_response.keys() and user_response[question.get_reference()] == part %}checked="checked"{% endif %}><label for="{{ question.get_reference() ~ '_' ~ loop.index0 }}">{{part}}</label></li>
+  <li><label for="{{ question.get_reference() ~ '_' ~ loop.index0 }}"><input type="radio" name="{{question.get_reference()}}" value="{{part}}" id="{{ question.get_reference() ~ '_' ~ loop.index0 }}" {% if question.get_reference() in user_response.keys() and user_response[question.get_reference()] == part %}checked="checked"{% endif %}>{{part}}</label></li>
 {% endfor %}
 </ul>
 {% endblock question_template %}
