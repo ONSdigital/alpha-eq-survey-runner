@@ -1,381 +1,322 @@
 {
-  "overview":"This is a questionnaire to test stuff",
+  "overview": "This is a questionnaire to test stuff",
   "title": "welcome to my survey about crayons",
-  "questionnaire_title":"Hope",
-  "questions": [
-    {
-      "questionText": "Section1",
-      "questionHelp": "",
-      "questionError": "",
-      "questionReference": "start",
-      "questionType": "QuestionGroup",
-      "dndType": "group",
-      "type": "group",
-      "children": [
-        {
-          "questionText": "Number1",
-          "questionHelp": "Number1",
-          "questionError": "Number1",
-          "questionReference": "q1",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            },
-            {
-              "condition": "numeric",
-              "value": true,
-              "type": "error",
-              "message" : "This field should be a number"
-            },
-             {
-               "condition": "lessthan",
-               "value": "11",
-               "type": "error",
-               "message" : "This field should be less then 11"
-             },
-            {
-              "condition": "greaterthan",
-              "value": "0",
-              "type": "error",
-              "message" : "This field  should be greater then 0"
-            },
-            {
-              "condition": "notequal",
-              "value": "5",
-              "type": "error",
-              "message" : "not 5"
-            },
-            {
-              "condition": "equal",
-              "value": "1",
-              "type": "error",
-              "message" : "only 1 today"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "InputText",
-          "type": "number_question"
-        },
-        {
-          "questionText": "<p>Rich1</p>",
-          "questionHelp": "",
-          "questionError": "",
-          "questionReference": "q2",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "TextBlock",
-          "type": "rich_text_block"
-        },
-        {
-          "questionText": "Multi 1",
-          "questionHelp": "Multi 1",
-          "questionError": "Multi 1",
-          "questionReference": "q3",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [
-            {
-              "type": "option",
-              "value": "option1"
-            },
-            {
-              "type": "option",
-              "value": "option2"
-            }
-          ],
-          "dndType": "item",
-          "questionType": "MultipleChoice",
-          "type": "radio_question"
-        },
-        {
-          "questionText": "check1",
-          "questionHelp": "check1",
-          "questionError": "check1",
-          "questionReference": "q4",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [
-            {
-              "type": "option",
-              "value": "Coption1"
-            }
-          ],
-          "dndType": "item",
-          "questionType": "CheckBox",
-          "type": "check_box_question"
-        },
-        {
-          "questionText": "text1",
-          "questionHelp": "text1",
-          "questionError": "text1",
-          "questionReference": "q5",
-          "children": [],
-           "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            },
-             {
-              "condition": "maxlength",
-              "value": "12",
-              "type": "error",
-              "message" : "This field is to big"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "InputText",
-          "type": "text_question"
-        },
-        {
-          "questionText": "Number2",
-          "questionHelp": "Number2",
-          "questionError": "Number2",
-          "questionReference": "q6",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": false,
-              "type": "error",
-              "message" : "This field is required"
-            },
-            {
-              "condition": "numeric",
-              "value": true,
-              "type": "error",
-              "message" : "This field should be a number"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "InputText",
-          "type": "number_question"
-        }
-      ],
-      "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-      "displayProperties": {},
-      "displayConditions": [],
-      "skipConditions": [],
-      "branchConditions": [],
-      "parts": []
-    },
-    {
-      "questionText": "section2",
-      "questionHelp": "",
-      "questionError": "",
-      "questionType": "QuestionGroup",
-      "questionReference": "",
-      "children": [
-        {
-          "questionText": "<p>rich2</p>",
-          "questionHelp": "",
-          "questionError": "",
-          "questionReference": "q1",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "TextBlock",
-          "type": "rich_text_block"
-        },
-        {
-          "questionText": "multi2",
-          "questionHelp": "multi2",
-          "questionError": "multi2",
-          "questionReference": "q2",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [
-            {
-              "type": "option",
-              "value": "multi2option1"
-            }
-          ],
-          "dndType": "item",
-          "questionType": "MultipleChoice",
-          "type": "radio_question"
-        },
-        {
-          "questionText": "check2",
-          "questionHelp": "check2",
-          "questionError": "check2",
-          "questionReference": "q3",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [
-            {
-              "type": "option",
-              "value": "check2option"
-            }
-          ],
-          "dndType": "item",
-          "questionType": "CheckBox",
-          "type": "check_box_question"
-        },
-        {
-          "questionText": "number2",
-          "questionHelp": "number2",
-          "questionError": "number2",
-          "questionReference": "q4",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            },
-            {
-              "condition": "numeric",
-              "value": true,
-              "type": "error",
-              "message" : "This field should be a number"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "InputText",
-          "type": "number_question"
-        },
-        {
-          "questionText": "text2",
-          "questionHelp": "text2",
-          "questionError": "text2",
-          "questionReference": "q5",
-          "children": [],
-          "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
-          "displayProperties": {},
-          "displayConditions": [],
-          "skipConditions": [],
-          "branchConditions": [],
-          "parts": [],
-          "dndType": "item",
-          "questionType": "InputText",
-          "type": "text_question"
-        }
-      ],
-      "validation": [
-            {
-              "condition": "required",
-              "value": true,
-              "type": "error",
-              "message" : "This field is required"
-            }
-          ],
+  "questionnaire_title": "Hope",
+  "questions": [{
+    "questionText": "Section1",
+    "questionHelp": "",
+    "questionError": "",
+    "questionReference": "start",
+    "questionType": "QuestionGroup",
+    "dndType": "group",
+    "type": "group",
+    "children": [{
+      "questionText": "Number1",
+      "questionHelp": "Number1",
+      "questionError": "Number1",
+      "questionReference": "q1",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }, {
+        "condition": "numeric",
+        "value": true,
+        "type": "error",
+        "message": "This field should be a number"
+      }, {
+        "condition": "greaterthan",
+        "value": "10",
+        "type": "error",
+        "message": "This field should be less than 11"
+      }, {
+        "condition": "lessthan",
+        "value": "1",
+        "type": "error",
+        "message": "This field should be greater than 0"
+      }, {
+        "condition": "equal",
+        "value": "5",
+        "type": "error",
+        "message": "should not be 5"
+      }, {
+        "condition": "notequal",
+        "value": "6",
+        "type": "error",
+        "message": "should be 6"
+      }],
       "displayProperties": {},
       "displayConditions": [],
       "skipConditions": [],
       "branchConditions": [],
       "parts": [],
-      "dndType": "group",
-      "questionType": "QuestionGroup",
-      "type": "group"
-    }
-  ]
+      "dndType": "item",
+      "questionType": "InputText",
+      "type": "number_question"
+    }, {
+      "questionText": "<p>Rich1</p>",
+      "questionHelp": "",
+      "questionError": "",
+      "questionReference": "q2",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "item",
+      "questionType": "TextBlock",
+      "type": "rich_text_block"
+    }, {
+      "questionText": "Multi 1",
+      "questionHelp": "Multi 1",
+      "questionError": "Multi 1",
+      "questionReference": "q3",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [{
+        "type": "option",
+        "value": "option1"
+      }, {
+        "type": "option",
+        "value": "option2"
+      }],
+      "dndType": "item",
+      "questionType": "MultipleChoice",
+      "type": "radio_question"
+    }, {
+      "questionText": "check1",
+      "questionHelp": "check1",
+      "questionError": "check1",
+      "questionReference": "q4",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [{
+        "type": "option",
+        "value": "Coption1"
+      }],
+      "dndType": "item",
+      "questionType": "CheckBox",
+      "type": "check_box_question"
+    }, {
+      "questionText": "text1",
+      "questionHelp": "text1",
+      "questionError": "text1",
+      "questionReference": "q5",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }, {
+        "condition": "maxlength",
+        "value": "12",
+        "type": "error",
+        "message": "This field is to big"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "item",
+      "questionType": "InputText",
+      "type": "text_question"
+    }, {
+      "questionText": "Number2",
+      "questionHelp": "Number2",
+      "questionError": "Number2",
+      "questionReference": "q6",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": false,
+        "type": "error",
+        "message": "This field is required"
+      }, {
+        "condition": "numeric",
+        "value": true,
+        "type": "error",
+        "message": "This field should be a number"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "item",
+      "questionType": "InputText",
+      "type": "number_question"
+    }],
+    "validation": [{
+      "condition": "required",
+      "value": true,
+      "type": "error",
+      "message": "This field is required"
+    }],
+    "displayProperties": {},
+    "displayConditions": [],
+    "skipConditions": [],
+    "branchConditions": [],
+    "parts": []
+  }, {
+    "questionText": "section2",
+    "questionHelp": "",
+    "questionError": "",
+    "questionType": "QuestionGroup",
+    "questionReference": "",
+    "children": [{
+      "questionText": "<p>rich2</p>",
+      "questionHelp": "",
+      "questionError": "",
+      "questionReference": "q1",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "item",
+      "questionType": "TextBlock",
+      "type": "rich_text_block"
+    }, {
+      "questionText": "multi2",
+      "questionHelp": "multi2",
+      "questionError": "multi2",
+      "questionReference": "q2",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [{
+        "type": "option",
+        "value": "multi2option1"
+      }],
+      "dndType": "item",
+      "questionType": "MultipleChoice",
+      "type": "radio_question"
+    }, {
+      "questionText": "check2",
+      "questionHelp": "check2",
+      "questionError": "check2",
+      "questionReference": "q3",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [{
+        "type": "option",
+        "value": "check2option"
+      }],
+      "dndType": "item",
+      "questionType": "CheckBox",
+      "type": "check_box_question"
+    }, {
+      "questionText": "number2",
+      "questionHelp": "number2",
+      "questionError": "number2",
+      "questionReference": "q4",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }, {
+        "condition": "numeric",
+        "value": true,
+        "type": "error",
+        "message": "This field should be a number"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "item",
+      "questionType": "InputText",
+      "type": "number_question"
+    }, {
+      "questionText": "text2",
+      "questionHelp": "text2",
+      "questionError": "text2",
+      "questionReference": "q5",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "item",
+      "questionType": "InputText",
+      "type": "text_question"
+    }],
+    "validation": [{
+      "condition": "required",
+      "value": true,
+      "type": "error",
+      "message": "This field is required"
+    }],
+    "displayProperties": {},
+    "displayConditions": [],
+    "skipConditions": [],
+    "branchConditions": [],
+    "parts": [],
+    "dndType": "group",
+    "questionType": "QuestionGroup",
+    "type": "group"
+  }]
 }
