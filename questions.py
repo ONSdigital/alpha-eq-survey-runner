@@ -26,6 +26,7 @@ class Question(object):
     @staticmethod
     def factory(schema, parent=None):
         if schema['questionType'] == 'InputText': return InputTextQuestion(schema, parent)
+        if schema['questionType'] == 'InputNumber': return InputNumberQuestion(schema, parent)
         if schema['questionType'] == 'TextBlock': return TextBlock(schema, parent)
         if schema['questionType'] == 'MultipleChoice': return MultipleChoiceQuestion(schema, parent)
         if schema['questionType'] == 'QuestionGroup': return QuestionGroup(schema, parent)
@@ -155,6 +156,11 @@ class CheckBoxQuestion(Question):
 class InputTextQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(InputTextQuestion, self).__init__(question_schema, parent)
+
+
+class InputNumberQuestion(Question):
+    def __init__(self, question_schema, parent=None):
+        super(InputNumberQuestion, self).__init__(question_schema, parent)
 
 
 class DropdownQuestion(Question):
