@@ -24,7 +24,8 @@
 				"value": true,
 				"type": "error",
 				"message": "This field is required"
-			}]
+			}],
+			"repeating":false
 		}, {
 			"type": "text_question",
 			"children": [],
@@ -49,7 +50,8 @@
 				"value": "20",
 				"type": "warning",
 				"message": "This field is quite is long"
-			}]
+			}],
+			"repeating":false
 		}, {
 			"type": "radio_question",
 			"children": [],
@@ -99,7 +101,8 @@
 				"value": true,
 				"type": "error",
 				"message": "This field is required"
-			}]
+			}],
+			"repeating":false
 		}, {
 			"type": "check_box_question",
 			"children": [],
@@ -155,7 +158,8 @@
 				"value": true,
 				"type": "error",
 				"message": "This field is required"
-			}]
+			}],
+			"repeating":false
 		}, {
 			"questionType": "Dropdown",
 			"questionError": "Just one answer",
@@ -191,7 +195,8 @@
 				"value": true,
 				"type": "error",
 				"message": "This field is required"
-			}]
+			}],
+			"repeating":false
 		}],
 		"id": 0,
 		"questionText": "Star Wars Favourites",
@@ -209,7 +214,8 @@
 			"value": true,
 			"type": "error",
 			"message": "This field is required"
-		}]
+		}],
+		"repeating":false
 	}, {
 		"children": [{
 			"type": "number_question",
@@ -255,7 +261,8 @@
 				"value": "10",
 				"type": "warning",
 				"message": "you could always change it to 10"
-			}]
+			}],
+			"repeating":false
 		}, {
 			"type": "date_question",
 			"children": [],
@@ -280,47 +287,8 @@
 				"value": true,
 				"type": "error",
 				"message": "This field must be a date"
-			}]
-		}],
-		"id": 2,
-		"questionText": "The New Film",
-		"questionError": "",
-		"displayProperties": {},
-		"skipConditions": [],
-		"parts": [],
-		"questionReference": "sectionTwo",
-		"displayConditions": [],
-		"branchConditions": [],
-		"questionHelp": "",
-		"questionType": "QuestionGroup",
-		"validation": [{
-			"condition": "required",
-			"value": true,
-			"type": "error",
-			"message": "This field is required"
-		}]
-	}, {
-		"children": [{
-			"type": "text_question",
-			"children": [],
-			"dndType": "item",
-			"questionText": "Please suggest any future improvements for episode 8",
-			"questionError": "",
-			"displayProperties": {},
-			"skipConditions": [],
-			"parts": [],
-			"questionReference": "q1",
-			"displayConditions": [],
-			"branchConditions": [],
-			"questionHelp": "This question is optional",
-			"questionType": "InputText",
-			"validation": [{
-				"condition": "required",
-				"value": true,
-				"type": "error",
-				"message": "This field is required"
-			}]
-
+			}],
+			"repeating":false
 		}, {
 			"type": "date_question",
 			"children": [],
@@ -345,7 +313,57 @@
 				"value": true,
 				"type": "error",
 				"message": "This field must be a date"
-			}]
+			}],
+			"repeating":false
+		}],
+		"id": 2,
+		"questionText": "The New Films",
+		"questionError": "",
+		"displayProperties": {},
+		"skipConditions": [],
+		"parts": [],
+		"questionReference": "sectionTwo",
+		"displayConditions": [],
+		"branchConditions": [],
+		"questionHelp": "",
+		"questionType": "QuestionGroup",
+		"validation": [{
+			"condition": "required",
+			"value": true,
+			"type": "error",
+			"message": "This field is required"
+		}],
+		"repeating":false
+	}, {
+		"children": [{
+			"type": "text_question",
+			"children": [],
+			"dndType": "item",
+			"questionText": "How many future improvements can you suggest?",
+			"questionError": "",
+			"displayProperties": {},
+			"skipConditions": [],
+			"parts": [],
+			"questionReference": "q1",
+			"displayConditions": [],
+			"branchConditions": [],
+			"questionHelp": "Please enter a numeric value",
+			"questionType": "InputText",
+			 "validation": [
+				{
+					"condition": "required",
+					"value": true,
+					"type": "error",
+					"message" : "This field is required"
+				},
+				{
+					"condition": "numeric",
+					"value": true,
+					"type": "error",
+					"message" : "This field should be a number"
+				}
+			],
+			"repeating":false
 		}],
 		"id": 1,
 		"questionText": "Future Improvements",
@@ -363,7 +381,55 @@
 			"value": true,
 			"type": "error",
 			"message": "This field is required"
-		}]
+		}],
+		"repeating":false
 
+	}, {
+		"children": [{
+			"type": "text_question",
+			"children": [],
+			"dndType": "item",
+			"questionText": "Repeating unit",
+			"questionError": "",
+			"displayProperties": {},
+			"skipConditions": [],
+			"parts": [],
+			"questionReference": "q1",
+			"displayConditions": [],
+			"branchConditions": [],
+			"questionHelp": "Please enter an improvement",
+			"questionType": "InputText",
+			 "validation": [
+				{
+					"condition": "required",
+					"value": true,
+					"type": "error",
+					"message" : "This field is required"
+				}
+			],
+			"repeating":false
+		}],
+		"id": 3,
+		"questionText": "Future Improvements List",
+		"questionError": "",
+		"displayProperties": {},
+		"skipConditions": [],
+		"parts": [],
+		"questionReference": "sectionFour",
+		"displayConditions": [],
+		"branchConditions": [],
+		"repeating": {
+		  "count": {
+			"value": "3"
+		  }
+		},
+		"questionHelp": "",
+		"questionType": "QuestionGroup",
+		"validation": [{
+				"condition": "required",
+				"value": true,
+				"type": "error",
+				"message": "This field is required"
+		}]
 	}]
 }

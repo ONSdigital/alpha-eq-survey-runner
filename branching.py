@@ -17,3 +17,12 @@ class SkipCondition(Condition):
     def __init__(self, trigger, state):
         super(SkipCondition, self).__init__(trigger, state)
 
+class Repeat(Condition):
+    def __init__(self, config):
+        if 'count' in config:
+            # we are repeating a predetermine number of times
+            if 'response' in config['count']:
+                # based on an earlier response
+                trigger = config['count']['response']
+                state = None
+        super(Repeat, self).__init__(trigger, state)

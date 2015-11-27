@@ -30,7 +30,8 @@
       "displayConditions": [],
       "skipConditions": [],
       "branchConditions": [],
-      "parts": []
+      "parts": [],
+      "repeating":false
     },
     {
       "questionType": "TextBlock",
@@ -51,7 +52,8 @@
           "message" : "This field is required"
         }
       ],
-      "skipConditions": []
+      "skipConditions": [],
+      "repeating":false
     },
     {
       "questionType": "MultipleChoice",
@@ -82,7 +84,8 @@
         {
           "value": "Green"
         }
-      ]
+      ],
+      "repeating":false
     }
   ]
 }
