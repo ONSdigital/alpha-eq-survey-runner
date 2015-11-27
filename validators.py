@@ -29,6 +29,7 @@ class Required(Validator):
     def get_message(self, response):
         return self._schema['message'] or "This field is requried"
 
+
 # Numeric Field
 class Numeric(Validator):
     def __init__(self, schema):
@@ -47,7 +48,8 @@ class Maxlength(Validator):
         super(Maxlength, self).__init__(schema)
 
     def is_valid(self, response):
-        return unicode(response).__len__() <= int(self._schema['value'])
+        value = self._schema['value']
+        return not value or unicode(response).__len__() <= int(value)
 
     def get_message(self, response):
         return self._schema['message'] or "This field has exceeded maximum length"
@@ -59,7 +61,8 @@ class Lessthan(Validator):
         super(Lessthan, self).__init__(schema)
 
     def is_valid(self, response):
-        return unicode(response).isnumeric() and int(response) < int(self._schema['value'])
+        value = self._schema['value']
+        return not value or unicode(response).isnumeric() and int(response) < int(value)
 
     def get_message(self, response):
         return self._schema['message'] or "This field should less than that"
@@ -71,7 +74,8 @@ class Greaterthan(Validator):
         super(Greaterthan, self).__init__(schema)
 
     def is_valid(self, response):
-        return unicode(response).isnumeric() and int(response) > int(self._schema['value'])
+        value = self._schema['value']
+        return not value or unicode(response).isnumeric() and int(response) > int(value)
 
     def get_message(self, response):
         return self._schema['message'] or "This field should be a great than that"
@@ -83,7 +87,8 @@ class Equal(Validator):
         super(Equal, self).__init__(schema)
 
     def is_valid(self, response):
-        return unicode(response).isnumeric() and int(response) == int(self._schema['value'])
+        value = self._schema['value']
+        return not value or unicode(response).isnumeric() and int(response) == int(value)
 
     def get_message(self, response):
         return self._schema['message'] or "This field should be equal to something else"
@@ -95,7 +100,8 @@ class Notequal(Validator):
         super(Notequal, self).__init__(schema)
 
     def is_valid(self, response):
-        return unicode(response).isnumeric() and int(response) != int(self._schema['value'])
+        value = self._schema['value']
+        return not value or unicode(response).isnumeric() and int(response) != int(value)
 
     def get_message(self, response):
         return self._schema['message'] or "This field should be not equal to that"
