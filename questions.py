@@ -89,6 +89,8 @@ class Question(object):
                     # submission should be blocked
                     if not warningAccepted:
                         self.allWarningsAccepted =False
+                        break
+
 
         return self.allWarningsAccepted and len(self.errors) == 0
 
