@@ -1,379 +1,316 @@
 {
-    "questionnaire_id": "1234",
-    "overview": "This is census survey for the population to discuss their views on Star Wars",
-    "title": "Census 2021",
-    "questionnaire_title": "Star Wars Census",
-    "questions": [
-        {
-            "children": [
-                {
-                    "type": "rich_text_block",
-                    "children": [],
-                    "dndType": "item",
-                    "questionText": "<p>In this section we trying to discover your favourite things about the Star Wars universe.</p>",
-                    "questionError": "",
-                    "displayProperties": {},
-                    "skipConditions": [],
-                    "parts": [],
-                    "questionReference": "q1",
-                    "displayConditions": [],
-                    "branchConditions": [],
-                    "questionHelp": "",
-                    "questionType": "TextBlock",
-                    "validation": [
-                        {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                        }
-                    ]
-                },
-                {
-                    "type": "text_question",
-                    "children": [],
-                    "dndType": "item",
-                    "questionText": "Who is your favourite Star Wars character?",
-                    "questionError": "This question is required",
-                    "displayProperties": {},
-                    "skipConditions": [],
-                    "parts": [],
-                    "questionReference": "q2",
-                    "displayConditions": [],
-                    "branchConditions": [],
-                    "questionHelp": "Please only enter one character, i.e. Han Solo",
-                    "questionType": "InputText",
-                    "validation": [
-                         {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                        },
-                         {
-                            "condition": "maxlength",
-                            "value": "20",
-                            "type": "warning",
-                            "message" : "This field is quite is long"
-                        }
-                    ]
-                },
-                {
-                    "type": "radio_question",
-                    "children": [],
-                    "dndType": "item",
-                    "questionText": "Which Star Wars Film is your favourite?",
-                    "questionError": "This question is required",
-                    "displayProperties": {},
-                    "skipConditions": [],
-                    "parts": [
-                        {
-                            "type": "option",
-                            "value": "Episode 1: The Phantom Menance"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Episode 2: Attack of the Clones"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Episode 3: Revenge of the Sith"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Episode 4: A New Hope"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Episode 5: The Empire Strikes Back"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Episode 6: Return of the Jedi"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Episode 7: The Force Awakens"
-                        }
-                    ],
-                    "questionReference": "q3",
-                    "displayConditions": [],
-                    "branchConditions": [ {
-                            "jumpTo": {
-                                "question":"sectionThree",
-                                "condition": {
-                                    "value": {
-                                        "is":"Episode 1: The Phantom Menance"
-                                    }
-                                }
-                            }
-                        }],
-                    "questionHelp": "Please select one only",
-                    "questionType": "MultipleChoice",
-                    "validation": [
-                        {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                        }
-                    ]
-                },
-                {
-                    "type": "check_box_question",
-                    "children": [],
-                    "dndType": "item",
-                    "questionText": "Please indicate which characters you class as your favourites?",
-                    "questionError": "This question is required",
-                    "displayProperties": {},
-                    "skipConditions": [],
-                    "parts": [
-                        {
-                            "type": "option",
-                            "value": "Princess Leia"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Luke Skywalker"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Kylo Ren"
-                        },
-                        {
-                            "type": "option",
-                            "value": "BB8"
-                        },
-                        {
-                            "type": "option",
-                            "value": "R2D2"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Jar Jar Binks"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Chewbacca"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Darth Vader"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Yoda"
-                        },
-                        {
-                            "type": "option",
-                            "value": "Obi Wan Kenobi"
-                        },
-                        {
-                            "type": "option",
-                            "value": "C3P0"
-                        }
-                    ],
-                    "questionReference": "q4",
-                    "displayConditions": [],
-                    "branchConditions": [],
-                    "questionHelp": "Please tick all that apply",
-                    "questionType": "CheckBox",
-                      "validation": [
-                        {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                        }
-                    ]
-                },
-                {
-                    "questionType": "Dropdown",
-                    "questionError": "Just one answer",
-                    "questionText": "Which Droid would purchase?",
-                    "displayConditions": [],
-                    "questionReference": "q5",
-                    "children": [],
-                    "parts": [
-                        {
-                            "type": "option",
-                            "value": "BB8"
-                        },
-                        {
-                            "type": "option",
-                            "value": "R2D2"
-                        },
-                        {
-                            "type": "option",
-                            "value": "C3P0"
-                        },
-                        {
-                            "type": "option",
-                            "value": "IG-88"
-                        },
-                        {
-                            "type": "option",
-                            "value": "2-1B"
-                        }
-                    ],
-                    "dndType": "item",
-                    "branchConditions": [],
-                    "displayProperties": {},
-                    "questionHelp": "Only select one",
-                    "validation": [
-                        {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                        }
-                    ]
-                }
-            ],
-            "id": 0,
-            "questionText": "Star Wars Favourites",
-            "questionError": "",
-            "displayProperties": {},
-            "skipConditions": [],
-            "parts": [],
-            "questionReference": "sectionOne",
-            "displayConditions": [],
-            "branchConditions": [],
-            "questionHelp": "",
-            "questionType": "QuestionGroup",
-            "validation": [
-                {
-                    "condition": "required",
-                    "value": true,
-                    "type": "error",
-                    "message" : "This field is required"
-                }
-            ]
-        },
-        {
-            "children": [
-                {
-                    "type": "number_question",
-                    "children": [],
-                    "dndType": "item",
-                    "questionText": "On a scale of 1 to 10 please rate your excitement about the new Star Wars film",
-                    "questionError": "This is required",
-                    "displayProperties": {},
-                    "skipConditions": [],
-                    "parts": [],
-                    "questionReference": "q1",
-                    "displayConditions": [],
-                    "branchConditions": [],
-                    "questionHelp": "Please only enter a number",
-                    "questionType": "InputText",
-                     "validation": [
-                        {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                        },
-                         {
-                            "condition": "numeric",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is should be a number"
-                        },
-                          {
-                            "condition": "lessthan",
-                            "value": "11",
-                            "type": "error",
-                            "message" : "This field should be less then 11"
-                        },
-                           {
-                            "condition": "greaterthan",
-                            "value": "0",
-                            "type": "error",
-                            "message" : "This field  should be greater then 0"
-                        },
-                          {
-                            "condition": "notequal",
-                            "value": "1",
-                            "type": "error",
-                            "message" : "Come on, really?"
-                        },
-                         {
-                            "condition": "equal",
-                            "value": "10",
-                            "type": "warning",
-                            "message" : "you could always change it to 10"
-                        }
-                    ]
-
-                }
-            ],
-            "id": 2,
-            "questionText": "The New Film",
-            "questionError": "",
-            "displayProperties": {},
-            "skipConditions": [],
-            "parts": [],
-            "questionReference": "sectionTwo",
-            "displayConditions": [],
-            "branchConditions": [],
-            "questionHelp": "",
-            "questionType": "QuestionGroup",
-            "validation": [
-                {
-                    "condition": "required",
-                    "value": true,
-                    "type": "error",
-                    "message" : "This field is required"
-                }
-            ]
-        },
-        {
-            "children": [
-                {
-                    "type": "text_question",
-                    "children": [],
-                    "dndType": "item",
-                    "questionText": "Please suggest any future improvements for episode 8",
-                    "questionError": "",
-                    "displayProperties": {},
-                    "skipConditions": [],
-                    "parts": [],
-                    "questionReference": "q1",
-                    "displayConditions": [],
-                    "branchConditions": [],
-                    "questionHelp": "This question is optional",
-                    "questionType": "InputText",
-                     "validation": [
-                        {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                        }
-                    ]
-
-                }
-            ],
-            "id": 1,
-            "questionText": "Future Improvements",
-            "questionError": "",
-            "displayProperties": {},
-            "skipConditions": [],
-            "parts": [],
-            "questionReference": "sectionThree",
-            "displayConditions": [],
-            "branchConditions": [],
-            "questionHelp": "",
-            "questionType": "QuestionGroup",
-            "validation": [
-                {
-                    "condition": "required",
-                    "value": true,
-                    "type": "error",
-                    "message": "This field is required"
-                }
-            ]
-
+  "questionnaire_id": "1234",
+  "overview": "This is census survey for the population to discuss their views on Star Wars",
+  "title": "Census 2021",
+  "questionnaire_title": "Star Wars Census",
+  "questions": [{
+    "children": [{
+      "type": "rich_text_block",
+      "children": [],
+      "dndType": "item",
+      "questionText": "<p>In this section we trying to discover your favourite things about the Star Wars universe.</p>",
+      "questionError": "",
+      "displayProperties": {},
+      "skipConditions": [],
+      "parts": [],
+      "questionReference": "q1",
+      "displayConditions": [],
+      "branchConditions": [],
+      "questionHelp": "",
+      "questionType": "TextBlock",
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }]
+    }, {
+      "type": "text_question",
+      "children": [],
+      "dndType": "item",
+      "questionText": "Who is your favourite Star Wars character?",
+      "questionError": "This question is required",
+      "displayProperties": {},
+      "skipConditions": [],
+      "parts": [],
+      "questionReference": "q2",
+      "displayConditions": [],
+      "branchConditions": [],
+      "questionHelp": "Please only enter one character, i.e. Han Solo",
+      "questionType": "InputText",
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }, {
+        "condition": "maxlength",
+        "value": "20",
+        "type": "warning",
+        "message": "This field is quite is long"
+      }]
+    }, {
+      "type": "radio_question",
+      "children": [],
+      "dndType": "item",
+      "questionText": "Which Star Wars Film is your favourite?",
+      "questionError": "This question is required",
+      "displayProperties": {},
+      "skipConditions": [],
+      "parts": [{
+        "type": "option",
+        "value": "Episode 1: The Phantom Menance"
+      }, {
+        "type": "option",
+        "value": "Episode 2: Attack of the Clones"
+      }, {
+        "type": "option",
+        "value": "Episode 3: Revenge of the Sith"
+      }, {
+        "type": "option",
+        "value": "Episode 4: A New Hope"
+      }, {
+        "type": "option",
+        "value": "Episode 5: The Empire Strikes Back"
+      }, {
+        "type": "option",
+        "value": "Episode 6: Return of the Jedi"
+      }, {
+        "type": "option",
+        "value": "Episode 7: The Force Awakens"
+      }],
+      "questionReference": "q3",
+      "displayConditions": [],
+      "branchConditions": [{
+        "jumpTo": {
+          "question": "sectionThree",
+          "condition": {
+            "value": {
+              "is": "Episode 1: The Phantom Menance"
+            }
+          }
         }
-    ]
+      }],
+      "questionHelp": "Please select one only",
+      "questionType": "MultipleChoice",
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }]
+    }, {
+      "type": "check_box_question",
+      "children": [],
+      "dndType": "item",
+      "questionText": "Please indicate which characters you class as your favourites?",
+      "questionError": "This question is required",
+      "displayProperties": {},
+      "skipConditions": [],
+      "parts": [{
+        "type": "option",
+        "value": "Princess Leia"
+      }, {
+        "type": "option",
+        "value": "Luke Skywalker"
+      }, {
+        "type": "option",
+        "value": "Kylo Ren"
+      }, {
+        "type": "option",
+        "value": "BB8"
+      }, {
+        "type": "option",
+        "value": "R2D2"
+      }, {
+        "type": "option",
+        "value": "Jar Jar Binks"
+      }, {
+        "type": "option",
+        "value": "Chewbacca"
+      }, {
+        "type": "option",
+        "value": "Darth Vader"
+      }, {
+        "type": "option",
+        "value": "Yoda"
+      }, {
+        "type": "option",
+        "value": "Obi Wan Kenobi"
+      }, {
+        "type": "option",
+        "value": "C3P0"
+      }],
+      "questionReference": "q4",
+      "displayConditions": [],
+      "branchConditions": [],
+      "questionHelp": "Please tick all that apply",
+      "questionType": "CheckBox",
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }]
+    }, {
+      "questionType": "Dropdown",
+      "questionError": "Just one answer",
+      "questionText": "Which Droid would you purchase?",
+      "displayConditions": [],
+      "questionReference": "q5",
+      "children": [],
+      "parts": [{
+        "type": "option",
+        "value": "BB8"
+      }, {
+        "type": "option",
+        "value": "R2D2"
+      }, {
+        "type": "option",
+        "value": "C3P0"
+      }, {
+        "type": "option",
+        "value": "IG-88"
+      }, {
+        "type": "option",
+        "value": "2-1B"
+      }, {
+        "type": "option",
+        "value": "These are not the droids you are looking for"
+      }],
+      "dndType": "item",
+      "branchConditions": [],
+      "displayProperties": {},
+      "questionHelp": "Only select one",
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }]
+    }],
+    "id": 0,
+    "questionText": "Star Wars Favourites",
+    "questionError": "",
+    "displayProperties": {},
+    "skipConditions": [],
+    "parts": [],
+    "questionReference": "sectionOne",
+    "displayConditions": [],
+    "branchConditions": [],
+    "questionHelp": "",
+    "questionType": "QuestionGroup",
+    "validation": [{
+      "condition": "required",
+      "value": true,
+      "type": "error",
+      "message": "This field is required"
+    }]
+  }, {
+    "children": [{
+      "type": "number_question",
+      "children": [],
+      "dndType": "item",
+      "questionText": "On a scale of 1 to 10 please rate your excitement about the new Star Wars film",
+      "questionError": "This is required",
+      "displayProperties": {},
+      "skipConditions": [],
+      "parts": [],
+      "questionReference": "q1",
+      "displayConditions": [],
+      "branchConditions": [],
+      "questionHelp": "Please only enter a number",
+      "questionType": "InputText",
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }, {
+        "condition": "numeric",
+        "value": true,
+        "type": "error",
+        "message": "This field is should be a number"
+      }, {
+        "condition": "lessthan",
+        "value": "11",
+        "type": "error",
+        "message": "This field should be less then 11"
+      }, {
+        "condition": "greaterthan",
+        "value": "0",
+        "type": "error",
+        "message": "This field  should be greater then 0"
+      }, {
+        "condition": "notequal",
+        "value": "1",
+        "type": "error",
+        "message": "Come on, really?"
+      }, {
+        "condition": "equal",
+        "value": "10",
+        "type": "warning",
+        "message": "you could always change it to 10"
+      }]
+
+    }],
+    "id": 2,
+    "questionText": "The New Film",
+    "questionError": "",
+    "displayProperties": {},
+    "skipConditions": [],
+    "parts": [],
+    "questionReference": "sectionTwo",
+    "displayConditions": [],
+    "branchConditions": [],
+    "questionHelp": "",
+    "questionType": "QuestionGroup",
+    "validation": [{
+      "condition": "required",
+      "value": true,
+      "type": "error",
+      "message": "This field is required"
+    }]
+  }, {
+    "children": [{
+      "type": "text_question",
+      "children": [],
+      "dndType": "item",
+      "questionText": "Please suggest any future improvements for episode 8",
+      "questionError": "",
+      "displayProperties": {},
+      "skipConditions": [],
+      "parts": [],
+      "questionReference": "q1",
+      "displayConditions": [],
+      "branchConditions": [],
+      "questionHelp": "This question is optional",
+      "questionType": "InputText",
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }]
+
+    }],
+    "id": 1,
+    "questionText": "Future Improvements",
+    "questionError": "",
+    "displayProperties": {},
+    "skipConditions": [],
+    "parts": [],
+    "questionReference": "sectionThree",
+    "displayConditions": [],
+    "branchConditions": [],
+    "questionHelp": "",
+    "questionType": "QuestionGroup",
+    "validation": [{
+      "condition": "required",
+      "value": true,
+      "type": "error",
+      "message": "This field is required"
+    }]
+
+  }]
 }
