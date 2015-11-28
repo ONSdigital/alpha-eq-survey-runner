@@ -62,10 +62,11 @@ class Lessthan(Validator):
 
     def is_valid(self, response):
         value = self._schema['value']
-        return not value or unicode(response).isnumeric() and int(response) < int(value)
+        return not value or unicode(response).isnumeric() and int(response) >= int(value)
 
     def get_message(self, response):
-        return self._schema['message'] or "This field should less than that"
+        value = self._schema['value']
+        return self._schema['message'] or "This field should be greater than or equal to {value}".format(value=value)
 
 
 # Great than
@@ -75,10 +76,11 @@ class Greaterthan(Validator):
 
     def is_valid(self, response):
         value = self._schema['value']
-        return not value or unicode(response).isnumeric() and int(response) > int(value)
+        return not value or unicode(response).isnumeric() and int(response) <= int(value)
 
     def get_message(self, response):
-        return self._schema['message'] or "This field should be a great than that"
+        value = self._schema['value']
+        return self._schema['message'] or "This field should be less than or equal to {value}".format(value=value)
 
 
 # Equal
@@ -88,10 +90,11 @@ class Equal(Validator):
 
     def is_valid(self, response):
         value = self._schema['value']
-        return not value or unicode(response).isnumeric() and int(response) == int(value)
+        return not value or unicode(response).isnumeric() and int(response) != int(value)
 
     def get_message(self, response):
-        return self._schema['message'] or "This field should be equal to something else"
+        value = self._schema['value']
+        return self._schema['message'] or "This field should not be equal to {value}".format(value=value)
 
 
 # Not equal
@@ -101,7 +104,8 @@ class Notequal(Validator):
 
     def is_valid(self, response):
         value = self._schema['value']
-        return not value or unicode(response).isnumeric() and int(response) != int(value)
+        return not value or unicode(response).isnumeric() and int(response) == int(value)
 
     def get_message(self, response):
-        return self._schema['message'] or "This field should be not equal to that"
+        value = self._schema['value']
+        return self._schema['message'] or "This field should be equal to {value}".format(value=value)

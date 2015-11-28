@@ -232,22 +232,22 @@
         "type": "error",
         "message": "This field is should be a number"
       }, {
-        "condition": "lessthan",
-        "value": "11",
-        "type": "error",
-        "message": "This field should be less then 11"
-      }, {
         "condition": "greaterthan",
+        "value": "10",
+        "type": "error",
+        "message": "This field should be less than 11"
+      }, {
+        "condition": "lessthan",
         "value": "0",
         "type": "error",
-        "message": "This field  should be greater then 0"
+        "message": "This field should be greater than 0"
       }, {
-        "condition": "notequal",
+        "condition": "equal",
         "value": "1",
         "type": "error",
         "message": "Come on, really?"
       }, {
-        "condition": "equal",
+        "condition": "notequal",
         "value": "10",
         "type": "warning",
         "message": "you could always change it to 10"

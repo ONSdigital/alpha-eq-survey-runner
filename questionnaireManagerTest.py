@@ -225,7 +225,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'EQ_start_q1': '1',          # Numeric required field
+            'EQ_start_q1': '6',          # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option1',    # Multi-choice, option 1
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
@@ -466,7 +466,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'EQ_start_q1': '11',          # Numeric required field
+            'EQ_start_q1': '0',         # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option1',    # Multi-choice, option 1
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
@@ -480,7 +480,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q1' in errors.keys()
-        assert 'This field should be less then 11' in errors['EQ_start_q1']
+        assert 'This field should be greater than 0' in errors['EQ_start_q1']
 
 
 
@@ -497,7 +497,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'EQ_start_q1': '0',          # Numeric required field
+            'EQ_start_q1': '11',          # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option1',    # Multi-choice, option 1
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
@@ -510,7 +510,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q1' in errors.keys()
-        assert 'This field  should be greater then 0' in errors['EQ_start_q1']
+        assert 'This field should be less than 11' in errors['EQ_start_q1']
 
 
     def test_validate_fail_equal(self):
@@ -538,7 +538,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q1' in errors.keys()
-        assert 'not 5' in errors['EQ_start_q1']
+        assert 'should not be 5' in errors['EQ_start_q1']
 
 
     def test_validate_fail_notequal(self):
@@ -553,7 +553,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'EQ_start_q1': '5',          # Numeric required field
+            'EQ_start_q1': '7',          # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option1',    # Multi-choice, option 1
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
@@ -567,7 +567,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         errors = qManager.get_question_errors()
 
         assert 'EQ_start_q1' in errors.keys()
-        assert 'not 5' in errors['EQ_start_q1']
+        assert 'should be 6' in errors['EQ_start_q1']
 
 
     def test_validation_warnings(self):
