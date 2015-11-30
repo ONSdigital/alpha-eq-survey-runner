@@ -13,7 +13,7 @@
           <input type="checkbox" name="warning_{{question.get_reference()}}" value="true" {% if question.get_reference() in user_warningsAccepted %}checked="checked"{% endif %}>
           <p>You can accept this warning and proceed by checking the box</p>
           <p>Please provide a short explanation for accepting the warning</p>
-          <input type="text" placeholder="e.g This question was not relevant to me because..." name="justification_{{question.get_reference()}}" value="{{user_justification[question.get_reference()] or ''}}">
+          <input type="text" name="justification_{{question.get_reference()}}" value="{{user_justification[question.get_reference()] or ''}}">
         </div>
       {% endfor %}
   {% endif %}
