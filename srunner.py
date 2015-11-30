@@ -35,9 +35,15 @@ def _load_fixture(filename):
     return q_data
 
 
-@app.route('/')
+@app.route('/', methods=('GET', 'POST'))
 def hello():
-    return render_template('index.html')
+    if request.method == 'POST':
+        questionnaire_id = request.form.get("questionnaire_id")
+        session_id = request.form.get("session_id")
+        new_url = request.base_url + 'questionnaire/' + questionnaire_id + '/' + session_id + '/'
+        return redirect(new_url)
+    else:
+        return render_template('index.html')
 
 
 @app.route('/autosave/<int:questionnaire_id>/<quest_session_id>', methods=['POST'])
