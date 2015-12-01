@@ -25,8 +25,6 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
 
 
-
-
 def _load_fixture(filename):
     q_data = None
     with open(os.path.join(APP_FIXTURES, filename)) as f:
@@ -63,18 +61,18 @@ def get_form_schema(questionnaire_id):
 
 
 def get_session_data(quest_session_id, session_id):
-    cql = "SELECT data FROM sessions WHERE  quest_session_id = '{}' LIMIT 1;".format(quest_session_id)
-    r = cassandra_session.execute(cql)
-    if r:
-        payload = json.loads(r[0].data)
+    bound_stmt = prepared_select.bind([quest_session_id])
+    result = cassandra_session.execute(bound_stmt)
+    if result:
+        payload = json.loads(result[0].data)
         return payload
     return None
 
 
 def set_session_data(quest_session_id, session_id, data):
-    cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES ('{}', '{}', '{}');".format(session_id, quest_session_id, data)
-    app.logger.debug(cql)
-    result = cassandra_session.execute(cql)
+    parameters = [session_id, quest_session_id, data]
+    bound_stmt = prepared_insert.bind(parameters)
+    result = cassandra_session.execute(bound_stmt)
     app.logger.debug(result)
     return result
 
@@ -208,6 +206,11 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
 
 
 cassandra_cluster, cassandra_session = eq_cassandra.connect_to_cassandra("sessionstore")
+insert_cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES (?, ?, ?);"
+prepared_insert = cassandra_session.prepare(insert_cql)
+select_cql = "SELECT data FROM sessions WHERE  quest_session_id = ? LIMIT 1;"
+prepared_select = cassandra_session.prepare(select_cql)
+
 
 if __name__ == '__main__':
     app.debug = True
