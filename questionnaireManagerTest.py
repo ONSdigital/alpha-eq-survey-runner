@@ -43,9 +43,12 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update({'EQ_q1': '15'})
 
-        assert qManager.validate().is_valid() == True
+        result = qManager.get_current_question().validate()
 
-        assert len(qManager.get_question_errors()) == 0
+        assert len(result) == 1
+        assert result[0].is_valid() == True
+
+        assert len(result[0].errors) == 0
 
     def test_miss_required_question(self):
         qData = self._loadFixture('test_survey.json')
@@ -61,13 +64,20 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update({'q1':'Lots'})
 
-        assert q.validate().is_valid() == True
+        result = qManager.get_current_question().validate()
+
+        assert len(result) == 1
+        assert result[0].is_valid() == True
 
         qManager.update({'q1':'    '})
 
-        assert q.validate().is_valid() == False
+        result = qManager.get_current_question().validate()
 
-        assert 'This field is required' in qManager.get_question_errors()
+        assert len(result) == 1
+        assert result[0].is_valid() == False
+
+        assert 'This field is required' in result[0].errors
+
 
     def test_next_question(self):
         qData = self._loadFixture('test_survey.json')
@@ -83,14 +93,16 @@ class QuestionnaireManagerTest(unittest.TestCase):
         response = {'q1':'35'}
         qManager.update(response)
 
-        assert qManager.current_question.validate().is_valid() == True
+        result = q.validate()
+        assert result[0].is_valid() == True
 
         q = qManager.get_next_question()
 
         assert isinstance(q, TextBlock) == True
 
-        assert qManager.validate().is_valid() == True
-        assert len(qManager.get_question_errors()) == 0
+        result = q.validate()
+        assert result[0].is_valid() == True
+        assert len(result[0].errors) == 0
 
         q = qManager.get_next_question()
 
@@ -98,13 +110,16 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q.question_text == 'Which colour marble would you prefer?'
 
         qManager.update({'EQ_q3':' '})
-        assert qManager.validate().is_valid() == False
+        result =  q.validate()
+        assert result[0].is_valid() == False
 
         qManager.update({'EQ_q3':'Purple'})
-        assert qManager.validate().is_valid() == False
+        result = q.validate()
+        assert result[0].is_valid() == False
 
         qManager.update({'EQ_q3':'Blue'})
-        assert qManager.validate().is_valid() == True
+        result = q.validate()
+        assert result[0].is_valid() == True
 
     def test_resume_questionnaire(self):
         qData = self._loadFixture('test_survey.json')
@@ -232,7 +247,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         result = qManager.validate()
 
-        assert result.is_valid() == True
+        assert result[0].is_valid() == True
 
     def test_group_fail_validation(self):
         qData = self._loadFixture('groups.json')
@@ -246,27 +261,38 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'EQ_start_q1': '',            # Numeric required field
+            'EQ_start_q1': '1',          # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option6',    # Multi-choice, there is no option6
             'EQ_start_q4': [''],         # Checkbox requires selection
             'EQ_start_q5': ' ',          # required free text field
-            'EQ_start_q6': ''           # numeric free text field
+            'EQ_start_q6': ''            # numeric free text field
         }
 
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() == False
+        result = q1.validate()
 
-        errors = qManager.get_question_errors()
+        assert len(result) == 1
+        assert result[0].is_valid() == False
 
-        assert len(errors['EQ_start_q3']) == 1
-        assert len(errors['EQ_start_q4']) == 1
+        errors = result[0].errors
 
-        assert 'This field is required' in errors['EQ_start_q1']
-        assert 'Invalid option' in errors['EQ_start_q3']
-        assert 'This field is required' in errors['EQ_start_q4']
-        assert 'This field is required' in errors['EQ_start_q5']
+        assert 'EQ_start_q3:0' in errors
+        assert 'EQ_start_q4:0' in errors
+        assert 'EQ_start_q5:0' in errors
+
+        EQ_start_q3 = qManager.get_question_by_reference('EQ_start_q3').validate()
+
+        assert 'Invalid option' in EQ_start_q3[0].errors
+
+        EQ_start_q4 = qManager.get_question_by_reference('EQ_start_q4').validate()
+
+        assert 'This field is required' in EQ_start_q4[0].errors
+
+        EQ_start_q5 = qManager.get_question_by_reference('EQ_start_q5').validate()
+
+        assert 'This field is required' in EQ_start_q5[0].errors
 
     def test_progress(self):
         qData = self._loadFixture('groups.json')
@@ -462,12 +488,15 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() ==False
+        result = qManager.validate()
 
-        errors = qManager.get_question_errors()
+        assert result[0].is_valid() == False
 
-        assert 'EQ_start_q5' in errors.keys()
-        assert 'This field is to big' in errors['EQ_start_q5']
+        assert 'EQ_start_q5:0' in result[0].errors
+
+        EQ_start_q5 = qManager.get_question_by_reference('EQ_start_q5').validate()
+
+        assert 'This field is to big' in EQ_start_q5[0].errors
 
     def test_validate_fail_lessthan(self):
         qData = self._loadFixture('groups.json')
@@ -492,12 +521,14 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() ==False
+        results = qManager.validate()
 
-        errors = qManager.get_question_errors()
+        assert results[0].is_valid() == False
+        assert 'EQ_start_q1:0' in results[0].errors
 
-        assert 'EQ_start_q1' in errors.keys()
-        assert 'This field should be less then 11' in errors['EQ_start_q1']
+        EQ_start_q1 = qManager.get_question_by_reference('EQ_start_q1').validate()
+
+        assert 'This field should be less then 11' in EQ_start_q1[0].errors
 
     def test_validate_fail_greaterthan(self):
         qData = self._loadFixture('groups.json')
@@ -521,12 +552,14 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() ==False
+        results = qManager.validate()
 
-        errors = qManager.get_question_errors()
+        assert results[0].is_valid() ==False
+        assert 'EQ_start_q1:0' in results[0].errors
 
-        assert 'EQ_start_q1' in errors.keys()
-        assert 'This field  should be greater then 0' in errors['EQ_start_q1']
+        EQ_start_q1 = qManager.get_question_by_reference('EQ_start_q1').validate()
+
+        assert 'This field  should be greater then 0' in EQ_start_q1[0].errors
 
     def test_validate_fail_equal(self):
         qData = self._loadFixture('groups.json')
@@ -549,12 +582,14 @@ class QuestionnaireManagerTest(unittest.TestCase):
         }
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() ==False
+        results = qManager.validate()
 
-        errors = qManager.get_question_errors()
+        assert results[0].is_valid() ==False
+        assert 'EQ_start_q1:0' in results[0].errors
 
-        assert 'EQ_start_q1' in errors.keys()
-        assert 'not 5' in errors['EQ_start_q1']
+        EQ_start_q1 = qManager.get_question_by_reference('EQ_start_q1').validate()
+
+        assert 'not 5' in EQ_start_q1[0].errors
 
     def test_validate_fail_notequal(self):
         qData = self._loadFixture('groups.json')
@@ -578,12 +613,13 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() ==False
+        results = qManager.validate()
 
-        errors = qManager.get_question_errors()
+        assert results[0].is_valid() ==False
+        assert 'EQ_start_q1:0' in results[0].errors
 
-        assert 'EQ_start_q1' in errors.keys()
-        assert 'not 5' in errors['EQ_start_q1']
+        EQ_start_q1 = qManager.get_question_by_reference('EQ_start_q1').validate()
+        assert 'not 5' in EQ_start_q1[0].errors
 
     def test_validation_warnings(self):
         qData = self._loadFixture('test_survey.json')
@@ -603,9 +639,11 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() == False
+        results = qManager.validate()
 
-        assert 'This field is long, are you sure?' in qManager.get_question_warnings()
+        assert results[0].is_valid() == False
+
+        assert 'This field is long, are you sure?' in results[0].warnings
 
         responses = {
             'q1': 'Lots and lots and lots',
@@ -615,7 +653,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         qManager.update(responses)
 
-        assert qManager.validate().is_valid() == True
+        results = qManager.validate()
+
+        assert results[0].is_valid() == True
 
     def test_repeating_set_number_of_times(self):
         qData = self._loadFixture('repeating_simple.json')
@@ -633,17 +673,24 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q1.repeats() == True
         assert q1.get_repetition() == 0
 
-        responses = {}
+        responses = {
+            'EQ_s1_q1':'',
+            'EQ_s1_q2':''
+        }
 
         qManager.update(responses)
 
         # no responses should fail validation
-        #assert qManager.validate().is_valid() == False
+
+        results = qManager.validate()
+
         assert q1.get_repetition() == 0
+        assert results[q1.get_repetition()].is_valid() == False
+
 
         # answer the question for the first repetition
         responses = {
-            'repetition' : qManager.get_current_question().get_repetition(),
+            'repetition_EQ_s1' : q1.get_repetition(),
             'EQ_s1_q1' : 'David',
             'EQ_s1_q2' : '39'
         }
@@ -664,8 +711,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert '39' == stored['user_data']['EQ_s1_q2']['answer'][0]
 
         # check validation passes
-        assert qManager.validate().is_valid() == True
+        results = qManager.validate()
         assert q1.get_repetition() == 0
+        assert results[q1.get_repetition()].is_valid() == True
 
 
         # call next question (there is only one, but it reepeats)
@@ -677,18 +725,23 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         # get the current question
         q2 = qManager.get_current_question()
+        assert q2._reference == q1._reference
+        assert q2.get_repetition() == 1
 
         responses = {
-            'repetition': qManager.get_current_question().get_repetition()
+            'repetition_EQ_s1': q2.get_repetition(),
+            'EQ_s1_q1' : '',
+            'EQ_s1_q2' : ''
         }
 
         qManager.update(responses)
 
         # check validation fails until we answer the second repetition
-        assert qManager.validate().is_valid() == False
+        results = qManager.validate()
+        assert results[q2.get_repetition()].is_valid() == False
 
         responses = {
-            'repetition': qManager.get_current_question().get_repetition(),
+            'repetition_EQ_s1': q2.get_repetition(),
             'EQ_s1_q1' : 'Lewis',
             'EQ_s1_q2' : 'Ten'
         }
@@ -710,6 +763,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert 'Ten' == stored['EQ_s1_q2'][1]
 
         # check validation passes with second response
+        results = qManager.validate()
+
         assert qManager.validation().is_valid() == False
 
         errors = qManager.get_question_errors()

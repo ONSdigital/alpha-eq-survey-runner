@@ -260,7 +260,7 @@ class QuestionnaireManager:
             question = self.get_question_by_reference(reference)
 
             if not question.skipping:
-                history_with_question_objects[question] = question.validate().is_valid()
+                history_with_question_objects[question] = question.validate()
 
         return history_with_question_objects
 
@@ -277,8 +277,11 @@ class QuestionnaireManager:
 
     def update(self, responses):
         repetition = 0
-        if 'repetition' in responses.keys():
-            repetition = int(responses['repetition'])
+        for reference in responses.keys():
+            if reference.startswith('repetition_'):
+                repetition = int(responses[reference])
+                question = self.get_question_by_reference(reference.replace('repetition_', ''))
+                question.set_repetition(repetition)
 
         for reference in responses.keys():
             if reference.startswith('justification_'):
@@ -289,9 +292,13 @@ class QuestionnaireManager:
                 question = self.get_question_by_reference(reference.replace('warning_', ''))
                 question.set_accepted(True)
 
-            elif reference != 'repetition':
+            elif not reference.startswith('repetition_'):
                 question = self.get_question_by_reference(reference)
-                question.set_repetition(repetition)
+                if question.repeats():
+                    question.set_repetition(repetition)
+                if question.parent and  question.parent.repeats():
+                    question.parent.set_repetition(repetition)
+
                 question.update(responses[reference])
 
         # store current question in history

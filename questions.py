@@ -20,12 +20,11 @@ class Question(object):
         self.display_conditions = None
         self.skip_conditions = []
         self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
-        self.warnings = []
-        self.errors = []
         self.allWarningsAccepted = True
         self.answers = []
         self.accepted = []
         self.justifications = []
+        self.validation_results = []
         self.set_repetition(0)
 
     def set_user_data(self, user_data):
@@ -114,27 +113,31 @@ class Question(object):
         return self.branches()
 
     def validate(self):
-        while len(self.errors) <= self.repetition:
-            self.errors.append([])
-            self.warnings.append([])
-            self.accepted.append(False)
+        self.validation_results = []
+        for repetition in range(0, self.repetition + 1):
+            if len(self.answers) > repetition:
+                self.validation_results.append(self._validate_answer(self.answers[repetition]))
 
-        return self._validate_answer(self.answers[self.repetition])
+        return self.validation_results
 
     def _validate_answer(self, answer):
-        self.errors[self.repetition] = []
-        self.warnings[self.repetition] = []
+        errors = []
+        warnings = []
+
         for rule in self.validation:
             if rule.get_type() == 'error':
                 if not rule.is_valid(answer):
-                    self.errors[self.repetition].append(rule.get_message(answer))
+                    errors.append(rule.get_message(answer))
                     break
             elif rule.get_type() == 'warning':
                 if not rule.is_valid(answer):
                     # All warnings need to be recorded to populate checkboxes and messages
-                    self.warnings[self.repetition].append(rule.get_message(answer))
+                    warnings.append(rule.get_message(answer))
 
-        return ValidationResult(self.errors[self.repetition], self.warnings[self.repetition], self.accepted[self.repetition])
+        result = ValidationResult(errors, warnings, self.accepted[self.repetition])
+
+        return result
+
 
 
     def get_warnings(self, reference=None):
@@ -203,13 +206,10 @@ class MultipleChoiceQuestion(Question):
     def validate(self):
         valid = super(MultipleChoiceQuestion, self).validate()
 
-        answer = self.get_answer()
-        if answer is not None and not answer.isspace():
-            for part in self.parts:
-                if part == answer:
-                    return valid
+        for repetition, result in enumerate(valid):
+            if self.answers[repetition] not in self.parts:
+                valid[repetition].errors.append('Invalid option')
 
-            valid.errors.append(unicode('Invalid option'))
 
         return valid
 
@@ -219,16 +219,18 @@ class CheckBoxQuestion(Question):
         super(CheckBoxQuestion, self).__init__(question_schema, parent)
 
     def validate(self):
-        result = ValidationResult([], [], False)
+        results = []
         for answer in self.answers:
+            result = ValidationResult([], [], False)
             for item in answer:
                 itemResult = self._validate_answer(item)
                 result.errors += itemResult.errors
                 result.warnings += itemResult.warnings
                 if itemResult.accepted:
                     result.accepted = True
+                results.append(result)
 
-        return result
+        return results
 
 class InputTextQuestion(Question):
     def __init__(self, question_schema, parent=None):
@@ -245,7 +247,7 @@ class TextBlock(Question):
         super(TextBlock, self).__init__(question_schema, parent)
 
     def validate(self):
-        return ValidationResult([], [], [])
+        return [ValidationResult([], [], [])]
 
 
 class QuestionGroup(Question):
@@ -269,20 +271,28 @@ class QuestionGroup(Question):
         return user_data
 
     def validate(self):
-        self.errors = {}
-        self.warnings = {}
-        for question in self.children:
-            question.set_repetition(self.get_repetition())
-            childResult = question.validate()
+        self.validation_results = []
 
-            if not childResult.is_valid():
-                if len(childResult.errors) > 0:
-                    self.errors[question.get_reference()] = childResult.errors
+        for repetition in range(0, self.repetition + 1):
+            errors = []
+            warnings = []
+            for child in self.children:
+                childValidation = child.validate()
 
-                if len(childResult.warnings) > 0:
-                    self.warnings[question.get_reference()] = childResult.warnings
+                if len(childValidation) > repetition:
+                    if not childValidation[repetition].is_valid():
+                        if len(childValidation[repetition].errors) > 0:
+                            errors.append(child.get_reference() + ':' + str(repetition))
 
-        return ValidationResult(self.errors, self.warnings, [])
+                        if len(childValidation[repetition].warnings) > 0:
+                            warnings.append(child.get_reference() + ':' + str(repetition))
+
+
+            self.validation_results.append(ValidationResult(errors, warnings, False))
+
+        return self.validation_results
+
+
 
     def branches(self):
         jumps = []
@@ -332,3 +342,10 @@ class QuestionGroup(Question):
 
     def _build_repeating(self, schema):
         return super(QuestionGroup, self)._build_repeating(schema)
+
+    def set_repetition(self, repetition):
+        super(QuestionGroup, self).set_repetition(repetition)
+        if self.children:
+            for child in self.children:
+                if child:
+                    child.set_repetition(repetition)
