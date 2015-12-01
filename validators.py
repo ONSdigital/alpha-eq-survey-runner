@@ -1,3 +1,4 @@
+import datetime
 # Base validator class
 class Validator(object):
     def __init__(self, schema):
@@ -40,6 +41,32 @@ class Numeric(Validator):
 
     def get_message(self, response):
         return self._schema['message'] or "This field should be a number"
+
+
+# Date Field
+class Date(Validator):
+    def __init__(self, schema):
+        super(Date, self).__init__(schema)
+
+    def is_valid(self, response):
+        if response and isinstance(response, list):
+            for r in response:
+                if not self.validate(r):
+                    return False
+        elif response and not response.isspace():
+            return self.validate(response)
+        return True
+
+    @staticmethod
+    def validate(date):
+        try:
+            datetime.datetime.strptime(date, "%d/%m/%Y")
+            return True
+        except ValueError:
+            return False
+
+    def get_message(self, response):
+        return self._schema['message'] or "This field should be a date"
 
 
 # Max length
