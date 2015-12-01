@@ -286,10 +286,12 @@ class QuestionnaireManager:
         for reference in responses.keys():
             if reference.startswith('justification_'):
                 question = self.get_question_by_reference(reference.replace('justification_', ''))
-                question.set_warning(responses[reference])
+                question.set_repetition(repetition)
+                question.set_justification(responses[reference])
 
             elif reference.startswith('warning_'):
                 question = self.get_question_by_reference(reference.replace('warning_', ''))
+                question.set_repetition(repetition)
                 question.set_accepted(True)
 
             elif not reference.startswith('repetition_'):
