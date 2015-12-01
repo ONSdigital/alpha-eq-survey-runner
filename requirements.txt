@@ -1,6 +1,8 @@
+awscli==1.9.9
 backports.ssl-match-hostname==3.4.0.2
 bleach==1.4.2
 bleach-whitelist==0.0.7
+boto3==1.2.2
 cassandra-driver==2.7.2
 decorator==4.0.4
 docker-compose==1.4.2

@@ -39,7 +39,7 @@ __Mac__
 
 1. Install docker-toolkit: https://www.docker.com/toolbox
 2. Install Virtualbox > 4.3.28 : https://www.virtualbox.org/wiki/Downloads
-2. Once installed, run the following:
+3. Once installed, run the following:
 ```
 docker-machine create default
 eval "$(docker-machine env default)"
@@ -49,6 +49,10 @@ environment with the correct values to use docker as a linux system would.
 Everytime you start or stop a docker-machine VM instance, you need to
 re-run `eval "$(docker-machine env default)"`.
 
+__AWS__
+The survey runner deposits submitted responses in an S3 bucket. To be able to do this it needs to know your aws details.
+PIP will install the aws cli for you, however you need to run `aws configure` in order to place the necessary files in
+your home directory.
 
 __Ubuntu__
 

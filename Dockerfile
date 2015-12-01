@@ -1,7 +1,7 @@
 FROM python:2.7.10
 
 RUN mkdir /opt/eq-survey-runner
-add ./requirements.txt /opt/eq-survey-runner/requirements.txt
+ADD ./requirements.txt /opt/eq-survey-runner/requirements.txt
 RUN pip install -r /opt/eq-survey-runner/requirements.txt
 ADD . /opt/eq-survey-runner
 WORKDIR /opt/eq-survey-runner
