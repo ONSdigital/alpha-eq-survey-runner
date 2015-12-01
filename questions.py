@@ -20,8 +20,8 @@ class Question(object):
         self.display_conditions = None
         self.skip_conditions = []
         self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
-        self.warnings = {}
-        self.errors = {}
+        self.warnings = []
+        self.errors = []
         self.allWarningsAccepted = True
         self.answers = []
         self.accepted = []
@@ -114,32 +114,37 @@ class Question(object):
         return self.branches()
 
     def validate(self):
+        while len(self.errors) <= self.repetition:
+            self.errors.append([])
+            self.warnings.append([])
+            self.accepted.append(False)
+
         return self._validate_answer(self.answers[self.repetition])
 
     def _validate_answer(self, answer):
-        self.errors = []
-        self.warnings = []
+        self.errors[self.repetition] = []
+        self.warnings[self.repetition] = []
         for rule in self.validation:
             if rule.get_type() == 'error':
                 if not rule.is_valid(answer):
-                    self.errors.append(rule.get_message(answer))
+                    self.errors[self.repetition].append(rule.get_message(answer))
                     break
             elif rule.get_type() == 'warning':
                 if not rule.is_valid(answer):
                     # All warnings need to be recorded to populate checkboxes and messages
-                    self.warnings.append(rule.get_message(answer))
+                    self.warnings[self.repetition].append(rule.get_message(answer))
 
-        return ValidationResult(self.errors, self.warnings, self.accepted[self.repetition])
+        return ValidationResult(self.errors[self.repetition], self.warnings[self.repetition], self.accepted[self.repetition])
 
 
     def get_warnings(self, reference=None):
-        return self.warnings
+        return self.warnings[self.repetition]
 
     def get_errors(self, reference=None):
-        return self.errors
+        return self.errors[self.repetition]
 
     def get_accepted(self):
-        return self.accepted
+        return self.accepted[self.repetition]
 
     def get_branch_conditions(self):
         return self.branch_conditions
@@ -184,6 +189,12 @@ class Question(object):
 
     def update(self, answer):
         self.answers[self.repetition] = answer
+
+    def set_warning(self, warning):
+        self.warnings[self.repetition] = warning
+
+    def set_accepted(self, accepted):
+        self.accepted[self.repetition] = accepted
 
 class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema, parent=None):
@@ -250,37 +261,28 @@ class QuestionGroup(Question):
                 question._reference = 'q' + str(index)
             self.children.append(question)
 
+    def get_user_data(self):
+        user_data = {}
+        for child in self.children:
+            user_data[child.get_reference()] = child.get_user_data()
+
+        return user_data
+
     def validate(self):
+        self.errors = {}
+        self.warnings = {}
         for question in self.children:
+            question.set_repetition(self.get_repetition())
             childResult = question.validate()
 
-        return ValidationResult(self.get_errors(), self.get_warnings(), self.get_accepted())
+            if not childResult.is_valid():
+                if len(childResult.errors) > 0:
+                    self.errors[question.get_reference()] = childResult.errors
 
-    def get_warnings(self):
-        warnings = {}
-        for question in self.children:
-            warnings[question.get_reference()] = question.get_warnings()
-        return warnings
+                if len(childResult.warnings) > 0:
+                    self.warnings[question.get_reference()] = childResult.warnings
 
-    def get_errors(self, reference=None):
-        if reference is None:
-            errors = {}
-            for question in self.children:
-                errors[question.get_reference()] = question.get_errors()
-            return errors
-
-        elif reference:
-            question = self.get_question_by_reference(reference)
-            return question.get_errors()
-
-        else:
-            return {}
-
-    def get_accepted(self):
-        accepted = {}
-        for question in self.children:
-            accepted[question.get_reference()] = question.get_accepted()
-        return accepted
+        return ValidationResult(self.errors, self.warnings, [])
 
     def branches(self):
         jumps = []

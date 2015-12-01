@@ -1,4 +1,4 @@
-from questions import Question
+from questions import Question, QuestionGroup
 import json
 from branching import SkipCondition
 from collections import OrderedDict
@@ -10,7 +10,6 @@ class QuestionnaireManager:
         self.started = False
         self.completed = False
         self.questions = []
-        self.responses = {}
         self.history = []
         self.warningsAccepted = []
         self.justifications = {}
@@ -55,7 +54,7 @@ class QuestionnaireManager:
         self.started = questionnaire_state['started']
         self.completed = questionnaire_state['completed']
         self.user_data = questionnaire_state['user_data']
-        self.history = questionnaire_state['history']
+        self.history = self._load_history(questionnaire_state['history'])
 
         # validate any previous data
         if len(self.questions) != 0:
@@ -78,14 +77,31 @@ class QuestionnaireManager:
                 question.set_user_data(self.user_data[reference])
 
             self.current_question = self.get_question_by_reference(questionnaire_state['current_question'])
-            self.question_index = self.get_current_question_index()
+            self.question_index = self._current_question_index()
 
+    def _build_user_data(self):
+        user_data = {}
+        for question in self.questions:
+            if isinstance(question, QuestionGroup):
+                question_data = question.get_user_data()
+                for child in question_data.keys():
+                    user_data[child] = question_data[child]
+            else:
+                user_data[question.get_reference()] = question.get_user_data()
 
+        return user_data
+
+    def _load_history(self, state):
+        history = []
+        for entry in state:
+            history.append(entry)
+
+        return history
 
     def _add_question(self, question):
         self.questions.append(question)
 
-    def get_current_question_index(self):
+    def get_current_question_number(self):
         current_position = 1
         for index, question in enumerate(self.questions):
             if index < self.question_index and not question.skipping:
@@ -99,11 +115,15 @@ class QuestionnaireManager:
                 total += 1
         return total
 
+    def _current_question_index(self):
+        for index, question in enumerate(self.questions):
+            if question.get_reference() == self.current_question.get_reference():
+                return index
+
+        return 0
+
     def get_responses(self, *args):
-        if len(args) == 1 and args[0] in self.responses.keys():
-            return self.responses[args[0]]
-        else:
-            return self.responses
+        pass
 
     def get_justifications(self, *args):
         if len(args) == 1 and args[0] in self.justifications.keys():
@@ -126,49 +146,19 @@ class QuestionnaireManager:
             'completed': self.completed,
             'current_question': self.current_question.get_reference(),
             'history': self.history,
-            'user_data' : self.user_data
+            'user_data' : self._build_user_data()
         }
 
-    def store_response(self, response):
-        if 'repetition' in response:
-            index = int(response['repetition'])
-            for ref in response.keys():
-                if ref is not 'repetition':
-                    if ref not in self.responses:
-                        self.responses[ref] = []
-
-                    while len(self.responses[ref]) <= index:
-                        self.responses[ref].append('')
-
-                    self.responses[ref][index] = response[ref]
-        else:
-            for ref in response.keys():
-                self.responses[ref] = response[ref]
-
-        self._store_in_history(response)
-
-    def _store_in_history(self, response):
-        if self.current_question:
-            if not self._exists_in_history(self.current_question.get_reference()):
-                history = {}
-                self.history.append(history)
-            else:
-                history = self._find_history(self.current_question.get_reference())
-
-            history['reference'] = self.current_question.get_reference()
-            history['valid'] = self.current_question.validate().is_valid()
+    def _store_in_history(self):
+        self.history.append(self.current_question.get_reference())
+        # make unique
+        self.history = list(set(self.history))
 
     def _exists_in_history(self, reference):
         for history in self.history:
-            if history['reference'] == reference:
+            if history == reference:
                 return True
         return False
-
-    def _find_history(self, reference):
-        for history in self.history:
-            if history['reference'] == reference:
-                return history
-        return None
 
     def validate(self):
         if self.current_question:
@@ -198,6 +188,8 @@ class QuestionnaireManager:
             return None
 
     def get_next_question(self):
+        self._store_in_history()
+
         if self.current_question.repeats():
             self.current_question.repetition += 1
             return self.current_question
@@ -221,14 +213,11 @@ class QuestionnaireManager:
         if self.completed:
             self.completed = False
 
-        for key in self.responses.keys():
-            if key.startswith(questionnaire_location):
-                index = 0
-                for question in self.questions:
-                    if question.get_reference() == questionnaire_location:
-                        self.question_index = index
-                        self.current_question = self.questions[self.question_index]
-                    index += 1
+        if self._exists_in_history(questionnaire_location):
+            self._store_in_history()
+            self.current_question = self.get_question_by_reference(questionnaire_location)
+            self.question_index = self._current_question_index()
+
 
     def branch_to_question(self, questionnaire_location):
         index = 0
@@ -267,11 +256,11 @@ class QuestionnaireManager:
     def get_history(self):
         # load the question objects
         history_with_question_objects = OrderedDict()
-        for history in self.history:
-            question = self.get_question_by_reference(history['reference'])
+        for reference in self.history:
+            question = self.get_question_by_reference(reference)
 
             if not question.skipping:
-                history_with_question_objects[question] = history['valid']
+                history_with_question_objects[question] = question.validate().is_valid()
 
         return history_with_question_objects
 
@@ -290,8 +279,20 @@ class QuestionnaireManager:
         repetition = 0
         if 'repetition' in responses.keys():
             repetition = int(responses['repetition'])
+
         for reference in responses.keys():
-            if reference != 'repetition':
+            if reference.startswith('justification_'):
+                question = self.get_question_by_reference(reference.replace('justification_', ''))
+                question.set_warning(responses[reference])
+
+            elif reference.startswith('warning_'):
+                question = self.get_question_by_reference(reference.replace('warning_', ''))
+                question.set_accepted(True)
+
+            elif reference != 'repetition':
                 question = self.get_question_by_reference(reference)
                 question.set_repetition(repetition)
                 question.update(responses[reference])
+
+        # store current question in history
+        self._store_in_history()
