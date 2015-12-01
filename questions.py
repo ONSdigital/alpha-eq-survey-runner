@@ -143,12 +143,6 @@ class Question(object):
         return result
 
 
-    def get_warnings(self, reference=None):
-        return self.warnings[self.repetition]
-
-    def get_errors(self, reference=None):
-        return self.errors[self.repetition]
-
     def get_accepted(self):
         return self.accepted[self.repetition]
 
@@ -196,8 +190,8 @@ class Question(object):
     def update(self, answer):
         self.answers[self.repetition] = answer
 
-    def set_warning(self, warning):
-        self.warnings[self.repetition] = warning
+    def set_justification(self, justification):
+        self.justifications[self.repetition] = justification
 
     def set_accepted(self, accepted):
         self.accepted[self.repetition] = accepted
