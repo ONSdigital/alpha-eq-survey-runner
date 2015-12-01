@@ -176,6 +176,31 @@
       "dndType": "item",
       "questionType": "InputText",
       "type": "number_question"
+    },  {
+      "questionText": "date",
+      "questionHelp": "date",
+      "questionError": "date",
+      "questionReference": "q7",
+      "children": [],
+      "validation": [{
+        "condition": "required",
+        "value": true,
+        "type": "error",
+        "message": "This field is required"
+      }, {
+		"condition": "date",
+		"value": true,
+		"type": "error",
+		"message": "This field must be a date"
+	  }],
+      "displayProperties": {},
+      "displayConditions": [],
+      "skipConditions": [],
+      "branchConditions": [],
+      "parts": [],
+      "dndType": "item",
+      "questionType": "Date",
+      "type": "date_question"
     }],
     "validation": [{
       "condition": "required",

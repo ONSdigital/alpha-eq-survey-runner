@@ -230,7 +230,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q3': 'option1',    # Multi-choice, option 1
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
             'EQ_start_q5': 'Some Text',  # required free text field
-            'EQ_start_q6': None          # Optional numeric
+            'EQ_start_q6': None,         # Optional numeric
+            'EQ_start_q7': '15/07/2015'  # Required date
         }
         warningsaccepted=[]
         assert qManager.is_valid_response(responses, warningsaccepted) == True
@@ -247,12 +248,13 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         responses = {
-            'EQ_start_q1': '',            # Numeric required field
+            'EQ_start_q1': '',           # Numeric required field
             'EQ_start_q2': None,         # Rich text text, no response required
             'EQ_start_q3': 'option6',    # Multi-choice, there is no option6
             'EQ_start_q4': None,         # Checkbox requires selection
             'EQ_start_q5': ' ',          # required free text field
-            'EQ_start_q6': ''           # numeric free text field
+            'EQ_start_q6': '',            # numeric free text field
+            'EQ_start_q7': '12/27/2016'  # invalid date
         }
         warningsaccepted=[]
 
@@ -265,12 +267,14 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert 'EQ_start_q3' in errors.keys()
         assert 'EQ_start_q4' in errors.keys()
         assert 'EQ_start_q5' in errors.keys()
+        assert 'EQ_start_q7' in errors.keys()
 
         assert 'This field is required' in errors['EQ_start_q1']
 
         assert 'invalid option' in errors['EQ_start_q3']
         assert 'This field is required' in errors['EQ_start_q4']
         assert 'This field is required' in errors['EQ_start_q5']
+        assert 'This field must be a date' in errors['EQ_start_q7']
 
 
     def test_progress(self):
@@ -452,8 +456,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert 'EQ_start_q5' in errors.keys()
         assert 'This field is to big' in errors['EQ_start_q5']
 
-
-
     def test_validate_fail_lessthan(self):
         qData = self._loadFixture('groups.json')
         resumeData = {}
@@ -472,7 +474,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
             'EQ_start_q4': 'Coption1',   # Checkbox, selected
             'EQ_start_q5': 'Some Text',  # required free text field
             'EQ_start_q6': None          # Optional numeric
-
         }
         warningsaccepted=[]
         assert qManager.is_valid_response(responses,warningsaccepted) ==False
@@ -481,9 +482,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'EQ_start_q1' in errors.keys()
         assert 'This field should be greater than 0' in errors['EQ_start_q1']
-
-
-
 
     def test_validate_fail_greaterthan(self):
         qData = self._loadFixture('groups.json')

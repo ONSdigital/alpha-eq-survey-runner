@@ -32,6 +32,8 @@ class Question(object):
         if schema['questionType'] == 'QuestionGroup': return QuestionGroup(schema, parent)
         if schema['questionType'] == 'CheckBox': return CheckBoxQuestion(schema, parent)
         if schema['questionType'] == 'Dropdown': return DropdownQuestion(schema, parent)
+        if schema['questionType'] == 'Date': return DateQuestion(schema, parent)
+        if schema['questionType'] == 'DateRange': return DateRangeQuestion(schema, parent)
 
     def _build_validation(self, validation_schema):
         rules = []
@@ -73,7 +75,7 @@ class Question(object):
     def get_branch_target(self, response):
         return self.branches(response)
 
-    def is_valid_response(self, response, warningAccepted):
+    def is_valid_response(self, response, warning_accepted):
 
         self.errors = []
         self.allWarningsAccepted =True
@@ -89,7 +91,7 @@ class Question(object):
                     self.warnings.append(rule.get_message(response))
                     # If there is a single warning on the page which hasn't been accepted
                     # submission should be blocked
-                    if not warningAccepted:
+                    if not warning_accepted:
                         self.allWarningsAccepted =False
 
         return self.allWarningsAccepted and len(self.errors) == 0
@@ -121,11 +123,12 @@ class Question(object):
         else:
             return "EQ_" + self._reference
 
+
 class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(MultipleChoiceQuestion, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, response,warningAccepted):
+    def is_valid_response(self, response, warning_accepted):
         valid = super(MultipleChoiceQuestion, self).is_valid_response(response,False)
 
         if response is not None and not response.isspace():
@@ -167,6 +170,25 @@ class InputNumberQuestion(Question):
 class DropdownQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(DropdownQuestion, self).__init__(question_schema, parent)
+
+
+class DateQuestion(Question):
+    def __init__(self, question_schema, parent=None):
+        super(DateQuestion, self).__init__(question_schema, parent)
+
+
+class DateRangeQuestion(Question):
+    def __init__(self, question_schema, parent=None):
+        super(DateRangeQuestion, self).__init__(question_schema, parent)
+
+    def is_valid_response(self, response, warnings_accepted):
+        if isinstance(response, list):
+            for r in response:
+               if not super(DateRangeQuestion, self).is_valid_response(r, False):
+                   return False
+            return True
+        else:
+            return False
 
 
 class TextBlock(Question):
