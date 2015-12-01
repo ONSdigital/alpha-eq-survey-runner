@@ -49,21 +49,13 @@ class Date(Validator):
         super(Date, self).__init__(schema)
 
     def is_valid(self, response):
-        if response and isinstance(response, list):
-            for r in response:
-                if not self.validate(r):
-                    return False
-        elif response and not response.isspace():
-            return self.validate(response)
+        if response and not response.isspace():
+            try:
+                datetime.datetime.strptime(response, "%d/%m/%Y")
+                return True
+            except ValueError:
+                return False
         return True
-
-    @staticmethod
-    def validate(date):
-        try:
-            datetime.datetime.strptime(date, "%d/%m/%Y")
-            return True
-        except ValueError:
-            return False
 
     def get_message(self, response):
         return self._schema['message'] or "This field should be a date"
