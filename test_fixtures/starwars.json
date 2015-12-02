@@ -239,7 +239,7 @@
 				"condition": "greaterthan",
 				"value": "10",
 				"type": "error",
-				"message": "This field should be less than 11"
+				"message": "This field should be less than 10"
 			}, {
 				"condition": "lessthan",
 				"value": "0",

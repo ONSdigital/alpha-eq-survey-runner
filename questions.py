@@ -41,8 +41,8 @@ class Question(object):
         for validation in validation_schema:
             # find the validaton class and instantiate it
             if validation['condition']:
-                RuleClass = getattr(importlib.import_module('validators'), validation['condition'].capitalize())
-                # this loads the class from the validators.py file
+                RuleClass = getattr(importlib.import_module('validators.'+validation['condition']), validation['condition'].capitalize())
+                # this loads the class from the validator.py file
                 rule = RuleClass(validation)
                 rules.append(rule)
 
