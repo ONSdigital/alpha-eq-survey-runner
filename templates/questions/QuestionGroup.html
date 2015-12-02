@@ -5,7 +5,7 @@
 <b>Section: {{ question.question_text }}</b>
 
 {% if question.repeats() %}
-<input type="text" name="repetition" value="{{ question.get_repetition() }}"/>
+<input type="text" name="repetition_{{ question.get_reference() }}" value="{{ question.get_repetition() }}"/>
 {% endif  %}
 
 

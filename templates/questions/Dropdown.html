@@ -6,8 +6,13 @@
 <select name="{{question.get_reference()}}">
 <option value="" selected="">Choose a response</option>
 {% for part in question.parts %}
-    <option value="{{part}}" id="{{ question.get_reference() ~ '_' ~ loop.index0 }}" {% if question.get_reference() in user_response and user_response[question.get_reference()] == part %}selected="selected"{% endif %}>{{part}}</option>
+    <option value="{{part}}"
+            id="{{ question.get_reference() ~ '_' ~ loop.index0 }}"
+            {% if question.get_answer() == part %}
+            selected="selected"
+            {% endif %}>{{part}}
+    </option>
 {% endfor %}
 </select>
 {% endblock question_template %}
-goi
+

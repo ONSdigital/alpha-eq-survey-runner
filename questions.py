@@ -196,6 +196,26 @@ class Question(object):
     def set_accepted(self, accepted):
         self.accepted[self.repetition] = accepted
 
+    def get_errors(self):
+        if len(self.validation_results) > self.repetition:
+            validation = self.validation_results[self.repetition]
+            return validation.errors
+
+        return []
+
+    def get_warnings(self):
+        if len(self.validation_results) > self.repetition:
+            validation = self.validation_results[self.repetition]
+            return validation.warnings
+
+        return []
+
+    def get_justification(self):
+        if len(self.justifications) > self.repetition:
+            return self.justifications[self.repetition]
+
+        return None
+
 class MultipleChoiceQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(MultipleChoiceQuestion, self).__init__(question_schema, parent)

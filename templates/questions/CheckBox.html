@@ -5,10 +5,15 @@
 <p>{{ question.question_help }}</p>
 <ul class="multiple-choice">
 {% for part in question.parts %}
-  <li>
-      <label for="{{ question.get_reference() ~ '_' ~ loop.index0 }}" {% if question.get_reference() in user_response and user_response[question.reference] == part %}checked="checked"{% endif %}>
-      <input id="{{ question.get_reference() ~ '_' ~ loop.index0 }}" type="checkbox" name="{{question.get_reference()}}" value="{{part}}"
-       {% if question.get_reference() in user_response and (part == user_response[question.get_reference()] or part in user_response[question.get_reference()]) %}checked="checked"{% endif %}>{{ part }}</label>
+  <li><label for="{{ question.get_reference() ~ '_' ~ loop.index0 }}">
+      <input id="{{ question.get_reference() ~ '_' ~ loop.index0 }}"
+             type="checkbox"
+             name="{{question.get_reference()}}"
+             value="{{part}}"
+             {% if part in question.get_answer() %}
+             checked="checked"
+             {% endif %}>
+        {{ part }}</label>
   </li>
 {% endfor %}
 </ul>
