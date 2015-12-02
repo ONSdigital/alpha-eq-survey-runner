@@ -1,7 +1,8 @@
-from questions import Question
 import json
-from branching import SkipCondition
 from collections import OrderedDict
+
+from branching.skip import SkipCondition
+from questions.question import Question
 
 
 class QuestionnaireManager(object):
@@ -16,8 +17,8 @@ class QuestionnaireManager(object):
         self.questions = []
         self.responses = {}
         self.history = []
-        self.warningsAccepted = []
-        self.justifications={}
+        self.warnings_accepted = []
+        self.justifications = {}
         self.current_question = None
         self._load_questionnaire_data(json.loads(questionnaire_schema))
         self._ensure_valid_routing()
@@ -62,7 +63,7 @@ class QuestionnaireManager(object):
         self.question_index = questionnaire_state['index']
         self.responses = questionnaire_state['responses']
         self.history = questionnaire_state['history']
-        self.warningsAccepted = questionnaire_state['warningsAccepted']
+        self.warnings_accepted = questionnaire_state['warningsAccepted']
         self.justifications= questionnaire_state['justifications']
 
         # validate any previous data
@@ -70,7 +71,7 @@ class QuestionnaireManager(object):
             for index in range(0, self.question_index + 1):
                 question = self.questions[index]
                 if self._exists_in_history(question.get_reference()):
-                    question.is_valid_response(self.responses,self.warningsAccepted)
+                    question.is_valid_response(self.responses, self.warnings_accepted)
 
             # evaluate skip conditions and skip matching questions
             for question in self.questions:
@@ -111,8 +112,8 @@ class QuestionnaireManager(object):
         else:
             return self.justifications
 
-    def get_warningsAccepted(self, *args):
-        return self.warningsAccepted
+    def get_warnings_accepted(self, *args):
+        return self.warnings_accepted
 
     def start_questionnaire(self):
         self.started = True
@@ -127,7 +128,7 @@ class QuestionnaireManager(object):
             'index': self.question_index,
             'responses': self.responses,
             'history': self.history,
-            'warningsAccepted': self.warningsAccepted,
+            'warningsAccepted': self.warnings_accepted,
             'justifications': self.justifications
         }
 
@@ -137,7 +138,7 @@ class QuestionnaireManager(object):
                 'surveyId': self.survey_id,
                 'questionnaireId': self.questionnaire_id,
                 'responses': self.responses,
-                'warningsAccepted': self.warningsAccepted,
+                'warningsAccepted': self.warnings_accepted,
                 'justifications': self.justifications
             }
         else:
@@ -151,8 +152,8 @@ class QuestionnaireManager(object):
     def store_warnings(self, warningsAccepted):
 
         for warning in warningsAccepted:
-            if warning not in self.warningsAccepted or '':
-                self.warningsAccepted.append(warning)
+            if warning not in self.warnings_accepted or '':
+                self.warnings_accepted.append(warning)
 
     def store_justifications(self, justifications):
         for ref in justifications.keys():
@@ -167,7 +168,7 @@ class QuestionnaireManager(object):
                 history = self._find_history(self.current_question.get_reference())
 
             history['reference'] = self.current_question.get_reference()
-            history['valid'] = self.current_question.is_valid_response(response,self.warningsAccepted)
+            history['valid'] = self.current_question.is_valid_response(response, self.warnings_accepted)
 
     def _exists_in_history(self, reference):
         for history in self.history:
@@ -245,7 +246,6 @@ class QuestionnaireManager(object):
                 self.current_question = self.questions[self.question_index]
             index += 1
 
-    # will use in template
     def get_question_by_reference(self, reference):
         if reference.startswith("EQ_"):
             reference = reference.replace("EQ_", "")
@@ -275,7 +275,7 @@ class QuestionnaireManager(object):
         return history_with_question_objects
 
     def condition_met(self, condition):
-       return condition.state == self.get_response_by_reference(condition.trigger)
+        return condition.state == self.get_response_by_reference(condition.trigger)
 
     def get_response_by_reference(self, reference):
         if reference in self.responses:

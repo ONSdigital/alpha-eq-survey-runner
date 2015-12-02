@@ -1,9 +1,14 @@
-import unittest
 import os
-from settings import APP_FIXTURES
-from questionnaireManager import QuestionnaireManager
+import unittest
 
-from questions import TextBlock, MultipleChoiceQuestion, InputTextQuestion, QuestionGroup
+from questions.inputtext import InputText
+from questions.multiplechoice import MultipleChoice
+from questions.questiongroup import QuestionGroup
+
+from questionnaire_manager import QuestionnaireManager
+from questions.textblock import TextBlock
+from settings import APP_FIXTURES
+
 
 class QuestionnaireManagerTest(unittest.TestCase):
 
@@ -37,7 +42,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert isinstance(q, InputTextQuestion) == True
+        assert isinstance(q, InputText) == True
         assert q.question_text == "How many marbles do you have"
 
         response = '15'
@@ -57,7 +62,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert isinstance(q, InputTextQuestion) == True
+        assert isinstance(q, InputText) == True
         assert q.question_text == "How many marbles do you have"
 
         response = 'Lots'
@@ -79,7 +84,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert isinstance(q, InputTextQuestion) == True
+        assert isinstance(q, InputText) == True
         assert q.question_text == "How many marbles do you have"
 
         response = '35'
@@ -95,7 +100,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_next_question(response)
 
-        assert isinstance(q, MultipleChoiceQuestion)
+        assert isinstance(q, MultipleChoice)
         assert q.question_text == 'Which colour marble would you prefer?'
 
         invalid_response_1 = ' '
@@ -362,7 +367,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         sectionTwoQ1 = qManager.get_question_by_reference('sectionTwo_q1')
 
-        assert isinstance(sectionTwoQ1, InputTextQuestion) == True
+        assert isinstance(sectionTwoQ1, InputText) == True
         assert sectionTwoQ1.get_reference() == 'EQ_sectionTwo_q1'
         # check 'private' internal reference
         assert sectionTwoQ1._reference == 'q1'
@@ -577,7 +582,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = qManager.get_current_question()
 
-        assert isinstance(q, InputTextQuestion) == True
+        assert isinstance(q, InputText) == True
         assert q.question_text == "How many marbles do you have"
 
         response = 'Lots and lots and lots'
