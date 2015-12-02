@@ -304,7 +304,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert 'This field must be a date' in EQ_start_q7[0].errors
 
-
     def test_progress(self):
         qData = self._loadFixture('groups.json')
         resume_data = {}

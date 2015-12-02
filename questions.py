@@ -268,7 +268,6 @@ class DateQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(DateQuestion, self).__init__(question_schema, parent)
 
-
 class DateRangeQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(DateRangeQuestion, self).__init__(question_schema, parent)

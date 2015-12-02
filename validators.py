@@ -9,6 +9,7 @@ class ValidationResult(object):
     def is_valid(self):
         return len(self.errors) == 0 and (len(self.warnings) == 0 or self.accepted)
 
+
 # Base validator class
 class Validator(object):
     def __init__(self, schema):
