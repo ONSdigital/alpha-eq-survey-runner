@@ -8,7 +8,7 @@ class Lessthan(Numeric):
 
     def is_valid(self, response):
         value = self._schema['value']
-        return not value or super(Lessthan, self).is_valid(response) and int(response) >= int(value)
+        return not value or super(Lessthan, self).is_valid(response) and float(response) >= float(value)
 
     def get_message(self, response):
         value = self._schema['value']

@@ -14,6 +14,18 @@ class NumericTest(unittest.TestCase):
         validator = Numeric(self.validation)
         assert validator.is_valid(number)
 
+    def test_is_decimal(self):
+        self._load_test_data()
+        number = "1.0"
+        validator = Numeric(self.validation)
+        assert validator.is_valid(number)
+
+    def test_is_negative_zero(self):
+        self._load_test_data()
+        number = "-0"
+        validator = Numeric(self.validation)
+        assert validator.is_valid(number)
+
     def test_is_numeric_negative(self):
         self._load_test_data()
         number = "-1"

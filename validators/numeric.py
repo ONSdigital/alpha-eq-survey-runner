@@ -11,12 +11,11 @@ class Numeric(Validator):
 
     @staticmethod
     def isnumeric(response):
-        if response.startswith('-'):
-            # replace the - with an empty space once only
-            value = response.replace('-', '', 1)
-        else:
-            value = response
-        return value.isnumeric()
+        try:
+            float(response)
+            return True
+        except ValueError:
+            return False
 
     def get_message(self, response):
         return self._schema['message'] or "This field should be a number"
