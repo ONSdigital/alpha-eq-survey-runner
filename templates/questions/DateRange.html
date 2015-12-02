@@ -5,7 +5,6 @@
   <h3>{{ question.question_text }}</h3>
     <p>{{ question.question_help }}</p>
     <label>Between</label>
-    <!--<input type="text" name="{{question.get_reference()}}" placeholder="dd/mm/yyyy" value="{%if user_response[question.get_reference()]%}{{user_response[question.get_reference()][0]}}{%endif%}" />-->
     <section class="date-input">
     <div>
       <label>Month</label>
@@ -66,9 +65,11 @@
     <label>Year</label>
     <input type="text" class="year" size="4" maxlength="4" value="">
   </div>
+
+  <input class="combined-date" type="hidden" name="{{question.get_reference()}}" placeholder="dd/mm/yyyy" value="{%if user_response[question.get_reference()]%}{{user_response[question.get_reference()][0]}}{%endif%}" />
+
 </section>
     <label>And</label>
-    <!--<input type="text" name="{{question.get_reference()}}" placeholder="dd/mm/yyyy" value="{%if user_response[question.get_reference()]%}{{user_response[question.get_reference()][1]}}{%endif%}" />-->
     <section class="date-input">
     <div>
       <label>Month</label>
@@ -129,5 +130,6 @@
     <label>Year</label>
     <input type="text" class="year" size="4" maxlength="4" value="">
     </div>
+    <input class="combined-date" type="hidden" name="{{question.get_reference()}}" placeholder="dd/mm/yyyy" value="{%if user_response[question.get_reference()]%}{{user_response[question.get_reference()][0]}}{%endif%}" />
     </section>
 {% endblock question_template %}

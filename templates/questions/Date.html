@@ -4,7 +4,6 @@
   <!-- text question -->
   <h3>{{ question.question_text }}</h3>
     <p>{{ question.question_help }}</p>
-    <!-- REMOVE ONCE WIRED IN <input type="text" name="{{question.get_reference()}}" placeholder="dd/mm/yyyy" value="{{user_response[question.get_reference()] or ''}}" />-->
     <section class="date-input">
     <div>
       <label>Month</label>
@@ -65,5 +64,10 @@
     <label>Year</label>
     <input type="text" class="year" size="4" maxlength="4" value="">
   </div>
+
+
 </section>
+
+<input class="combined-date" type="text" name="{{question.get_reference()}}" placeholder="dd/mm/yyyy" value="{{user_response[question.get_reference()] or ''}}" disabled="disabled" />
+
 {% endblock question_template %}
