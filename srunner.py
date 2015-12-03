@@ -8,8 +8,10 @@ from logging import StreamHandler
 import uuid
 from questionnaireManager import QuestionnaireManager
 from settings import APP_FIXTURES
-import eq_cassandra
 import boto3
+import redis
+
+redis = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 app = Flask(__name__)
 app.debug = True
@@ -56,7 +58,7 @@ def hello():
 @app.route('/autosave/<int:questionnaire_id>/<quest_session_id>', methods=['POST'])
 def autosave(questionnaire_id, quest_session_id):
     data = request.get_data()
-    rtn = set_session_data(quest_session_id, session['uid'], data)
+    rtn = set_session_data(quest_session_id,  data)
     if rtn == None:
         return 'OK'
     else:
@@ -69,21 +71,12 @@ def get_form_schema(questionnaire_id):
     return form_schema.content
 
 
-def get_session_data(quest_session_id, session_id):
-    bound_stmt = prepared_select.bind([quest_session_id])
-    result = cassandra_session.execute(bound_stmt)
-    if result:
-        payload = json.loads(result[0].data)
-        return payload
-    return None
+def get_session_data(quest_session_id):
+    return redis.get(quest_session_id)
 
 
-def set_session_data(quest_session_id, session_id, data):
-    parameters = [session_id, quest_session_id, data]
-    bound_stmt = prepared_insert.bind(parameters)
-    result = cassandra_session.execute(bound_stmt)
-    app.logger.debug(result)
-    return result
+def set_session_data(quest_session_id, data):
+    return redis.set(quest_session_id, data)
 
 
 def get_jump_link(request, reference):
@@ -127,7 +120,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
     questionnaire_state = None
 
     if quest_session_id is not None:
-        questionnaire_state = get_session_data(quest_session_id, str(session['uid']))
+        questionnaire_state = json.loads(get_session_data(quest_session_id))
 
     q_manager = QuestionnaireManager(q_schema, questionnaire_state)
 
@@ -165,7 +158,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
             if q_manager.is_valid_response(user_responses, warningsAccepted):
                 q_manager.get_next_question(user_responses)
 
-        set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
+        set_session_data(quest_session_id,  json.dumps(q_manager.get_questionnaire_state()))
 
         redirect_url = request.base_url
         if 'debug' in request.args.keys():
@@ -177,7 +170,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         jump_to = request.args.get('jumpTo')
         if jump_to:
             q_manager.jump_to_question(jump_to)
-            set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
+            set_session_data(quest_session_id, json.dumps(q_manager.get_questionnaire_state()))
             base_url = request.base_url
             if 'debug' in request.args.keys():
                 base_url += '?debug=' + request.args['debug']
@@ -213,14 +206,6 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                                     questionnaire=q_manager,
                                     request=request,
                                     current="intro")
-
-
-cassandra_cluster, cassandra_session = eq_cassandra.connect_to_cassandra("sessionstore")
-insert_cql = "INSERT into sessions (session_id, quest_session_id, data) VALUES (?, ?, ?);"
-prepared_insert = cassandra_session.prepare(insert_cql)
-select_cql = "SELECT data FROM sessions WHERE  quest_session_id = ? LIMIT 1;"
-prepared_select = cassandra_session.prepare(select_cql)
-
 
 if __name__ == '__main__':
     app.debug = True
