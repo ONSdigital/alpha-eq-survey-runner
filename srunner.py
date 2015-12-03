@@ -1,4 +1,5 @@
 from flask import Flask, render_template, redirect, request, session, url_for
+from waitress import serve
 from flask_zurb_foundation import Foundation
 import requests
 import os
@@ -11,7 +12,15 @@ from settings import APP_FIXTURES
 import boto3
 import redis
 
-redis = redis.StrictRedis(host='localhost', port=6379, db=0)
+vcap_services = json.loads(os.environ['VCAP_SERVICES'])
+
+print (vcap_services)
+
+redis_host = vcap_services['redis'][0]['credentials']['host']
+redis_port = vcap_services['redis'][0]['credentials']['port']
+redis_password = vcap_services['redis'][0]['credentials']['password']
+
+redis = redis.StrictRedis(host=redis_host, port=redis_port, db=0, password=redis_password)
 
 app = Flask(__name__)
 app.debug = True
@@ -120,7 +129,9 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
     questionnaire_state = None
 
     if quest_session_id is not None:
-        questionnaire_state = json.loads(get_session_data(quest_session_id))
+        saved_data = get_session_data(quest_session_id)
+        if saved_data:
+            questionnaire_state = json.loads(saved_data)
 
     q_manager = QuestionnaireManager(q_schema, questionnaire_state)
 
@@ -207,6 +218,13 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                                     request=request,
                                     current="intro")
 
+port = int(os.getenv("VCAP_APP_PORT"))
+
 if __name__ == '__main__':
     app.debug = True
-    app.run(host="0.0.0.0", port=8080)
+    #if os.environ['PRODUCTION'] == "0":
+
+    serve(app, port=port)
+    #else:
+
+    #app.run(host='0.0.0.0', port=8080)

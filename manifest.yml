@@ -1,5 +1,7 @@
+# all applications use these settings and services
+memory: 512M
+instances: 1
 applications:
 - name: eq-survey-runner
-- path: srunner.py
-- buildpack: python_buildpack
-- command: python srunner.py
+  path: .
+  timeout: 30

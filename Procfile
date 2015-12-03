@@ -1,1 +1,1 @@
-web: gunicorn srunner:app --log-file -
+web: python srunner.py
