@@ -1,24 +1,34 @@
 <html>
-<head><title>DigitalEQ Gateway</title>
+<head><title>Respondent portal</title>
 <style>
     body, button, input, select, textarea {
         font-family: "open-sans-n4", "open-sans", sans-serif;
     }
     body {
-        position: fixed;
-        top: 10%;
-        left: 50%;
-        transform: translate(-50%, -10%);
+
     }
     label {
-        width: 150px;
+        width: 250px;
         display: inline-block;
+    }
+    header {
+        width: 100%;
+        background-color: green;
+        color: white;
+        margin:0;
+        padding:25px;
+    }
+    section {
+        margin-left: 200px;
+
+
     }
 </style>
 </head>
 <body>
-
-<h1>Digital EQ Gateway</h1>
+<header>
+<h1>Respondent portal</h1>
+</header>
 <form method="post">
     <p><label for="questionnaire_id">Questionnaire ID</label>
         <input id="questionnaire_id" type="text" name="questionnaire_id"/>
