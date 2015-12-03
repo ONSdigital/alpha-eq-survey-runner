@@ -52,6 +52,10 @@ def hello():
     else:
         return render_template('index.html')
 
+@app.route('/feedback', methods=('GET', 'POST'))
+def feedback():
+    return render_template('feedback.html')
+
 
 @app.route('/autosave/<int:questionnaire_id>/<quest_session_id>', methods=['POST'])
 def autosave(questionnaire_id, quest_session_id):

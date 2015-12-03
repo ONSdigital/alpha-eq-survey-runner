@@ -1,0 +1,57 @@
+<html>
+<head><title>Respondent portal</title>
+<style>
+    body, button, input, select, textarea {
+        font-family: "open-sans-n4", "open-sans", sans-serif;
+    }
+    body {
+
+    }
+    label {
+        width: 250px;
+        display: inline-block;
+    }
+    header {
+        width: 100%;
+        background-color: green;
+        color: white;
+        margin:0;
+        padding:25px;
+    }
+    section {
+        margin-left: 200px;
+
+
+    }
+</style>
+</head>
+<body>
+<header>
+<h1>Respondent portal</h1>
+</header>
+<br>
+<section>
+<h1>Give feedback</h1>
+
+<form method="post">
+    <p><label for="feedback">Overall, how did you feel about the service you received today?</label><br />
+    <br>
+        <input type="radio" name="group1" value="Milk">Very satisfied<br>
+        <input type="radio" name="group1" value="Butter">Satisfied <br>
+        <input type="radio" name="group1" value="Butter">Niether satisfied nor dissatified<br>
+        <input type="radio" name="group1" value="Butter">Dissatified<br>
+        <input type="radio" name="group1" value="Butter">Very dissatified<br>
+    </p>
+
+    <p><label for="feedback_data">How could we improve this service?</label><br><br>
+        <input id="session_id" type="text" name="session_id"/>
+    </p>
+    <p>
+        <label for="submit"> </label>
+        <input id="submit" type="submit" value="Send feedback">
+    </p>
+</form>
+</section>
+</body>
+</html>
+
