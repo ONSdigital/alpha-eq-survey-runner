@@ -149,9 +149,9 @@ class QuestionnaireManager(object):
             self.responses[ref] = response[ref]
         self._store_in_history(response)
 
-    def store_warnings(self, warningsAccepted):
+    def store_warnings(self, warnings_accepted):
 
-        for warning in warningsAccepted:
+        for warning in warnings_accepted:
             if warning not in self.warnings_accepted or '':
                 self.warnings_accepted.append(warning)
 
@@ -182,9 +182,9 @@ class QuestionnaireManager(object):
                 return history
         return None
 
-    def is_valid_response(self, user_answer, warningsAccepted):
+    def is_valid_response(self, user_answer, warnings_accepted):
         if self.current_question:
-            return self.current_question.is_valid_response(user_answer, warningsAccepted)
+            return self.current_question.is_valid_response(user_answer, warnings_accepted)
         return True
 
     def get_question_warnings(self, reference=None):
