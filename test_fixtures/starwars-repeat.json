@@ -289,32 +289,6 @@
 				"message": "This field must be a date"
 			}],
 			"repeating":false
-		}, {
-			"type": "date_question",
-			"children": [],
-			"dndType": "item",
-			"questionText": "When do you expect episode 8 to be released",
-			"questionError": "This is required",
-			"displayProperties": {},
-			"skipConditions": [],
-			"parts": [],
-			"questionReference": "q3",
-			"displayConditions": [],
-			"branchConditions": [],
-			"questionHelp": "Please enter a valid date range",
-			"questionType": "DateRange",
-			"validation": [{
-				"condition": "required",
-				"value": false,
-				"type": "error",
-				"message": "This field is not required"
-			}, {
-				"condition": "date",
-				"value": true,
-				"type": "error",
-				"message": "This field must be a date"
-			}],
-			"repeating":false
 		}],
 		"id": 2,
 		"questionText": "The New Films",

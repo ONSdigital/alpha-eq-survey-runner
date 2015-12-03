@@ -710,6 +710,11 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         stored = qManager.get_questionnaire_state()
 
+        assert 'current_question' in stored
+        assert stored['current_question'] == 'EQ_s1'
+        assert 'current_repetition' in stored
+        assert stored['current_repetition'] == 0
+
         assert len(stored['user_data']) == 2
         assert 'EQ_s1_q1' in stored['user_data'].keys()
         assert isinstance(stored['user_data']['EQ_s1_q1']['answer'], list)
@@ -729,6 +734,13 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         # check we have not completed the questionnaire
         assert qManager.completed == False
+
+        stored = qManager.get_questionnaire_state()
+
+        assert 'current_question' in stored
+        assert stored['current_question'] == 'EQ_s1'
+        assert 'current_repetition' in stored
+        assert stored['current_repetition'] == 1
 
         # get the current question
         q2 = qManager.get_current_question()

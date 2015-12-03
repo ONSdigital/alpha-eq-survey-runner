@@ -25,6 +25,7 @@ class Question(object):
         self.accepted = []
         self.justifications = []
         self.validation_results = []
+        self._repetition = 0
         self.set_repetition(0)
 
     def set_user_data(self, user_data):
@@ -79,8 +80,11 @@ class Question(object):
                     return True
 
                 if 'value' in schema['count']:
-                    # not implemented, just here as a placeholder for the thought
-                    return True
+                    # return a function to check the repetition
+                    def repeats():
+                        return self._repetition < int(schema['count']['value'])
+
+                    return repeats
 
 
             if 'until' in schema:
@@ -107,7 +111,7 @@ class Question(object):
 
     def branches(self):
         for rule in self.branch_conditions:
-            if rule.trigger == self.get_reference() and rule.state == self.answers[self.repetition]:
+            if rule.trigger == self.get_reference() and rule.state == self.answers[self._repetition]:
                 # need to append the EQ_ rule.target comes from the schema
                 return "EQ_" + rule.target
 
@@ -118,7 +122,7 @@ class Question(object):
 
     def validate(self):
         self.validation_results = []
-        for repetition in range(0, self.repetition + 1):
+        for repetition in range(0, self._repetition + 1):
             if len(self.answers) > repetition:
                 self.validation_results.append(self._validate_answer(self.answers[repetition]))
 
@@ -138,13 +142,13 @@ class Question(object):
                     # All warnings need to be recorded to populate checkboxes and messages
                     warnings.append(rule.get_message(answer))
 
-        result = ValidationResult(errors, warnings, self.accepted[self.repetition])
+        result = ValidationResult(errors, warnings, self.accepted[self._repetition])
 
         return result
 
 
     def get_accepted(self):
-        return self.accepted[self.repetition]
+        return self.accepted[self._repetition]
 
     def get_branch_conditions(self):
         return self.branch_conditions
@@ -168,10 +172,14 @@ class Question(object):
             return "EQ_" + self._reference
 
     def repeats(self):
-        return self._repeating
+        if self._repeating:
+            # _repeating is *either* False, or a closure
+            return self._repeating()
+
+        return False
 
     def get_repetition(self):
-        return self.repetition
+        return self._repetition
 
     def set_repetition(self, repetition):
         while len(self.answers) <= repetition:
@@ -179,40 +187,43 @@ class Question(object):
             self.justifications.append(False)
             self.accepted.append(False)
 
-        self.repetition = repetition
+        self._repetition = repetition
 
     def get_answer(self):
-        if self.repetition >= len(self.answers):
+        if self._repetition >= len(self.answers):
             return None
 
-        return self.answers[self.repetition]
+        return self.answers[self._repetition]
+
+    def get_answers(self):
+        return self.answers
 
     def update(self, answer):
-        self.answers[self.repetition] = answer
+        self.answers[self._repetition] = answer
 
     def set_justification(self, justification):
-        self.justifications[self.repetition] = justification
+        self.justifications[self._repetition] = justification
 
     def set_accepted(self, accepted):
-        self.accepted[self.repetition] = accepted
+        self.accepted[self._repetition] = accepted
 
     def get_errors(self):
-        if len(self.validation_results) > self.repetition:
-            validation = self.validation_results[self.repetition]
+        if len(self.validation_results) > self._repetition:
+            validation = self.validation_results[self._repetition]
             return validation.errors
 
         return []
 
     def get_warnings(self):
-        if len(self.validation_results) > self.repetition:
-            validation = self.validation_results[self.repetition]
+        if len(self.validation_results) > self._repetition:
+            validation = self.validation_results[self._repetition]
             return validation.warnings
 
         return []
 
     def get_justification(self):
-        if len(self.justifications) > self.repetition:
-            return self.justifications[self.repetition]
+        if len(self.justifications) > self._repetition:
+            return self.justifications[self._repetition]
 
         return None
 
@@ -239,13 +250,27 @@ class CheckBoxQuestion(Question):
         results = []
         for answer in self.answers:
             result = ValidationResult([], [], False)
-            for item in answer:
+
+            # checkboxes will always be sent one blank so that they can fail validation when no other options are selected
+            # If we have other selections, then we need to discard the blank string
+            if len(answer) == 1 and answer[0] == '':
+                item = answer[0]
                 itemResult = self._validate_answer(item)
                 result.errors += itemResult.errors
                 result.warnings += itemResult.warnings
                 if itemResult.accepted:
                     result.accepted = True
                 results.append(result)
+
+            else:
+                for item in answer:
+                    if item:
+                        itemResult = self._validate_answer(item)
+                        result.errors += itemResult.errors
+                        result.warnings += itemResult.warnings
+                        if itemResult.accepted:
+                            result.accepted = True
+                        results.append(result)
 
         return results
 
@@ -272,14 +297,13 @@ class DateRangeQuestion(Question):
     def __init__(self, question_schema, parent=None):
         super(DateRangeQuestion, self).__init__(question_schema, parent)
 
-    def is_valid_response(self, response, warnings_accepted):
-        if isinstance(response, list):
-            for r in response:
-               if not super(DateRangeQuestion, self).is_valid_response(r, False):
-                   return False
-            return True
-        else:
-            return False
+    def _validate_answer(self, answer):
+        # answer is a list of two dates, each needing separate validation
+        results = []
+        for date in answer:
+            results.append(super(DateRangeQuestion, self)._validate_answer(date))
+
+        return results
 
 
 class TextBlock(Question):
@@ -313,7 +337,7 @@ class QuestionGroup(Question):
     def validate(self):
         self.validation_results = []
 
-        for repetition in range(0, self.repetition + 1):
+        for repetition in range(0, self._repetition + 1):
             errors = []
             warnings = []
             for child in self.children:

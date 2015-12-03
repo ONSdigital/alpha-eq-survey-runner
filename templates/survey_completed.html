@@ -20,26 +20,24 @@
                   <blockquote>
                     {{ question.question_text | safe }}
                   </blockquote>
-                  {% if question.get_reference() in responses %}
                     <p>You said:</p>
+                    {% for answer in question.get_answers() %}
                     <blockquote>
                         {% if question.type == 'CheckBoxQuestion' %}
                           <p>
-                          {% for response in responses[question.get_reference()] %}
-                            {{ response }}<br>
+                          {% for part in answer %}
+                            {{ part }}<br>
                           {% endfor %}
                           </p>
                         {% else %}
-                          <p>{{ responses[question.get_reference()] }}</p>
+                          <p>{{ answer }}</p>
                         {% endif %}
                     </blockquote>
-                  {% endif %}
+                    {% endfor %}
 
-                  {% if question.errors %}
-                    {% for error in question.errors %}
+                    {% for error in question.get_errors() %}
                       {{ error }}
                     {% endfor %}
-                  {% endif %}
 
                 {% endif %}
 

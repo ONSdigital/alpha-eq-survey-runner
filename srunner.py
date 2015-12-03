@@ -120,7 +120,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         preview = True
 
     if 'debug' in request.args:
-        q_schema = _load_fixture('starwars.json')
+        q_schema = _load_fixture('starwars-repeat.json')
     else:
         q_schema = get_form_schema(questionnaire_id)
 
@@ -176,9 +176,7 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
             if q_manager.completed:
                 submit_data(quest_session_id, q_manager.get_submitted_data());
                 return render_template('survey_completed.html',
-                                        responses=q_manager.get_responses(),
                                         questionnaire=q_manager,
-                                        request=request,
                                         current="completed")
             else:
                 question = q_manager.get_current_question()

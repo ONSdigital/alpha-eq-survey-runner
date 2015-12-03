@@ -79,8 +79,16 @@ class QuestionnaireManager:
                 question = self.get_question_by_reference(reference)
                 question.set_user_data(self.user_data[reference])
 
-            self.current_question = self.get_question_by_reference(questionnaire_state['current_question'])
-            self.question_index = self._current_question_index()
+            if 'current_question' in questionnaire_state.keys():
+                self.current_question = self.get_question_by_reference(questionnaire_state['current_question'])
+                self.question_index = self._current_question_index()
+            else:
+                self.question_index = 0
+                self.current_question = self.questions[0]
+
+            if 'current_repetition' in questionnaire_state.keys():
+                self.current_question.set_repetition(questionnaire_state['current_repetition'])
+
 
     def _build_user_data(self):
         user_data = {}
@@ -144,22 +152,25 @@ class QuestionnaireManager:
             self.current_question = self.questions[self.question_index]
 
     def get_questionnaire_state(self):
-        return {
+        state = {
             'started': self.started,
             'completed': self.completed,
-            'current_question': self.current_question.get_reference(),
             'history': self.history,
             'user_data' : self._build_user_data()
         }
+
+        if self.current_question:
+            state['current_question'] = self.current_question.get_reference()
+            state['current_repetition'] = self.current_question.get_repetition()
+
+        return state
 
     def get_submitted_data(self):
         if self.completed:
             return {
                 'surveyId': self.survey_id,
                 'questionnaireId': self.questionnaire_id,
-                'responses': self.responses,
-                'warningsAccepted': self.warningsAccepted,
-                'justifications': self.justifications
+                'user_data': self._build_user_data()
             }
         else:
             return {}
@@ -224,7 +235,7 @@ class QuestionnaireManager:
         self._store_in_history()
 
         if self.current_question.repeats():
-            self.current_question.repetition += 1
+            self.current_question._repetition += 1
             return self.current_question
 
         if self.current_question.branches():
@@ -274,13 +285,15 @@ class QuestionnaireManager:
         if len(address_parts) == 1:
             for question in self.questions:
                 if question._reference == reference:
-                    question.repetition = repetition
+                    # don't use the setter here as children might not have been initialised
+                    question._repetition = repetition
                     return question
         else:
             this_level = address_parts.pop(0)
             for question in self.questions:
                 if question._reference == this_level:
-                    question.repetition = repetition
+                    # don't use the setter here as children might not have been initialised
+                    question._repetition = repetition
                     return question.get_question_by_reference('_'.join(address_parts))
 
     def complete_questionnaire(self):
