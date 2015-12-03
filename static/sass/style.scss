@@ -316,6 +316,50 @@ input:focus:-ms-input-placeholder, textarea:focus:-ms-input-placeholder {
   color: transparent;
 }
 
+/* date */
+
+section.date-input {
+  display:flex;
+  width:100%;
+  min-width:300px;
+}
+
+section.date-input select {
+  appearance: none;
+  border:1px solid #ccc;
+  padding:8px 40px 8px 10px;
+  background: white url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/66278/down.svg) no-repeat center right 10px;
+  background-size:12px;
+  height:auto;
+  display: flex;
+  flex:1;
+}
+
+section.date-input label {
+  display:flex;
+  align-self: flex-start;
+  margin:10px 10px 5px 4px;
+  font-family: sans-serif;
+  font-weight:600;
+  font-size:12px;
+}
+
+section.date-input input {
+  padding:10px;
+  display: flex;
+}
+
+section.date-input div  {
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  margin:10px 10px 10px 0;
+}
+
+section.date-input div:last-child {
+  flex:0 0 60px;
+}
+
 
 /* mqs TBD */
 @media all and (max-width: 780px) {
