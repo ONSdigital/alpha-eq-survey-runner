@@ -1,0 +1,181 @@
+{
+	"survey_id": "0001",
+    "questionnaire_id": "1234",
+    "overview": "This is a simple test of repeating questions",
+    "title": "Repeating - Simple",
+    "questionnaire_title": "Repeating based on an answer Test",
+    "questions": [
+        {
+            "children": [
+                {
+                    "type": "text_question",
+                    "children": [],
+                    "dndType": "item",
+                    "questionText": "How many times would you like to repeat the next section?",
+                    "questionError": "This question is required",
+                    "displayProperties": {},
+                    "skipConditions": [],
+                    "parts": [],
+                    "questionReference": "q1",
+                    "displayConditions": [],
+                    "branchConditions": [],
+                    "questionHelp": "",
+                    "questionType": "InputText",
+                    "validation": [
+                         {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                         },
+                         {
+                            "condition": "numeric",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is numeric"
+                         }
+                    ],
+                    "repeating":false
+                },
+                {
+                    "type": "number_question",
+                    "children": [],
+                    "dndType": "item",
+                    "questionText": "What is the developers age?",
+                    "questionError": "This question is required",
+                    "displayProperties": {},
+                    "skipConditions": [],
+                    "parts": [],
+                    "questionReference": "q2",
+                    "displayConditions": [],
+                    "branchConditions": [],
+                    "questionHelp": "",
+                    "questionType": "InputText",
+                    "validation": [
+                         {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                         },
+                         {
+                            "condition": "numeric",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is numeric"
+                         }
+                    ],
+                    "repeating":false
+                }
+
+            ],
+            "id": 0,
+            "questionText": "Repeating Section Test",
+            "questionError": "",
+            "displayProperties": {},
+            "skipConditions": [],
+            "parts": [],
+            "questionReference": "s1",
+            "displayConditions": [],
+            "branchConditions": [],
+            "questionHelp": "Please tell us who developed this monster",
+            "questionType": "QuestionGroup",
+            "validation": [
+                {
+                    "condition": "required",
+                    "value": true,
+                    "type": "error",
+                    "message" : "This field is required"
+                }
+            ],
+            "repeating": {
+              "count": {
+                "value": "2"
+              }
+            }
+        },
+        {
+            "children": [
+                {
+                    "type": "text_question",
+                    "children": [],
+                    "dndType": "item",
+                    "questionText": "What is the developers firstname?",
+                    "questionError": "This question is required",
+                    "displayProperties": {},
+                    "skipConditions": [],
+                    "parts": [],
+                    "questionReference": "q1",
+                    "displayConditions": [],
+                    "branchConditions": [],
+                    "questionHelp": "",
+                    "questionType": "InputText",
+                    "validation": [
+                         {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                        }
+                    ],
+                    "repeating":false
+                },
+                {
+                    "type": "number_question",
+                    "children": [],
+                    "dndType": "item",
+                    "questionText": "What is the developers age?",
+                    "questionError": "This question is required",
+                    "displayProperties": {},
+                    "skipConditions": [],
+                    "parts": [],
+                    "questionReference": "q2",
+                    "displayConditions": [],
+                    "branchConditions": [],
+                    "questionHelp": "",
+                    "questionType": "InputText",
+                    "validation": [
+                         {
+                            "condition": "required",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is required"
+                         },
+                         {
+                            "condition": "numeric",
+                            "value": true,
+                            "type": "error",
+                            "message" : "This field is numeric"
+                         }
+                    ],
+                    "repeating":false
+                }
+
+            ],
+            "id": 0,
+            "questionText": "Repeating Section",
+            "questionError": "",
+            "displayProperties": {},
+            "skipConditions": [],
+            "parts": [],
+            "questionReference": "s2",
+            "displayConditions": [],
+            "branchConditions": [],
+            "questionHelp": "Please tell us who developed this monster",
+            "questionType": "QuestionGroup",
+            "validation": [
+                {
+                    "condition": "required",
+                    "value": true,
+                    "type": "error",
+                    "message" : "This field is required"
+                }
+            ],
+            "repeating": {
+              "count": {
+                "response": "s2_q1"
+              }
+            }
+        }
+    ]
+}

@@ -27,7 +27,7 @@ class QuestionnaireManager:
         self.title = questionnaire_data['title']
         self.overview = questionnaire_data['overview']
         for index, schema in enumerate(questionnaire_data['questions']):
-            question = Question.factory(schema)
+            question = Question.factory(self, schema)
 
             # TODO: Remove this as it breaks encapsulation.  References should be set in the schema instead
             # all questions need references - should really be set by the author

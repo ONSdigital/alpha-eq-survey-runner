@@ -4,7 +4,8 @@ from validators import ValidationResult
 
 
 class Question(object):
-    def __init__(self, question_schema, parent=None):
+    def __init__(self, manager, question_schema, parent=None):
+        self.manager = manager
         self.parent = parent
         self.skipping = False
         self._schema = question_schema
@@ -47,16 +48,16 @@ class Question(object):
         }
 
     @staticmethod
-    def factory(schema, parent=None):
-        if schema['questionType'] == 'InputText': return InputTextQuestion(schema, parent)
-        if schema['questionType'] == 'InputNumber': return InputNumberQuestion(schema, parent)
-        if schema['questionType'] == 'TextBlock': return TextBlock(schema, parent)
-        if schema['questionType'] == 'MultipleChoice': return MultipleChoiceQuestion(schema, parent)
-        if schema['questionType'] == 'QuestionGroup': return QuestionGroup(schema, parent)
-        if schema['questionType'] == 'CheckBox': return CheckBoxQuestion(schema, parent)
-        if schema['questionType'] == 'Dropdown': return DropdownQuestion(schema, parent)
-        if schema['questionType'] == 'Date': return DateQuestion(schema, parent)
-        if schema['questionType'] == 'DateRange': return DateRangeQuestion(schema, parent)
+    def factory(manager, schema, parent=None):
+        if schema['questionType'] == 'InputText': return InputTextQuestion(manager, schema, parent)
+        if schema['questionType'] == 'InputNumber': return InputNumberQuestion(manager, schema, parent)
+        if schema['questionType'] == 'TextBlock': return TextBlock(manager, schema, parent)
+        if schema['questionType'] == 'MultipleChoice': return MultipleChoiceQuestion(manager, schema, parent)
+        if schema['questionType'] == 'QuestionGroup': return QuestionGroup(manager, schema, parent)
+        if schema['questionType'] == 'CheckBox': return CheckBoxQuestion(manager, schema, parent)
+        if schema['questionType'] == 'Dropdown': return DropdownQuestion(manager, schema, parent)
+        if schema['questionType'] == 'Date': return DateQuestion(manager, schema, parent)
+        if schema['questionType'] == 'DateRange': return DateRangeQuestion(manager, schema, parent)
 
     def _build_validation(self, validation_schema):
         rules = []
@@ -234,8 +235,8 @@ class Question(object):
         return None
 
 class MultipleChoiceQuestion(Question):
-    def __init__(self, question_schema, parent=None):
-        super(MultipleChoiceQuestion, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(MultipleChoiceQuestion, self).__init__(manager, question_schema, parent)
 
     def validate(self):
         valid = super(MultipleChoiceQuestion, self).validate()
@@ -249,8 +250,8 @@ class MultipleChoiceQuestion(Question):
 
 
 class CheckBoxQuestion(Question):
-    def __init__(self, question_schema, parent=None):
-        super(CheckBoxQuestion, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(CheckBoxQuestion, self).__init__(manager, question_schema, parent)
 
     def validate(self):
         results = []
@@ -281,27 +282,27 @@ class CheckBoxQuestion(Question):
         return results
 
 class InputTextQuestion(Question):
-    def __init__(self, question_schema, parent=None):
-        super(InputTextQuestion, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(InputTextQuestion, self).__init__(manager, question_schema, parent)
 
 
 class InputNumberQuestion(Question):
-    def __init__(self, question_schema, parent=None):
-        super(InputNumberQuestion, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(InputNumberQuestion, self).__init__(manager, question_schema, parent)
 
 
 class DropdownQuestion(Question):
-    def __init__(self, question_schema, parent=None):
-        super(DropdownQuestion, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(DropdownQuestion, self).__init__(manager, question_schema, parent)
 
 
 class DateQuestion(Question):
-    def __init__(self, question_schema, parent=None):
-        super(DateQuestion, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(DateQuestion, self).__init__(manager, question_schema, parent)
 
 class DateRangeQuestion(Question):
-    def __init__(self, question_schema, parent=None):
-        super(DateRangeQuestion, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(DateRangeQuestion, self).__init__(manager, question_schema, parent)
 
     def _validate_answer(self, answer):
         # answer is a list of two dates, each needing separate validation
@@ -313,22 +314,22 @@ class DateRangeQuestion(Question):
 
 
 class TextBlock(Question):
-    def __init__(self, question_schema, parent=None):
-        super(TextBlock, self).__init__(question_schema, parent)
+    def __init__(self, manager, question_schema, parent=None):
+        super(TextBlock, self).__init__(manager, question_schema, parent)
 
     def validate(self):
         return [ValidationResult([], [], [])]
 
 
 class QuestionGroup(Question):
-    def __init__(self, question_schema, parent=None):
-        super(QuestionGroup, self).__init__(question_schema)
+    def __init__(self, manager, question_schema, parent=None):
+        super(QuestionGroup, self).__init__(manager, question_schema)
         self.children = []
         self._load_children(question_schema['children'])
 
     def _load_children(self, children_schema):
         for index, child in enumerate(children_schema):
-            question = Question.factory(child, self)
+            question = Question.factory(self.manager, child, self)
             if not question._reference:
                 question._reference = 'q' + str(index)
             self.children.append(question)
