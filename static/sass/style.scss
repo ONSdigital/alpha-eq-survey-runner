@@ -47,50 +47,61 @@ a {
   hyphens: auto;
 }
 
+
 header {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
   background: #003d59;
   position: relative;
+  color:white;
+  padding:3rem 0;
 }
-.survey-info {
-  margin: 30px 0 60px;
-}
+
 header h2 {
-  color: white;
-  font-weight: 200;
-  text-align: center;
-  font-size: initial;
-  font-size: calc(1.6vw + 1.6vh);
-  transition: all 0.2s;
+  color:white;
 }
-header p {
-  font-style: italic;
-  text-align: center;
-  opacity: 0.57;
-  font-size: 16px;
-  color: #fff;
-  font-size: initial;
-  font-size: calc(0.7vw + 0.7vh);
-  transition: all 0.2s;
+
+header figure:nth-of-type(1) {
+  display: inline-flex;
+  flex: 0 0 150px;
+  height: 100%;
+  min-width: 60px;
+  max-width: 180px;
+  margin: -10px 10px 10px 10px;
+  padding: 10px;
 }
-header span {
-  position: absolute;
+
+header figure:nth-of-type(2) {
+  display: inline-flex;
+  flex: 0 0 150px;
+  height: 100%;
+  min-width: 140px;
+  max-width: 200px;
+  margin: -10px 10px 10px 10px;
+  padding: 10px
 }
-header span img {
+
+header figure img {
   width: 100%;
   height: auto;
 }
-header span.logo {
-  left: 30px;
-  top: 30px;
-  width: 14%;
-  min-width:160px;
+
+.crest {
+  max-width: 90px;
 }
-header span.crest {
-  right: 30px;
-  top: 30px;
-  width: 5.5%;
-  min-width:60px;
+
+.logo {
+  max-width: 150px
 }
+
+header div {
+  flex: 1;
+  text-align: center;
+}
+
+
+
 main {
   background: #fff;
   border: 1px solid #ededed;
@@ -377,5 +388,43 @@ input:focus:-ms-input-placeholder, textarea:focus:-ms-input-placeholder {
   .recipient-info li:last-of-type {
     width: 100%;
     border-left: none;
+  }
+}
+
+@media all and (max-width: 450px) {
+  header div {
+    flex: 0 0 100%;
+    order: 3;
+    padding:10px;
+  }
+  header {
+    justify-content: space-between;
+    margin:0;
+    padding:10px;
+  }
+
+  header h2 {
+    margin:0;
+    font-size:22px;
+  }
+
+  header figure {
+    margin-top: 0!important;
+    order:1;
+  }
+
+  .logo {
+    margin-top: 8px;
+  }
+
+  .crest {
+    max-width: 60px;
+  }
+
+  main {
+    margin-top: 0;
+  }
+  .survey-nav {
+    padding:10px inherit;
   }
 }
