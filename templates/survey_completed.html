@@ -1,56 +1,70 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>{{questionnaire.title}}</h1>
-<p>Thank you for completing the Questionnaire, You gave us the following answers:</p>
+<section class="summary-header">
+  <b>Thank you for completing {{questionnaire.title}}. Here's a summary of your responses</b>
+</section>
 
 {% if questionnaire.get_history() %}
-    <ul>
+    <ul class="summary-screen">
         {% for section in questionnaire.questions %}
         {% if not section.skipping %}
-        <li>
+        <li class="summary-screen-list">
           <div>
-            <div class="header">
-              <a href="{{ get_jump_link(request, section.get_reference()) }}">{{ section.question_text }}</a> <input type="checkbox" disabled readonly {% if questionnaire.get_history()[section] %}checked="checked"{% endif %}>
+            <div class="summary-screen-header">
+              {% if questionnaire.get_history()[section] %}<i class="icon-Circle-Check-2 done"></i>{% else %}<i class="icon-Circle-Minus-1"></i>{% endif %}&nbsp;&nbsp;<a href="{{ get_jump_link(request, section.get_reference()) }}" title="Edit your responses to this question?">{{ section.question_text }}</a>
             </div>
-            <div>
+
               {% for question in section.children %}
-                {% if question.type != 'TextBlock' %}
-                  <p>We said:</p>
-                  <blockquote>
-                    {{ question.question_text | safe }}
-                  </blockquote>
-                  {% if question.get_reference() in responses %}
-                    <p>You said:</p>
-                    <blockquote>
-                        {% if question.type == 'CheckBoxQuestion' %}
-                          <p>
-                          {% for response in responses[question.get_reference()] %}
-                            {{ response }}<br>
-                          {% endfor %}
-                          </p>
-                        {% else %}
-                          <p>{{ responses[question.get_reference()] }}</p>
+
+              {% if question.type != 'TextBlock' %}
+
+                <div class="question-group">
+
+                      <div class="question-text">{{ question.question_text | safe }}</div>
+
+                      <div class="question-response">
+
+                      {% if question.get_reference() in responses %}
+
+                          {% if isinstance(responses[question.get_reference()], (dict, list)) %}
+                            <ul>
+                            {% for response in responses[question.get_reference()] %}
+                                {% if response %}
+                                    <li>{{ response }}</li>
+                                {% endif %}
+                            {% endfor %}
+                            </ul>
+                            {% else %}
+
+                            <p>{{ responses[question.get_reference()] }}</p>
+
+                            {% endif %}
+
                         {% endif %}
-                    </blockquote>
+
+                      </div>
+
+                      {% if question.errors %}
+
+                      {% for error in question.errors %}
+                        {{ error }}
+                      {% endfor %}
+
+                    {% endif %}
+
                   {% endif %}
 
-                  {% if question.errors %}
-                    {% for error in question.errors %}
-                      {{ error }}
-                    {% endfor %}
-                  {% endif %}
-
-                {% endif %}
+                  </div>
 
               {% endfor %}
-            </div>
-          </div>
 
         </li>
         {% endif %}
+
+
         {% endfor %}
-    </ul>
+</ul>
 {% endif %}
 
 
