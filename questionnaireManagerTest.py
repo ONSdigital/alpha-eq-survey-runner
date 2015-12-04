@@ -696,6 +696,10 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q1.get_repetition() == 0
         assert results[q1.get_repetition()].is_valid() == False
 
+        stored = qManager.get_questionnaire_state()
+
+        # re-instantiate the questionnaire manager as if following a submit
+        qManager = QuestionnaireManager(qData, stored)
 
         # answer the question for the first repetition
         responses = {
@@ -736,6 +740,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert qManager.completed == False
 
         stored = qManager.get_questionnaire_state()
+
+        # re-instantiate the questionnaire manager as if following a submit
+        qManager = QuestionnaireManager(qData, stored)
 
         assert 'current_question' in stored
         assert stored['current_question'] == 'EQ_s1'
@@ -794,6 +801,9 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert EQ_s1_q2[1].is_valid() == False
 
         assert 'This field is numeric' in EQ_s1_q2[1].errors
+
+        # re-instantiate the questionnaire manager as if following a submit
+        qManager = QuestionnaireManager(qData, stored)
 
         responses = {
             'repetition_EQ_s1': 1,
