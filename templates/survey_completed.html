@@ -27,12 +27,14 @@
 
                       {% if question.get_reference() in responses %}
 
-                          {% if question.type == 'CheckBoxQuestion' %}
-                            <p>
+                          {% if isinstance(responses[question.get_reference()], (dict, list)) %}
+                            <ul>
                             {% for response in responses[question.get_reference()] %}
-                              {{ response }}
+                                {% if response %}
+                                    <li>{{ response }}</li>
+                                {% endif %}
                             {% endfor %}
-                            </p>
+                            </ul>
                             {% else %}
 
                             <p>{{ responses[question.get_reference()] }}</p>
