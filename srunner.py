@@ -10,21 +10,15 @@ import uuid
 from questionnaireManager import QuestionnaireManager
 from settings import APP_FIXTURES
 import boto3
-import redis
+import eq_redis
 
-vcap_services = json.loads(os.environ['VCAP_SERVICES'])
-
-print (vcap_services)
-
-redis_host = vcap_services['redis'][0]['credentials']['host']
-redis_port = vcap_services['redis'][0]['credentials']['port']
-redis_password = vcap_services['redis'][0]['credentials']['password']
-
-redis = redis.StrictRedis(host=redis_host, port=redis_port, db=0, password=redis_password)
 
 app = Flask(__name__)
 app.debug = True
 Foundation(app)
+
+# get a redis connection
+redis = eq_redis.get_redis()
 
 
 # log to stderr
@@ -46,11 +40,10 @@ def submit_data(sessionid, data):
 
 
 def _load_fixture(filename):
-    q_data = None
     with open(os.path.join(APP_FIXTURES, filename)) as f:
         q_data = f.read()
         f.close()
-    return q_data
+        return q_data
 
 
 @app.route('/', methods=('GET', 'POST'))
@@ -218,13 +211,11 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                                     request=request,
                                     current="intro")
 
-port = int(os.getenv("VCAP_APP_PORT"))
 
 if __name__ == '__main__':
     app.debug = True
-    #if os.environ['PRODUCTION'] == "0":
-
-    serve(app, port=port)
-    #else:
-
-    #app.run(host='0.0.0.0', port=8080)
+    if os.environ['PRODUCTION'] == "0":
+        port = int(os.getenv("VCAP_APP_PORT"))
+        serve(app, port=port)
+    else:
+        app.run(host='0.0.0.0', port=8080)
