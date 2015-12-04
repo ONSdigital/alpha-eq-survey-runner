@@ -104,6 +104,10 @@ def inject_jump_link():
 def inject_isinstance():
     return dict(isinstance=isinstance)
 
+@app.context_processor
+def inject_list():
+    return dict(list=list)
+
 @app.route('/questionnaire/<int:questionnaire_id>', methods=('GET', 'POST'), strict_slashes=False)
 @app.route('/questionnaire/<int:questionnaire_id>/<quest_session_id>', methods=('GET', 'POST'), strict_slashes=False)
 def questionnaire_viewer(questionnaire_id, quest_session_id=None):
