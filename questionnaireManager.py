@@ -194,7 +194,7 @@ class QuestionnaireManager:
         self._store_in_history(response)
 
     def _store_in_history(self):
-        self.history.append(self.current_question.get_reference())
+        self.history.append(self.current_question.get_reference() + ':' + str(self.current_question.get_repetition()))
         # make unique
         self.history = list(set(self.history))
 
@@ -234,7 +234,7 @@ class QuestionnaireManager:
     def get_next_question(self):
         self._store_in_history()
 
-        if self.current_question.repeats():
+        if self.current_question.should_repeat():
             self.current_question._repetition += 1
             return self.current_question
 
@@ -256,6 +256,9 @@ class QuestionnaireManager:
         # can only jump to a previously seen question
         if self.completed:
             self.completed = False
+
+        if not ':' in questionnaire_location:
+            questionnaire_location += ':0'  # jump to repetition 0 unless specified otherwise
 
         if self._exists_in_history(questionnaire_location):
             self._store_in_history()
@@ -302,11 +305,11 @@ class QuestionnaireManager:
     def get_history(self):
         # load the question objects
         history_with_question_objects = OrderedDict()
-        for reference in self.history:
-            question = self.get_question_by_reference(reference)
-
-            if not question.skipping:
-                history_with_question_objects[question] = question.validate()
+        # for reference in self.history:
+        #     question = self.get_question_by_reference(reference)
+        #
+        #     if not question.skipping:
+        #         history_with_question_objects[question] = question.validate()
 
         return history_with_question_objects
 
@@ -342,9 +345,9 @@ class QuestionnaireManager:
 
             elif not reference.startswith('repetition_'):
                 question = self.get_question_by_reference(reference)
-                if question.repeats():
+                if question.is_repeating():
                     question.set_repetition(repetition)
-                if question.parent and  question.parent.repeats():
+                if question.parent and  question.parent.is_repeating():
                     question.parent.set_repetition(repetition)
 
                 question.update(responses[reference])

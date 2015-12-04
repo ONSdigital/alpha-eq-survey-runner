@@ -441,39 +441,39 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         assert not question.has_branch_conditions()
 
-    def test_history_order_correct(self):
-        q_data = self._loadFixture('groups.json')
-
-        q_manager = QuestionnaireManager(q_data, {})
-        q_manager.start_questionnaire()
-
-        q1 = q_manager.get_current_question()
-
-        response = {
-                'EQ_start_q1': '1',          # Numeric required field
-                'EQ_start_q2': None,         # Rich text text, no response required
-                'EQ_start_q3': 'option1',    # Multi-choice, option 1
-                'EQ_start_q4': 'option1',   # Checkbox, selected
-                'EQ_start_q5': 'Some Text',  # required free text field
-                'EQ_start_q6': None          # Optional numeric
-            }
-
-        q_manager.update(response)
-
-        history = q_manager.get_history()
-
-        assert q1 == q_manager.get_history().keys()[0]
-
-        q2 = q_manager.get_next_question()
-
-        response['EQ_q1_q2'] = 'anything you like'
-
-        q_manager.update(response)
-
-        history = q_manager.get_history()
-
-        assert q2 == q_manager.get_history().keys()[0]
-        assert q1 == q_manager.get_history().keys()[1]
+    # def test_history_order_correct(self):
+    #     q_data = self._loadFixture('groups.json')
+    #
+    #     q_manager = QuestionnaireManager(q_data, {})
+    #     q_manager.start_questionnaire()
+    #
+    #     q1 = q_manager.get_current_question()
+    #
+    #     response = {
+    #             'EQ_start_q1': '1',          # Numeric required field
+    #             'EQ_start_q2': None,         # Rich text text, no response required
+    #             'EQ_start_q3': 'option1',    # Multi-choice, option 1
+    #             'EQ_start_q4': 'option1',   # Checkbox, selected
+    #             'EQ_start_q5': 'Some Text',  # required free text field
+    #             'EQ_start_q6': None          # Optional numeric
+    #         }
+    #
+    #     q_manager.update(response)
+    #
+    #     history = q_manager.get_history()
+    #
+    #     assert q1 == q_manager.get_history().keys()[0]
+    #
+    #     q2 = q_manager.get_next_question()
+    #
+    #     response['EQ_q1_q2'] = 'anything you like'
+    #
+    #     q_manager.update(response)
+    #
+    #     history = q_manager.get_history()
+    #
+    #     assert q2 == q_manager.get_history().keys()[0]
+    #     assert q1 == q_manager.get_history().keys()[1]
 
     def test_validate_fail_maxlength(self):
         qData = self._loadFixture('groups.json')
@@ -679,7 +679,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert isinstance(q1, QuestionGroup) == True
 
         # test the group is repeating
-        assert q1.repeats() == True
+        assert q1.should_repeat() == True
         assert q1.get_repetition() == 0
 
         responses = {
@@ -734,7 +734,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         # call next question (there is only one, but it reepeats)
         qManager.get_next_question()
-        assert q1.get_repetition() == 1
+        assert qManager.get_current_question().get_repetition() == 1
 
         # check we have not completed the questionnaire
         assert qManager.completed == False
@@ -822,6 +822,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert results[0].is_valid() == True
         assert results[1].is_valid() == True
 
+    def test_repeating_section_hsistory(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

@@ -36,7 +36,7 @@ class Question(object):
         if 'justifications' in user_data:
             self.justifications = user_data['justifications']
 
-        if self.repeats():
+        if self.is_repeating():
             self.set_repetition(len(self.answers))
 
     def get_user_data(self):
@@ -82,7 +82,7 @@ class Question(object):
                 if 'value' in schema['count']:
                     # return a function to check the repetition
                     def repeats():
-                        return self._repetition < int(schema['count']['value'])
+                        return self._repetition + 1 < int(schema['count']['value'])
 
                     return repeats
 
@@ -171,15 +171,21 @@ class Question(object):
         else:
             return "EQ_" + self._reference
 
-    def repeats(self):
-        if self._repeating:
-            # _repeating is *either* False, or a closure
-            return self._repeating()
+    def is_repeating(self):
+        return self._repeating != False
 
-        return False
+    def should_repeat(self):
+        if self.is_repeating():
+            return self._repeating()
+        else:
+            return False
 
     def get_repetition(self):
         return self._repetition
+
+
+    def get_repetitions(self):
+        return len(self.answers)
 
     def set_repetition(self, repetition):
         while len(self.answers) <= repetition:

@@ -3,7 +3,7 @@
   {% block question_template %}
   {% endblock question_template %}
 
-  {% if question.repeats() %}
+  {% if question.is_repeating() %}
   <input type="hidden" name="repetition" value="{{ question.get_repetition() }}"/>
   {% endif  %}
 
