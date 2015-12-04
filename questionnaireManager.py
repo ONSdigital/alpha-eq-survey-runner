@@ -270,8 +270,7 @@ class QuestionnaireManager(object):
         for history in self.history:
             question = self.get_question_by_reference(history['reference'])
 
-            if not question.skipping:
-                history_with_question_objects[question] = history['valid']
+            history_with_question_objects[question] = history['valid']
 
         return history_with_question_objects
 
