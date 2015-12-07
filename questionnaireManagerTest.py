@@ -822,7 +822,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert results[0].is_valid() == True
         assert results[1].is_valid() == True
 
-    def test_repeating_set_number_of_times(self):
+    def test_repeating_based_on_answer(self):
         qData = self._loadFixture('repeating_answer.json')
         resumeData = {}
 
@@ -831,56 +831,45 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q1 = qManager.get_current_question()
 
-        # Test we have a group
-        assert isinstance(q1, QuestionGroup) == True
-
-        # test the group is repeating
-        assert q1.should_repeat() == True
-        assert q1.get_repetition() == 0
-
         responses = {
-            'EQ_s1_q1':'',
-            'EQ_s1_q2':''
+            'EQ_s1_q1':'2',
         }
 
         qManager.update(responses)
 
-        # no responses should fail validation
-
         results = qManager.validate()
-
-        assert q1.get_repetition() == 0
-        assert results[q1.get_repetition()].is_valid() == False
-
+        assert results[q1.get_repetition()].is_valid() == True
+        qManager.get_next_question()
         stored = qManager.get_questionnaire_state()
 
         # re-instantiate the questionnaire manager as if following a submit
         qManager = QuestionnaireManager(qData, stored)
+        q2 = qManager.get_current_question()
 
         # answer the question for the first repetition
         responses = {
-            'repetition_EQ_s1' : 0,
-            'EQ_s1_q1' : 'David',
-            'EQ_s1_q2' : '39'
+            'repetition_EQ_s2' : 0,
+            'EQ_s2_q1' : 'David',
+            'EQ_s2_q2' : '39'
         }
 
         qManager.update(responses)
 
-        assert q1.get_repetition() == 0
+        assert q2.get_repetition() == 0
 
         stored = qManager.get_questionnaire_state()
 
         assert 'current_question' in stored
-        assert stored['current_question'] == 'EQ_s1'
+        assert stored['current_question'] == 'EQ_s2'
         assert 'current_repetition' in stored
         assert stored['current_repetition'] == 0
 
-        assert len(stored['user_data']) == 2
-        assert 'EQ_s1_q1' in stored['user_data'].keys()
-        assert isinstance(stored['user_data']['EQ_s1_q1']['answer'], list)
-        assert 'David' == stored['user_data']['EQ_s1_q1']['answer'][0]
-        assert isinstance(stored['user_data']['EQ_s1_q2']['answer'], list)
-        assert '39' == stored['user_data']['EQ_s1_q2']['answer'][0]
+        assert len(stored['user_data']) == 3
+        assert 'EQ_s2_q1' in stored['user_data'].keys()
+        assert isinstance(stored['user_data']['EQ_s2_q1']['answer'], list)
+        assert 'David' == stored['user_data']['EQ_s2_q1']['answer'][0]
+        assert isinstance(stored['user_data']['EQ_s2_q2']['answer'], list)
+        assert '39' == stored['user_data']['EQ_s2_q2']['answer'][0]
 
         # check validation passes
         results = qManager.validate()
@@ -888,7 +877,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert results[q1.get_repetition()].is_valid() == True
 
 
-        # call next question (there is only one, but it reepeats)
+        # call next question ( it repeats)
         qManager.get_next_question()
         assert qManager.get_current_question().get_repetition() == 1
 
@@ -901,47 +890,47 @@ class QuestionnaireManagerTest(unittest.TestCase):
         qManager = QuestionnaireManager(qData, stored)
 
         assert 'current_question' in stored
-        assert stored['current_question'] == 'EQ_s1'
+        assert stored['current_question'] == 'EQ_s2'
         assert 'current_repetition' in stored
         assert stored['current_repetition'] == 1
 
         # get the current question
-        q2 = qManager.get_current_question()
-        assert q2._reference == q1._reference
-        assert q2.get_repetition() == 1
+        q3 = qManager.get_current_question()
+        assert q3._reference == q2._reference
+        assert q3.get_repetition() == 1
 
         responses = {
-            'repetition_EQ_s1': 1,
-            'EQ_s1_q1' : '',
-            'EQ_s1_q2' : ''
+            'repetition_EQ_s2': 1,
+            'EQ_s2_q1' : '',
+            'EQ_s2_q2' : ''
         }
 
         qManager.update(responses)
 
         # check validation fails until we answer the second repetition
         results = qManager.validate()
-        assert results[q2.get_repetition()].is_valid() == False
+        assert results[q3.get_repetition()].is_valid() == False
 
         responses = {
-            'repetition_EQ_s1': 1,
-            'EQ_s1_q1' : 'Lewis',
-            'EQ_s1_q2' : 'Ten'
+            'repetition_EQ_s2': 1,
+            'EQ_s2_q1' : 'Lewis',
+            'EQ_s2_q2' : 'Ten'
         }
 
         qManager.update(responses)
 
         stored = qManager.get_questionnaire_state()
 
-        assert len(stored['user_data']) == 2
-        assert 'EQ_s1_q1' in stored['user_data'].keys()
-        assert isinstance(stored['user_data']['EQ_s1_q1']['answer'], list)
-        assert len(stored['user_data']['EQ_s1_q1']['answer']) == 2
-        assert 'David' == stored['user_data']['EQ_s1_q1']['answer'][0]
-        assert 'Lewis' == stored['user_data']['EQ_s1_q1']['answer'][1]
-        assert isinstance(stored['user_data']['EQ_s1_q2']['answer'], list)
-        assert len(stored['user_data']['EQ_s1_q2']['answer']) == 2
-        assert '39' == stored['user_data']['EQ_s1_q2']['answer'][0]
-        assert 'Ten' == stored['user_data']['EQ_s1_q2']['answer'][1]
+        assert len(stored['user_data']) == 3
+        assert 'EQ_s2_q1' in stored['user_data'].keys()
+        assert isinstance(stored['user_data']['EQ_s2_q1']['answer'], list)
+        assert len(stored['user_data']['EQ_s2_q1']['answer']) == 2
+        assert 'David' == stored['user_data']['EQ_s2_q1']['answer'][0]
+        assert 'Lewis' == stored['user_data']['EQ_s2_q1']['answer'][1]
+        assert isinstance(stored['user_data']['EQ_s2_q2']['answer'], list)
+        assert len(stored['user_data']['EQ_s2_q2']['answer']) == 2
+        assert '39' == stored['user_data']['EQ_s2_q2']['answer'][0]
+        assert 'Ten' == stored['user_data']['EQ_s2_q2']['answer'][1]
 
         # check validation passes with second response
         results = qManager.validate()
@@ -949,36 +938,36 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert results[0].is_valid() == True
         assert results[1].is_valid() == False
 
-        assert 'EQ_s1_q2:1' in results[1].errors
+        assert 'EQ_s2_q2:1' in results[1].errors
 
-        EQ_s1_q2 = qManager.get_question_by_reference('EQ_s1_q2').validate()
+        EQ_s2_q2 = qManager.get_question_by_reference('EQ_s2_q2').validate()
 
-        assert EQ_s1_q2[0].is_valid() == True
-        assert EQ_s1_q2[1].is_valid() == False
+        assert EQ_s2_q2[0].is_valid() == True
+        assert EQ_s2_q2[1].is_valid() == False
 
-        assert 'This field is numeric' in EQ_s1_q2[1].errors
+        assert 'This field is numeric' in EQ_s2_q2[1].errors
 
         # re-instantiate the questionnaire manager as if following a submit
         qManager = QuestionnaireManager(qData, stored)
 
         responses = {
-            'repetition_EQ_s1': 1,
-            'EQ_s1_q1' : 'Lewis',
-            'EQ_s1_q2' : '10'
+            'repetition_EQ_s2': 1,
+            'EQ_s2_q1' : 'Lewis',
+            'EQ_s2_q2' : '10'
         }
 
         qManager.update(responses)
 
         stored = qManager.get_questionnaire_state()
 
-        assert '10' == stored['user_data']['EQ_s1_q2']['answer'][1]
+        assert '10' == stored['user_data']['EQ_s2_q2']['answer'][1]
 
         results = qManager.validate()
 
         assert results[0].is_valid() == True
         assert results[1].is_valid() == True
 
-    def test_repeating_section_hsistory(self):
+    def test_repeating_section_history(self):
         pass
 
 if __name__ == '__main__':

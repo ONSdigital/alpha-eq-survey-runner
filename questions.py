@@ -78,7 +78,14 @@ class Question(object):
                 # we are repeating a specific number of times
                 if 'response' in schema['count']:
                     # we are repeating based on a previous response
-                    return True
+                        def repeats():
+                            triggerQuestion = self.manager.get_question_by_reference(schema['count']['response'])
+                            if triggerQuestion:
+                                return self._repetition + 1 < int(triggerQuestion.get_answer())
+                            else:
+                                return False
+
+                        return repeats
 
                 if 'value' in schema['count']:
                     # return a function to check the repetition

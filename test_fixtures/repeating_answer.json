@@ -36,38 +36,7 @@
                          }
                     ],
                     "repeating":false
-                },
-                {
-                    "type": "number_question",
-                    "children": [],
-                    "dndType": "item",
-                    "questionText": "What is the developers age?",
-                    "questionError": "This question is required",
-                    "displayProperties": {},
-                    "skipConditions": [],
-                    "parts": [],
-                    "questionReference": "q2",
-                    "displayConditions": [],
-                    "branchConditions": [],
-                    "questionHelp": "",
-                    "questionType": "InputText",
-                    "validation": [
-                         {
-                            "condition": "required",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is required"
-                         },
-                         {
-                            "condition": "numeric",
-                            "value": true,
-                            "type": "error",
-                            "message" : "This field is numeric"
-                         }
-                    ],
-                    "repeating":false
                 }
-
             ],
             "id": 0,
             "questionText": "Repeating Section Test",
@@ -88,11 +57,7 @@
                     "message" : "This field is required"
                 }
             ],
-            "repeating": {
-              "count": {
-                "value": "2"
-              }
-            }
+            "repeating": false
         },
         {
             "children": [
@@ -173,7 +138,7 @@
             ],
             "repeating": {
               "count": {
-                "response": "s2_q1"
+                "response": "EQ_s1_q1"
               }
             }
         }
