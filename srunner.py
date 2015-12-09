@@ -25,7 +25,7 @@ app.logger.addHandler(file_handler)
 
 # @TODO change this env variable
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8000/')
+app.survey_registry_url = os.environ.get('SURVEY_REGISTRY_URL', 'http://localhost:8081/')
 
 
 # store the responses in a S3 bucket
@@ -70,7 +70,7 @@ def autosave(questionnaire_id, quest_session_id):
 
 
 def get_form_schema(questionnaire_id):
-    qurl = app.survey_registry_url + '/surveys/api/questionnaire/' + str(questionnaire_id) + '/'
+    qurl = app.survey_registry_url + '/' + str(questionnaire_id)
     form_schema = requests.get(qurl)
     return form_schema.content
 
