@@ -7,13 +7,3 @@ class Condition(object):
         elif len(args) == 2:
             self.trigger = args[0]
             self.state = args[1]
-
-
-class JumpTo(Condition):
-    def __init__(self, target, trigger, state):
-        super(JumpTo, self).__init__(target, trigger, state)
-
-class SkipCondition(Condition):
-    def __init__(self, trigger, state):
-        super(SkipCondition, self).__init__(trigger, state)
-

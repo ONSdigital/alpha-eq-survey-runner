@@ -1,15 +1,17 @@
-from flask import Flask, render_template, redirect, request, session, url_for
-from flask_zurb_foundation import Foundation
-import requests
-import os
 import json
 import logging
-from logging import StreamHandler
+import os
 import uuid
-from questionnaireManager import QuestionnaireManager
-from settings import APP_FIXTURES
-import eq_cassandra
+from logging import StreamHandler
+
 import boto3
+import requests
+from flask import Flask, render_template, redirect, request, session
+from flask_zurb_foundation import Foundation
+
+from database import eq_cassandra
+from questionnaire.questionnaire_manager import QuestionnaireManager
+from settings import APP_FIXTURES
 
 app = Flask(__name__)
 app.debug = True
@@ -145,13 +147,13 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
         elif 'next' in request.form and q_manager.started:
             # validate response
             user_responses = {}
-            warningsAccepted = []
+            warnings_accepted = []
             justifications ={}
             for key in request.form.keys():
                 response = request.form.getlist(key)
                 # Separate out warning checkbox responses from questionnaire question  responses
                 if key.startswith( 'warning_' ):
-                    warningsAccepted.append(key.replace("warning_", ""))
+                    warnings_accepted.append(key.replace("warning_", ""))
                 if key.startswith( 'justification_' ):
                      justifications[key.replace("justification_", "")] = response[0]
                 elif key != 'next' and key != 'start':
@@ -165,12 +167,12 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
             q_manager.store_response(user_responses)
 
             # Save the current accepted warnings to cassandra
-            q_manager.store_warnings(warningsAccepted)
+            q_manager.store_warnings(warnings_accepted)
 
             # Save the justifications
             q_manager.store_justifications(justifications)
 
-            if q_manager.is_valid_response(user_responses, warningsAccepted):
+            if q_manager.is_valid_response(user_responses, warnings_accepted):
                 q_manager.get_next_question(user_responses)
 
         set_session_data(quest_session_id, str(session['uid']), json.dumps(q_manager.get_questionnaire_state()))
@@ -203,13 +205,13 @@ def questionnaire_viewer(questionnaire_id, quest_session_id=None):
                 question = q_manager.get_current_question()
                 if question:
                     return render_template('questions/' + question.type + '.html',
-                                    question=question,
-                                    user_response=q_manager.get_responses(),
-                                    user_warningsAccepted=q_manager.get_warningsAccepted(),
-                                    user_justification=q_manager.get_justifications(),
-                                    questionnaire=q_manager,
-                                    request=request,
-                                    current="question")
+                                           question=question,
+                                           user_response=q_manager.get_responses(),
+                                           user_warningsAccepted=q_manager.get_warnings_accepted(),
+                                           user_justification=q_manager.get_justifications(),
+                                           questionnaire=q_manager,
+                                           request=request,
+                                           current="question")
                 else:
                     return render_template('survey_error.html',
                                            questionnaire=q_manager,
