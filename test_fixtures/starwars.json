@@ -224,7 +224,7 @@
 			"displayConditions": [],
 			"branchConditions": [],
 			"questionHelp": "Please only enter a number",
-			"questionType": "InputText",
+			"questionType": "InputNumber",
 			"validation": [{
 				"condition": "required",
 				"value": true,

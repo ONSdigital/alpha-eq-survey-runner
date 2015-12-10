@@ -1,4 +1,4 @@
-from branching.condition import Condition
+from conditions.condition import Condition
 
 
 class SkipCondition(Condition):
