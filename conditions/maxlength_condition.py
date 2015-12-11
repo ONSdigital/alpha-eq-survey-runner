@@ -2,9 +2,13 @@ from condition import Condition
 
 
 class MaxLengthCondition(Condition):
-    def __init__(self, max_length=None):
+    def __init__(self):
         super(MaxLengthCondition, self).__init__()
-        self.max_length = max_length
+        self.value = None
+
+    def initialize(self, condition, value, error_type, message):
+        super(MaxLengthCondition, self).initialize(condition, value, error_type, message)
+        self.value = value
 
     def condition_is_met(self, response):
-        return len(response) < self.max_length
+        return len(response) < self.value

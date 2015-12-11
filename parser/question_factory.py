@@ -1,4 +1,4 @@
-from schema import question, checkbox, date, daterange, dropdown, inputtext, inputnumber, multiplechoice, numeric_question, questiongroup, textblock
+from schema import question, checkbox, date, daterange, dropdown, inputtext, inputnumber, multiplechoice, questiongroup, textblock
 from factory import Factory
 
 
@@ -19,13 +19,13 @@ class QuestionFactory(Factory):
         return instance
 
 # create the factory and register the question classes
-factory = QuestionFactory()
-factory.register("QuestionGroup", questiongroup.QuestionGroup)
-factory.register("CheckBox", checkbox.CheckBox)
-factory.register("Date", date.Date)
-factory.register("DateRange", daterange.DateRange)
-factory.register("Dropdown", dropdown.Dropdown)
-factory.register("InputNumber", inputnumber.InputNumber)
-factory.register("InputText", inputtext.InputText)
-factory.register("MultipleChoice", multiplechoice.MultipleChoice)
-factory.register("TextBlock", textblock.TextBlock)
+question_factory = QuestionFactory()
+question_factory.register("QuestionGroup", questiongroup.QuestionGroup)
+question_factory.register("CheckBox", checkbox.CheckBox)
+question_factory.register("Date", date.Date)
+question_factory.register("DateRange", daterange.DateRange)
+question_factory.register("Dropdown", dropdown.Dropdown)
+question_factory.register("InputNumber", inputnumber.InputNumber)
+question_factory.register("InputText", inputtext.InputText)
+question_factory.register("MultipleChoice", multiplechoice.MultipleChoice)
+question_factory.register("TextBlock", textblock.TextBlock)
