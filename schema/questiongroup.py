@@ -4,10 +4,13 @@ from reapting.no_repeat_rule import NoRepeatRule
 
 # AKA QuestionSection TODO
 class QuestionGroup(QuestionElement):
-    def __init__(self, reference, question_type, text):
-        super(QuestionGroup, self).__init__(reference, question_type, text)
+    def __init__(self):
+        super(QuestionGroup, self).__init__()
         self._children = []
         self._repeat_condition = NoRepeatRule()
+
+    def initialize(self, reference, question_type, text):
+        super(QuestionGroup, self).initialize(reference, question_type, text)
 
     def add_child(self, child):
         assert child.parent is None

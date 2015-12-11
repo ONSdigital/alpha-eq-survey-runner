@@ -1,5 +1,5 @@
 import json
-from question_factory import QuestionFactory
+from question_factory import factory
 from schema.questionnaire import Questionnaire
 from schema.questiongroup import QuestionGroup
 
@@ -21,13 +21,16 @@ class JsonParser:
 
     def add_questions(self):
         for question_schema in self.schema['questions']:
-            question = QuestionFactory.create_question(question_schema)
+            question = factory.create_question(question_schema)
             self.questionnaire.add_question(question)
 
             if isinstance(question, QuestionGroup):
                 for child_schema in question_schema['children']:
-                    child_question = QuestionFactory.create_question(child_schema)
+                    child_question = factory.create_question(child_schema)
                     question.add_child(child_question)
+
+    def add_validation(self, question, question_schema):
+        pass
 
     def _get_value(self, name):
         value = None

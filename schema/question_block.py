@@ -3,8 +3,11 @@ from reapting.no_repeat_rule import NoRepeatRule
 
 
 class QuestionBlock(QuestionElement):
-    def __init__(self, reference, text):
-        super(QuestionBlock, self).__init__(reference, "block", text)
+    def __init__(self):
+        pass
+
+    def initialize(self, reference, question_type, text):
+        super(QuestionBlock, self).initialize(reference, "block", text)
         self._children = []
         self._repeat_condition = NoRepeatRule()
 
