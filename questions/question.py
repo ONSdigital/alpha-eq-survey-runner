@@ -1,66 +1,50 @@
-import importlib
-
-from branching.jump_to import JumpTo
-from parser.validation_factory import validation_factory
-from validators.validation_rule import ValidationRule
-
 
 class Question(object):
-    def __init__(self, question_schema, parent=None):
-        self.parent = parent
+    def __init__(self):
+        self.parent = None
         self.skipping = False
-        self._schema = question_schema
-        self.type = question_schema['questionType']
-        self.question_text = question_schema['questionText']
-        self.question_help = question_schema['questionHelp']
-        self._reference = question_schema['questionReference']
+        self.type = None
+        self.text = None
+        self.question_help = None
+        self._reference = None
         self.display_properties = None
-        self.validation = self._build_validation(question_schema['validation'])
-        self.parts = self._build_parts(question_schema['parts'])
+        self.validation = []
+        self.parts = []
         self.children = None
         self.display_conditions = None
         self.skip_conditions = []
-        self.branch_conditions = self._build_branch_conditions(question_schema['branchConditions'])
+        self.branch_conditions = []
         self.warnings = []
         self.errors = []
-        self.allWarningsAccepted =True
+        self.allWarningsAccepted = True
 
-    @staticmethod
-    def factory(schema, parent=None):
-        if schema['questionType']:
-            question_class = getattr(importlib.import_module('questions.'+schema['questionType'].lower()), schema['questionType'])
-            question = question_class(schema, parent)
-            return question
-        else:
-            return Question()
+    def initialize(self, reference, question_type, text, question_help):
+        self._reference = reference
+        self.type = question_type
+        self.text = text
+        self.question_help = question_help
 
-    @staticmethod
-    def _build_validation(validation_schema):
-        rules = []
+    def deserialize(self, schema):
+        question_type = self._get_value(schema, 'questionType')
+        question_text = self._get_value(schema, 'questionText')
+        question_reference = self._get_value(schema, 'questionReference')
+        question_help = self._get_value(schema, 'questionHelp')
+        self.initialize(question_reference, question_type, question_text, question_help)
 
-        for validation in validation_schema:
-            if validation['condition']:
-                condition = validation_factory.create_condition(validation)
-                rule = ValidationRule(condition, condition.get_type(), condition.get_message())
-                rules.append(rule)
+    def _get_value(self, schema, name):
+        value = None
+        if schema[name]:
+            value = schema[name]
+        return value
 
-        return rules
+    def add_validation_rule(self, rule):
+        self.validation.append(rule)
 
-    def _build_parts(self, schema):
-        parts = []
-        for part in schema:
-            parts.append(part['value'])
+    def add_part(self, part):
+        self.parts.append(part)
 
-        return parts
-
-    def _build_branch_conditions(self, branch_conditions_schema):
-        branch_conditions = []
-        for condition in branch_conditions_schema:
-             if condition['jumpTo'] and condition['jumpTo']['condition']['value']['is']:
-                jump_to = JumpTo(condition['jumpTo']['question'], self.get_reference(), condition['jumpTo']['condition']['value']['is'])
-                branch_conditions.append(jump_to)
-
-        return branch_conditions
+    def add_branch_condition(self, condition):
+        self.branch_conditions.append(condition)
 
     def branches(self, response):
         for rule in self.branch_conditions:

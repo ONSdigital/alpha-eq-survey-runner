@@ -3,7 +3,7 @@ import os
 from settings import APP_FIXTURES
 
 from json_parser import JsonParser
-from schema.questiongroup import QuestionGroup
+from questions.questiongroup import QuestionGroup
 
 
 class JsonParserTest(unittest.TestCase):
@@ -35,15 +35,15 @@ class JsonParserTest(unittest.TestCase):
         assert isinstance(questionnaire.questions[2], QuestionGroup)
 
         assert questionnaire.questions[0].text == "Star Wars Favourites"
-        assert questionnaire.questions[0].reference == "sectionOne"
+        assert questionnaire.questions[0]._reference == "sectionOne"
         assert questionnaire.questions[0].type == "QuestionGroup"
 
         assert questionnaire.questions[1].text == "The New Film"
-        assert questionnaire.questions[1].reference == "sectionTwo"
+        assert questionnaire.questions[1]._reference == "sectionTwo"
         assert questionnaire.questions[1].type == "QuestionGroup"
 
         assert questionnaire.questions[2].text == "Future Improvements"
-        assert questionnaire.questions[2].reference == "sectionThree"
+        assert questionnaire.questions[2]._reference == "sectionThree"
         assert questionnaire.questions[2].type == "QuestionGroup"
 
     def test_question_creation_section_one(self):

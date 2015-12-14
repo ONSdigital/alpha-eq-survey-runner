@@ -3,6 +3,7 @@ from collections import OrderedDict
 
 from branching.skip import SkipCondition
 from questions.question import Question
+from parser.json_parser import JsonParser
 
 
 class QuestionnaireManager(object):
@@ -20,26 +21,19 @@ class QuestionnaireManager(object):
         self.warnings_accepted = []
         self.justifications = {}
         self.current_question = None
-        self._load_questionnaire_data(json.loads(questionnaire_schema))
+        self._load_questionnaire_data(questionnaire_schema)
         self._ensure_valid_routing()
         if questionnaire_state:
             self._load_questionnaire_state(questionnaire_state)
 
-    def _load_questionnaire_data(self, questionnaire_data):
-        self.survey_id = questionnaire_data['survey_id']
-        self.questionnaire_id = questionnaire_data['questionnaire_id']
-        self.title = questionnaire_data['title']
-        self.overview = questionnaire_data['overview']
-        for index, schema in enumerate(questionnaire_data['questions']):
-            question = Question.factory(schema)
-
-            # TODO: Remove this as it breaks encapsulation.  References should be set in the schema instead
-            # all questions need references - should really be set by the author
-            # but if not lets set them
-            if not question._reference:
-                question._reference = 'q' + str(index)
-                
-            self._add_question(question)
+    def _load_questionnaire_data(self, questionnaire_schema):
+        parser = JsonParser(questionnaire_schema)
+        questionnaire = parser.questionnaire
+        self.survey_id = questionnaire.survey_id
+        self.questionnaire_id = questionnaire.questionnaire_id
+        self.title = questionnaire.title
+        self.overview = questionnaire.overview
+        self.questions = questionnaire.questions
 
     def _ensure_valid_routing(self):
         for question_index, question in enumerate(self.questions):

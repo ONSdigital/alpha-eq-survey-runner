@@ -2,18 +2,24 @@ from questions.question import Question
 
 
 class QuestionGroup(Question):
-    def __init__(self, question_schema, parent=None):
-        super(QuestionGroup, self).__init__(question_schema)
+    def __init__(self):
+        super(QuestionGroup, self).__init__()
         self.children = []
         self.errors = {}
-        self._load_children(question_schema['children'])
 
-    def _load_children(self, children_schema):
-        for index, child in enumerate(children_schema):
-            question = Question.factory(child, self)
-            if not question._reference:
-                question._reference = 'q' + str(index)
-            self.children.append(question)
+    def add_child(self, child):
+        assert child.parent is None
+        child.parent = self
+        self.children.append(child)
+
+    def has_children(self):
+        return len(self.children) > 0
+
+    def number_of_children(self):
+        return len(self.children)
+
+    def get_child(self, index):
+        return self.children[index]
 
     def is_valid_response(self, responses, warningsAccepted):
         self.errors = {}

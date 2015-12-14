@@ -2,8 +2,8 @@ from questions.question import Question
 
 
 class MultipleChoice(Question):
-    def __init__(self, question_schema, parent=None):
-        super(MultipleChoice, self).__init__(question_schema, parent)
+    def __init__(self):
+        super(MultipleChoice, self).__init__()
 
     def is_valid_response(self, response, warning_accepted):
         valid = super(MultipleChoice, self).is_valid_response(response, False)

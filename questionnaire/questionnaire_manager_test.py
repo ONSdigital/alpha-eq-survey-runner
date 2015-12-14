@@ -28,7 +28,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         q = q_manager.get_current_question()
 
-        assert q.question_text == "How many marbles do you have"
+        assert q.text == "How many marbles do you have"
 
     def test_answer_required_question(self):
         q_data = self._loadFixture('test_survey.json')
@@ -40,7 +40,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q = q_manager.get_current_question()
 
         assert isinstance(q, InputText) == True
-        assert q.question_text == "How many marbles do you have"
+        assert q.text == "How many marbles do you have"
 
         response = '15'
         warnings_accepted = []
@@ -59,7 +59,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q = q_manager.get_current_question()
 
         assert isinstance(q, InputText) == True
-        assert q.question_text == "How many marbles do you have"
+        assert q.text == "How many marbles do you have"
 
         response = 'Lots'
         warnings_accepted = []
@@ -81,7 +81,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q = q_manager.get_current_question()
 
         assert isinstance(q, InputText)
-        assert q.question_text == "How many marbles do you have"
+        assert q.text == "How many marbles do you have"
 
         response = '35'
         warnings_accepted = []
@@ -97,7 +97,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q = q_manager.get_next_question(response)
 
         assert isinstance(q, MultipleChoice)
-        assert q.question_text == 'Which colour marble would you prefer?'
+        assert q.text == 'Which colour marble would you prefer?'
 
         invalid_response_1 = ' '
         assert q_manager.is_valid_response(invalid_response_1, warnings_accepted) == False
@@ -574,7 +574,7 @@ class QuestionnaireManagerTest(unittest.TestCase):
         q = q_manager.get_current_question()
 
         assert isinstance(q, InputText) == True
-        assert q.question_text == "How many marbles do you have"
+        assert q.text == "How many marbles do you have"
 
         response = 'Lots and lots and lots'
         warnings_accepted = []

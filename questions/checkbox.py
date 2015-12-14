@@ -2,8 +2,8 @@ from questions.question import Question
 
 
 class CheckBox(Question):
-    def __init__(self, question_schema, parent=None):
-        super(CheckBox, self).__init__(question_schema, parent)
+    def __init__(self):
+        super(CheckBox, self).__init__()
 
     def is_valid_response(self, response, warnings_accepted):
         if isinstance(response, list):

@@ -2,7 +2,7 @@
 
 {% block pageBody %}
 
-<b>Section: {{ question.question_text }}</b>
+<b>Section: {{ question.text }}</b>
 
 {% for question in question.children %}
 {% include 'questions/' + question.type + '.html' %}

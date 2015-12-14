@@ -1,4 +1,4 @@
-from schema import question, checkbox, date, daterange, dropdown, inputtext, inputnumber, multiplechoice, questiongroup, textblock
+from questions import question, checkbox, date, daterange, dropdown, inputtext, inputnumber, multiplechoice, questiongroup, textblock
 from factory import Factory
 
 
