@@ -1,4 +1,4 @@
-from conditions.condition import Condition
+from condition import Condition
 
 
 class SkipCondition(Condition):

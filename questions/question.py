@@ -1,6 +1,8 @@
 import importlib
 
 from branching.jump_to import JumpTo
+from parser.validation_factory import validation_factory
+from validators.validation_rule import ValidationRule
 
 
 class Question(object):
@@ -37,11 +39,9 @@ class Question(object):
         rules = []
 
         for validation in validation_schema:
-            # find the validaton class and instantiate it
             if validation['condition']:
-                RuleClass = getattr(importlib.import_module('validators.'+validation['condition']), validation['condition'].capitalize())
-                # this loads the class from the validator.py file
-                rule = RuleClass(validation)
+                condition = validation_factory.create_condition(validation)
+                rule = ValidationRule(condition, condition.get_type(), condition.get_message())
                 rules.append(rule)
 
         return rules
@@ -76,21 +76,21 @@ class Question(object):
     def is_valid_response(self, response, warning_accepted):
 
         self.errors = []
-        self.allWarningsAccepted =True
+        self.allWarningsAccepted = True
 
         for rule in self.validation:
             if rule.get_type() == 'error':
                 if not rule.is_valid(response):
-                    self.errors.append(rule.get_message(response))
+                    self.errors.append(rule.get_message())
                     break
             elif rule.get_type() == 'warning':
                 if not rule.is_valid(response):
                     # All warnings need to be recorded to populate checkboxes and messages
-                    self.warnings.append(rule.get_message(response))
+                    self.warnings.append(rule.get_message())
                     # If there is a single warning on the page which hasn't been accepted
                     # submission should be blocked
                     if not warning_accepted:
-                        self.allWarningsAccepted =False
+                        self.allWarningsAccepted = False
 
         return self.allWarningsAccepted and len(self.errors) == 0
 

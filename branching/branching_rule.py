@@ -4,6 +4,6 @@ class BranchingRule(object):
         self._target = target
 
     def branch(self, response):
-        if (self._condition.condition_is_met(response)):
+        if self._condition.condition_is_met(response):
             return self._target
         return None

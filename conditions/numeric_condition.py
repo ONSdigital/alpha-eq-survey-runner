@@ -11,6 +11,10 @@ class IsNumericCondition(Condition):
         self.value = value
 
     def condition_is_met(self, response):
+        return not response or response.isspace() or self.isnumeric(unicode(response))
+
+    @staticmethod
+    def isnumeric(response):
         try:
             float(response)
             return True

@@ -12,3 +12,9 @@ class ValidationRule(object):
 
     def is_valid(self, response):
         return self.condition.condition_is_met(response)
+
+    def get_type(self):
+        return self.type
+
+    def get_message(self):
+        return self.message

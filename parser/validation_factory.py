@@ -20,7 +20,7 @@ class ValidatorFactory(Factory):
 
 # create the factory and register the question classes
 validation_factory = ValidatorFactory()
-validation_factory.register("required", answer_provided.AnswerProvidedConditon)
+validation_factory.register("required", answer_provided.AnswerProvidedCondition)
 validation_factory.register("numeric", numeric_condition.IsNumericCondition)
 validation_factory.register("greaterthan", greaterthan.IsGreaterThanCondition)
 validation_factory.register("lessthan", lessthan.IsLessThanCondition)

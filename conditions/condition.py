@@ -25,6 +25,11 @@ class Condition(object):
             value = schema[name]
         return value
 
-
     def condition_is_met(self, response):
         raise NotImplementedError()
+
+    def get_message(self):
+        return self.message
+
+    def get_type(self):
+        return self.error_type

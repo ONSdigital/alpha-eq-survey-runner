@@ -1,6 +1,6 @@
 import json
 from question_factory import question_factory
-from validation_factory import  validation_factory
+from validation_factory import validation_factory
 from schema.questionnaire import Questionnaire
 from schema.questiongroup import QuestionGroup
 

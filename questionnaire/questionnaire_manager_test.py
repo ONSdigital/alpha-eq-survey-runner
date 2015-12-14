@@ -1,6 +1,7 @@
 import os
 import unittest
 from questions.inputtext import InputText
+from questions.inputnumber import InputNumber
 from questions.multiplechoice import MultipleChoice
 from questions.questiongroup import QuestionGroup
 from questionnaire_manager import QuestionnaireManager
@@ -360,7 +361,8 @@ class QuestionnaireManagerTest(unittest.TestCase):
 
         section_two_q1 = q_manager.get_question_by_reference('sectionTwo_q1')
 
-        assert isinstance(section_two_q1, InputText) == True
+
+        assert isinstance(section_two_q1, InputNumber) == True
         assert section_two_q1.get_reference() == 'EQ_sectionTwo_q1'
         # check 'private' internal reference
         assert section_two_q1._reference == 'q1'
@@ -450,7 +452,6 @@ class QuestionnaireManagerTest(unittest.TestCase):
         assert q_manager.is_valid_response(responses, warnings_accepted) == False
 
         errors = q_manager.get_question_errors()
-
         assert 'EQ_start_q5' in errors.keys()
         assert 'This field is to big' in errors['EQ_start_q5']
 

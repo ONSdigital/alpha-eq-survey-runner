@@ -11,4 +11,4 @@ class MaxLengthCondition(Condition):
         self.value = value
 
     def condition_is_met(self, response):
-        return len(response) < self.value
+        return not self.value or unicode(response).__len__() <= int(self.value)
