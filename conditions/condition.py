@@ -3,21 +3,15 @@ class Condition(object):
     def __init__(self):
         self.condition = None
         self.value = None
-        self.error_type = None
-        self.message = None
 
-    def initialize(self, condition, value, error_type, message):
+    def initialize(self, condition, value):
         self.condition = condition
         self.value = value
-        self.error_type = error_type
-        self.message = message
 
     def deserialize(self, schema):
         condition = self._get_value(schema, 'condition')
         value = self._get_value(schema, 'value')
-        error_type = self._get_value(schema, 'type')
-        message = self._get_value(schema, 'message')
-        self.initialize(condition, value, error_type, message)
+        self.initialize(condition, value)
 
     def _get_value(self, schema, name):
         value = None
@@ -27,9 +21,3 @@ class Condition(object):
 
     def condition_is_met(self, response):
         raise NotImplementedError()
-
-    def get_message(self):
-        return self.message
-
-    def get_type(self):
-        return self.error_type

@@ -5,7 +5,7 @@ from questionnaire.questionnaire import Questionnaire
 from questions.questiongroup import QuestionGroup
 from branching.skip import SkipCondition
 from branching.jump_to import JumpTo
-from validators.validation_rule import ValidationRule
+
 
 class JsonParser:
     def __init__(self, questionnaire_schema):
@@ -49,8 +49,7 @@ class JsonParser:
 
     def add_validation(self, question, question_schema):
         for validation in question_schema['validation']:
-            condition = validation_factory.create_condition(validation)
-            rule = ValidationRule(condition, condition.get_type(), condition.get_message())
+            rule = validation_factory.get_validation_rule(validation)
             question.add_validation_rule(rule)
 
     def build_parts(self, question, question_schema):
