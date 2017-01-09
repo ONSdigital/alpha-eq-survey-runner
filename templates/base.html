@@ -18,17 +18,13 @@
   <div class="wrapper">
 
     <header>
-      <div class="row">
-        <span class="crest"><img src="/static/img/crest.svg"></span>
-        <div class="large-12 columns">
-          <div class="survey-info">
-              <h2>{{questionnaire.title}}</h2>
-              <!-- below notice should be optional + editable by survey manager -->
-              <p>Notice is given under Section 1 of the Statistics of Trade Act 1947</p>
-            </div>
+      <figure><img src="/static/img/crest.svg" class="crest"></figure>
+          <div>
+            <h2>{{questionnaire.title}}</h2>
+            <!-- below notice should be optional + editable by survey manager -->
+          <p>Notice is given under Section 1 of the Statistics of Trade Act 1947</p>
           </div>
-        <span class="logo"><img src="/static/img/ons-logo.svg"></span>
-      </div>
+      <figure><img src="/static/img/ons-logo.svg" class="logo"></figure>
     </header>
 
     <form method="post">
